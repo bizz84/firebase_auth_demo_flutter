@@ -2,31 +2,31 @@
 import 'package:firebase_auth_demo_flutter/app/sign_in/validator.dart';
 import 'package:firebase_auth_demo_flutter/constants/strings.dart';
 
-enum EmailSignInFormType { signIn, register }
+enum EmailPasswordSignInFormType { signIn, register }
 
-class EmailSignInModel with EmailAndPasswordValidators {
-  EmailSignInModel({
+class EmailPasswordSignInModel with EmailAndPasswordValidators {
+  EmailPasswordSignInModel({
     this.email = '',
     this.password = '',
-    this.formType = EmailSignInFormType.signIn,
+    this.formType = EmailPasswordSignInFormType.signIn,
     this.isLoading = false,
     this.submitted = false,
   });
 
   final String email;
   final String password;
-  final EmailSignInFormType formType;
+  final EmailPasswordSignInFormType formType;
   final bool isLoading;
   final bool submitted;
 
-  EmailSignInModel copyWith({
+  EmailPasswordSignInModel copyWith({
     String email,
     String password,
-    EmailSignInFormType formType,
+    EmailPasswordSignInFormType formType,
     bool isLoading,
     bool submitted,
   }) {
-    return EmailSignInModel(
+    return EmailPasswordSignInModel(
       email: email ?? this.email,
       password: password ?? this.password,
       formType: formType ?? this.formType,
@@ -37,13 +37,13 @@ class EmailSignInModel with EmailAndPasswordValidators {
 
   // Getters
   String get primaryButtonText {
-    return formType == EmailSignInFormType.signIn
+    return formType == EmailPasswordSignInFormType.signIn
         ? Strings.signIn
         : Strings.createAnAccount;
   }
 
   String get secondaryButtonText {
-    return formType == EmailSignInFormType.signIn
+    return formType == EmailPasswordSignInFormType.signIn
         ? Strings.needAnAccount
         : Strings.haveAnAccount;
   }

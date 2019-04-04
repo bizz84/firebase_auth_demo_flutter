@@ -1,17 +1,17 @@
 import 'dart:async';
 
-import 'package:firebase_auth_demo_flutter/app/sign_in/email_sign_in_model.dart';
+import 'package:firebase_auth_demo_flutter/app/sign_in/email_password_sign_in_model.dart';
 import 'package:firebase_auth_demo_flutter/services/auth_service.dart';
 import 'package:flutter/foundation.dart';
 
-class EmailSignInBloc {
-  EmailSignInBloc({@required this.auth});
+class EmailPasswordSignInBloc {
+  EmailPasswordSignInBloc({@required this.auth});
   final AuthService auth;
 
-  final StreamController<EmailSignInModel> _modelController =
-      StreamController<EmailSignInModel>();
-  Stream<EmailSignInModel> get modelStream => _modelController.stream;
-  EmailSignInModel _model = EmailSignInModel();
+  final StreamController<EmailPasswordSignInModel> _modelController =
+      StreamController<EmailPasswordSignInModel>();
+  Stream<EmailPasswordSignInModel> get modelStream => _modelController.stream;
+  EmailPasswordSignInModel _model = EmailPasswordSignInModel();
 
   // Setters
   void updateEmail(String email) => _updateWith(email: email);
@@ -19,8 +19,8 @@ class EmailSignInBloc {
   void updatePassword(String password) => _updateWith(password: password);
 
   void toggleFormType() {
-    final EmailSignInFormType formType =
-        _model.formType == EmailSignInFormType.signIn ? EmailSignInFormType.register : EmailSignInFormType.signIn;
+    final EmailPasswordSignInFormType formType =
+        _model.formType == EmailPasswordSignInFormType.signIn ? EmailPasswordSignInFormType.register : EmailPasswordSignInFormType.signIn;
     _updateWith(
       email: '',
       password: '',
@@ -38,7 +38,7 @@ class EmailSignInBloc {
         return false;
       }
       _updateWith(isLoading: true);
-      if (_model.formType == EmailSignInFormType.signIn) {
+      if (_model.formType == EmailPasswordSignInFormType.signIn) {
         await auth.signInWithEmailAndPassword(_model.email, _model.password);
       } else {
         await auth.createUserWithEmailAndPassword(_model.email, _model.password);
@@ -55,7 +55,7 @@ class EmailSignInBloc {
   void _updateWith({
     String email,
     String password,
-    EmailSignInFormType formType,
+    EmailPasswordSignInFormType formType,
     bool isLoading,
     bool submitted,
   }) {

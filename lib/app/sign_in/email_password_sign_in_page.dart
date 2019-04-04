@@ -1,5 +1,5 @@
-import 'package:firebase_auth_demo_flutter/app/sign_in/email_sign_in_bloc.dart';
-import 'package:firebase_auth_demo_flutter/app/sign_in/email_sign_in_model.dart';
+import 'package:firebase_auth_demo_flutter/app/sign_in/email_password_sign_in_bloc.dart';
+import 'package:firebase_auth_demo_flutter/app/sign_in/email_password_sign_in_model.dart';
 import 'package:firebase_auth_demo_flutter/common_widgets/form_submit_button.dart';
 import 'package:firebase_auth_demo_flutter/common_widgets/platform_exception_alert_dialog.dart';
 import 'package:firebase_auth_demo_flutter/constants/strings.dart';
@@ -11,35 +11,35 @@ import 'package:provider/provider.dart';
 /// This class relies on a EmailSignInBloc + StreamBuilder to manage its state.
 /// However, it still needs to be a StatefulWidget due to an issue when
 /// TextEditingController and StreamBuilder are used together.
-class EmailSignInPage extends StatefulWidget {
-  const EmailSignInPage._({Key key, this.bloc}) : super(key: key);
-  final EmailSignInBloc bloc;
+class EmailPasswordSignInPage extends StatefulWidget {
+  const EmailPasswordSignInPage._({Key key, this.bloc}) : super(key: key);
+  final EmailPasswordSignInBloc bloc;
 
   /// Creates a Provider with a EmailSignInBloc and a EmailSignInPage
   static Widget create(BuildContext context) {
     final AuthService auth = Provider.of<AuthService>(context);
-    return StatefulProvider<EmailSignInBloc>(
-      valueBuilder: (BuildContext context) => EmailSignInBloc(auth: auth),
-      onDispose: (BuildContext context, EmailSignInBloc bloc) => bloc.dispose(),
-      child: Consumer<EmailSignInBloc>(
-        builder: (BuildContext context, EmailSignInBloc bloc) => EmailSignInPage._(bloc: bloc),
+    return StatefulProvider<EmailPasswordSignInBloc>(
+      valueBuilder: (BuildContext context) => EmailPasswordSignInBloc(auth: auth),
+      onDispose: (BuildContext context, EmailPasswordSignInBloc bloc) => bloc.dispose(),
+      child: Consumer<EmailPasswordSignInBloc>(
+        builder: (BuildContext context, EmailPasswordSignInBloc bloc) => EmailPasswordSignInPage._(bloc: bloc),
       ),
     );
   }
 
   @override
-  _EmailSignInPageState createState() => _EmailSignInPageState();
+  _EmailPasswordSignInPageState createState() => _EmailPasswordSignInPageState();
 }
 
-class _EmailSignInPageState extends State<EmailSignInPage> {
+class _EmailPasswordSignInPageState extends State<EmailPasswordSignInPage> {
   final FocusNode _emailFocusNode = FocusNode();
   final FocusNode _passwordFocusNode = FocusNode();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  void _showSignInError(EmailSignInModel model, PlatformException exception) {
+  void _showSignInError(EmailPasswordSignInModel model, PlatformException exception) {
     PlatformExceptionAlertDialog(
-      title: model.formType == EmailSignInFormType.signIn ? Strings.signInFailed : Strings.registrationFailed,
+      title: model.formType == EmailPasswordSignInFormType.signIn ? Strings.signInFailed : Strings.registrationFailed,
       exception: exception,
     ).show(context);
   }
@@ -49,16 +49,17 @@ class _EmailSignInPageState extends State<EmailSignInPage> {
     _passwordFocusNode.unfocus();
   }
 
-  Future<void> _submit(EmailSignInModel model) async {
+  Future<void> _submit(EmailPasswordSignInModel model) async {
     _unfocus();
     try {
       await widget.bloc.submit();
+      Navigator.of(context).pop();
     } on PlatformException catch (e) {
       _showSignInError(model, e);
     }
   }
 
-  void _emailEditingComplete(EmailSignInModel model) {
+  void _emailEditingComplete(EmailPasswordSignInModel model) {
     final FocusNode newFocus = model.canSubmitEmail ? _passwordFocusNode : _emailFocusNode;
     FocusScope.of(context).requestFocus(newFocus);
   }
@@ -69,7 +70,7 @@ class _EmailSignInPageState extends State<EmailSignInPage> {
     _passwordController.clear();
   }
 
-  Widget _buildEmailField(EmailSignInModel model) {
+  Widget _buildEmailField(EmailPasswordSignInModel model) {
     return TextField(
       controller: _emailController,
       focusNode: _emailFocusNode,
@@ -90,7 +91,7 @@ class _EmailSignInPageState extends State<EmailSignInPage> {
     );
   }
 
-  Widget _buildPasswordField(EmailSignInModel model) {
+  Widget _buildPasswordField(EmailPasswordSignInModel model) {
     return TextField(
       controller: _passwordController,
       focusNode: _passwordFocusNode,
@@ -107,7 +108,7 @@ class _EmailSignInPageState extends State<EmailSignInPage> {
     );
   }
 
-  Widget _buildContent(EmailSignInModel model) {
+  Widget _buildContent(EmailPasswordSignInModel model) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
@@ -132,15 +133,15 @@ class _EmailSignInPageState extends State<EmailSignInPage> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<EmailSignInModel>(
+    return StreamBuilder<EmailPasswordSignInModel>(
       stream: widget.bloc.modelStream,
-      initialData: EmailSignInModel(),
-      builder: (BuildContext context, AsyncSnapshot<EmailSignInModel> snapshot) {
-        final EmailSignInModel model = snapshot.data;
+      initialData: EmailPasswordSignInModel(),
+      builder: (BuildContext context, AsyncSnapshot<EmailPasswordSignInModel> snapshot) {
+        final EmailPasswordSignInModel model = snapshot.data;
         return Scaffold(
           appBar: AppBar(
             elevation: 2.0,
-            title: Text(model.formType == EmailSignInFormType.signIn ? Strings.signIn : Strings.register),
+            title: Text(model.formType == EmailPasswordSignInFormType.signIn ? Strings.signIn : Strings.register),
           ),
           backgroundColor: Colors.grey[200],
           body: SingleChildScrollView(

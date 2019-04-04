@@ -1,4 +1,4 @@
-import 'package:firebase_auth_demo_flutter/app/sign_in/email_sign_in_page.dart';
+import 'package:firebase_auth_demo_flutter/app/sign_in/email_password_sign_in_page.dart';
 import 'package:firebase_auth_demo_flutter/app/sign_in/sign_in_bloc.dart';
 import 'package:firebase_auth_demo_flutter/app/sign_in/social_sign_in_button.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +29,7 @@ class SignInPage extends StatelessWidget {
     Navigator.of(context).push(
       MaterialPageRoute<void>(
         fullscreenDialog: true,
-        builder: (BuildContext context) => EmailSignInPage.create(context),
+        builder: (BuildContext context) => EmailPasswordSignInPage.create(context),
       ),
     );
   }
