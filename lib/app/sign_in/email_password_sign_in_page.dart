@@ -52,8 +52,10 @@ class _EmailPasswordSignInPageState extends State<EmailPasswordSignInPage> {
   Future<void> _submit(EmailPasswordSignInModel model) async {
     _unfocus();
     try {
-      await widget.bloc.submit();
-      Navigator.of(context).pop();
+      final bool success = await widget.bloc.submit();
+      if (success) {
+        Navigator.of(context).pop();
+      }
     } on PlatformException catch (e) {
       _showSignInError(model, e);
     }
