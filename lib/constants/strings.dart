@@ -8,8 +8,17 @@ class Strings {
   static const String logout = 'Logout';
   static const String logoutAreYouSure = 'Are you sure that you want to logout?';
 
-  // Email & Password page
+  // Sign In Page
   static const String signIn = 'Sign in';
+  static const String signInWithEmail = 'Sign in with email';
+  static const String signInWithFacebook = 'Sign in with Facebook';
+  static const String signInWithGoogle = 'Sign in with Facebook';
+  static const String goAnonymous = 'Go anonymous';
+  static const String or = 'or';
+
+
+  // Email & Password page
+  //static const String signIn = 'Sign in';
   static const String register = 'Register';
   static const String createAnAccount = 'Create an account';
   static const String needAnAccount = 'Need an account? Register';
