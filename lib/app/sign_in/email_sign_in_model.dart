@@ -1,6 +1,6 @@
 
-import 'package:email_password_auth_flutter/app/sign_in/validator.dart';
-import 'package:email_password_auth_flutter/constants/strings.dart';
+import 'package:firebase_auth_demo_flutter/app/sign_in/validator.dart';
+import 'package:firebase_auth_demo_flutter/constants/strings.dart';
 
 enum EmailSignInFormType { signIn, register }
 

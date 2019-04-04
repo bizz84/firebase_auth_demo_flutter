@@ -1,4 +1,4 @@
-import 'package:email_password_auth_flutter/common_widgets/custom_raised_button.dart';
+import 'package:firebase_auth_demo_flutter/common_widgets/custom_raised_button.dart';
 import 'package:flutter/material.dart';
 
 class FormSubmitButton extends CustomRaisedButton {

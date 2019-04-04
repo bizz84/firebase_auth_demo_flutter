@@ -35,6 +35,9 @@ end
 target 'Runner' do
   use_frameworks!
 
+  pod 'FBSDKCoreKit', '4.39.1'
+  pod 'FBSDKLoginKit', '4.39.1'
+
   # Prepare symlinks folder. We use symlinks to avoid having Podfile.lock
   # referring to absolute paths on developers' machines.
   system('rm -rf .symlinks')

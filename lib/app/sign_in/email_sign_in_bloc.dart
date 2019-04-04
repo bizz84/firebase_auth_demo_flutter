@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:email_password_auth_flutter/app/sign_in/email_sign_in_model.dart';
-import 'package:email_password_auth_flutter/services/auth_service.dart';
+import 'package:firebase_auth_demo_flutter/app/sign_in/email_sign_in_model.dart';
+import 'package:firebase_auth_demo_flutter/services/auth_service.dart';
 import 'package:flutter/foundation.dart';
 
 class EmailSignInBloc {

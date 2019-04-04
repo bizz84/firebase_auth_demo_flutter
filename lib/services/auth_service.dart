@@ -6,7 +6,7 @@ import 'package:meta/meta.dart';
 class User {
   const User({
     @required this.uid,
-    @required this.email,
+    this.email,
   });
 
   final String uid;
@@ -15,8 +15,11 @@ class User {
 
 abstract class AuthService {
   Future<User> currentUser();
+  Future<User> signInAnonymously();
   Future<User> signInWithEmailAndPassword(String email, String password);
   Future<User> createUserWithEmailAndPassword(String email, String password);
+  Future<User> signInWithGoogle();
+  Future<User> signInWithFacebook();
   Future<void> signOut();
   Stream<User> get onAuthStateChanged;
 }

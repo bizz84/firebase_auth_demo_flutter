@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:email_password_auth_flutter/common_widgets/platform_alert_dialog.dart';
-import 'package:email_password_auth_flutter/constants/strings.dart';
-import 'package:email_password_auth_flutter/services/auth_service.dart';
+import 'package:firebase_auth_demo_flutter/common_widgets/platform_alert_dialog.dart';
+import 'package:firebase_auth_demo_flutter/constants/strings.dart';
+import 'package:firebase_auth_demo_flutter/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

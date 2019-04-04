@@ -1,8 +1,8 @@
 import 'dart:async';
 
+import 'package:firebase_auth_demo_flutter/services/auth_service.dart';
 import 'package:meta/meta.dart';
 import 'package:random_string/random_string.dart' as random;
-import 'package:email_password_auth_flutter/services/auth_service.dart';
 
 enum AuthServiceExceptionType {
   emailAlreadyRegistered,
@@ -95,5 +95,29 @@ class MockAuthService implements AuthService {
   void _add(User user) {
     _currentUser = user;
     _onAuthStateChangedController.add(user);
+  }
+
+  @override
+  Future<User> signInAnonymously() async {
+    await Future<void>.delayed(responseTime);
+    final User user = User(uid: random.randomAlphaNumeric(32));
+    _add(user);
+    return user;
+  }
+
+  @override
+  Future<User> signInWithFacebook() async {
+    await Future<void>.delayed(responseTime);
+    final User user = User(uid: random.randomAlphaNumeric(32));
+    _add(user);
+    return user;
+  }
+
+  @override
+  Future<User> signInWithGoogle() async {
+    await Future<void>.delayed(responseTime);
+    final User user = User(uid: random.randomAlphaNumeric(32));
+    _add(user);
+    return user;
   }
 }

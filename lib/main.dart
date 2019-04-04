@@ -1,7 +1,6 @@
-import 'package:email_password_auth_flutter/app/landing_page.dart';
-import 'package:email_password_auth_flutter/services/auth_service.dart';
-import 'package:email_password_auth_flutter/services/firebase_auth_service.dart';
-import 'package:email_password_auth_flutter/services/mock_auth_service.dart';
+import 'package:firebase_auth_demo_flutter/app/landing_page.dart';
+import 'package:firebase_auth_demo_flutter/services/auth_service.dart';
+import 'package:firebase_auth_demo_flutter/services/mock_auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

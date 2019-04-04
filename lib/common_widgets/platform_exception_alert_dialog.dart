@@ -1,4 +1,4 @@
-import 'package:email_password_auth_flutter/common_widgets/platform_alert_dialog.dart';
+import 'package:firebase_auth_demo_flutter/common_widgets/platform_alert_dialog.dart';
 import 'package:flutter/services.dart';
 
 class PlatformExceptionAlertDialog extends PlatformAlertDialog {

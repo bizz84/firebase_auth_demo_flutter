@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:email_password_auth_flutter/common_widgets/platform_widget.dart';
+import 'package:firebase_auth_demo_flutter/common_widgets/platform_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
