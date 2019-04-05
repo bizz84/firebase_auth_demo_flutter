@@ -1,6 +1,7 @@
 import 'package:firebase_auth_demo_flutter/app/sign_in/email_password_sign_in_page.dart';
 import 'package:firebase_auth_demo_flutter/app/sign_in/sign_in_bloc.dart';
 import 'package:firebase_auth_demo_flutter/app/sign_in/social_sign_in_button.dart';
+import 'package:firebase_auth_demo_flutter/common_widgets/platform_exception_alert_dialog.dart';
 import 'package:firebase_auth_demo_flutter/constants/strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,11 +11,18 @@ class SignInPage extends StatelessWidget {
   final SignInBloc bloc;
   final String title;
 
+  void _showAlert(BuildContext context, PlatformException exception) {
+    PlatformExceptionAlertDialog(
+      title: Strings.signInFailed,
+      exception: exception,
+    ).show(context);
+  }
+
   Future<void> _signInAnonymously(BuildContext context) async {
     try {
       await bloc.signInAnonymously();
     } on PlatformException catch (e) {
-      print(e);
+      _showAlert(context, e);
     }
   }
 
@@ -22,6 +30,8 @@ class SignInPage extends StatelessWidget {
     try {
       await bloc.signInWithGoogle();
     } on PlatformException catch (e) {
+      _showAlert(context, e);
+    } catch (e) {
       print(e);
     }
   }
@@ -30,6 +40,8 @@ class SignInPage extends StatelessWidget {
     try {
       await bloc.signInWithFacebook();
     } on PlatformException catch (e) {
+      _showAlert(context, e);
+    } catch (e) {
       print(e);
     }
   }
