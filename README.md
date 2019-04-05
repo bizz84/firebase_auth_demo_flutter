@@ -4,6 +4,16 @@ This project shows how to implement a full authentication flow in Flutter, using
 
 It aims to be a reference implementation. Think of it as "authentication done right".
 
+## Project goals
+
+This project aims to show how to:
+
+- use the various Firebase sign-in methods
+- abstract away Firebase authentication code
+- build a robust authentication flow
+- use blocs for state management and better separation of concerns
+- handle errors and present user-friendly error messages 
+
 ## Supported sign-in methods
 
 - [x] Email and password
@@ -30,12 +40,12 @@ It aims to be a reference implementation. Think of it as "authentication done ri
 - [x] Focus order (email -> password -> submit by pressing "next" on keyboard)
 - [x] Password of at least 8 characters
 
-
-### Authentication service
+### Authentication
 
 - [x] Abstract `AuthService` class, modeled after the `firebase_auth` API
 - [x] `FirebaseAuthService` implementation
 - [x] `MockAuthService` for testing
+- [x] Firebase project configuration for iOS & Android
 
 ### Architecture
 
@@ -49,7 +59,6 @@ It aims to be a reference implementation. Think of it as "authentication done ri
 ## TODO
 
 - [ ] Internationalization
-- [ ] Firebase project configuration for iOS & Android
 - [ ] Full test coverage
 - [ ] Improve documentation
 - [ ] Screenshots / video for README
