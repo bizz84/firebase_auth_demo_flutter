@@ -39,7 +39,7 @@ class DeveloperMenu extends StatelessWidget {
     return StreamBuilder<AuthServiceType>(
       stream: authServiceTypeBloc.authServiceTypeStream,
       // TODO: Use RxDart
-      initialData: AuthServiceType.firebase,
+      //initialData: AuthServiceType.firebase,
       builder: (BuildContext context, AsyncSnapshot<AuthServiceType> snapshot) {
         final AuthServiceType type = snapshot.data;
         print('read: $type');

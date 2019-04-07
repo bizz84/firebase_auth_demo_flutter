@@ -8,9 +8,9 @@ import 'package:provider/provider.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
+  final AuthServiceFacade authServiceFacade = AuthServiceFacade();
   @override
   Widget build(BuildContext context) {
-    final AuthServiceFacade authServiceFacade = AuthServiceFacade();
     final AuthServiceTypeBloc bloc = AuthServiceTypeBloc(authServiceFacade: authServiceFacade);
     return Provider<AuthService>(
       value: authServiceFacade,
