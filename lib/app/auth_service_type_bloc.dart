@@ -1,16 +1,18 @@
 import 'dart:async';
 
-enum AuthServiceType { firebase, mock }
-//enum MockAuthServiceDefaultResponse { success, failure }
+import 'package:firebase_auth_demo_flutter/services/auth_service_facade.dart';
+import 'package:meta/meta.dart';
 
-class DeveloperOptionsBloc {
+class AuthServiceTypeBloc {
+  AuthServiceTypeBloc({@required this.authServiceFacade});
+  final AuthServiceFacade authServiceFacade;
+
   final StreamController<AuthServiceType> _authServiceTypeController = StreamController<AuthServiceType>();
   Stream<AuthServiceType> get authServiceTypeStream => _authServiceTypeController.stream;
-  AuthServiceType authServiceType = AuthServiceType.firebase;
 
   void setAuthServiceType(AuthServiceType type) {
     print('type: $type');
-    authServiceType = type;
+    authServiceFacade.authServiceType = type;
     _authServiceTypeController.add(type);
   }
 
