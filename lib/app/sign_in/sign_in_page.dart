@@ -63,7 +63,7 @@ class SignInPage extends StatelessWidget {
         elevation: 2.0,
         title: Text(title),
       ),
-      drawer: DeveloperMenu.create(context),
+      drawer: DeveloperMenu(),
       backgroundColor: Colors.grey[200],
       body: StreamBuilder<bool>(
         stream: bloc.isLoadingStream,

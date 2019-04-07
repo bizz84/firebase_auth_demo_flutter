@@ -1,23 +1,10 @@
 import 'package:firebase_auth_demo_flutter/app/auth_service_type_bloc.dart';
-import 'package:firebase_auth_demo_flutter/services/auth_service.dart';
 import 'package:firebase_auth_demo_flutter/services/auth_service_facade.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class DeveloperMenu extends StatelessWidget {
-  const DeveloperMenu._({@required this.authServiceTypeBloc});
-  final AuthServiceTypeBloc authServiceTypeBloc;
-
-  static Widget create(BuildContext context) {
-    final AuthServiceFacade authServiceFacade = Provider.of<AuthService>(context) as AuthServiceFacade;
-    final AuthServiceTypeBloc bloc = AuthServiceTypeBloc(authServiceFacade: authServiceFacade);
-    return StatefulProvider<AuthServiceTypeBloc>(
-      valueBuilder: (BuildContext context) => bloc,
-      onDispose: (BuildContext context, AuthServiceTypeBloc bloc) => bloc.dispose(),
-      child: DeveloperMenu._(authServiceTypeBloc: bloc),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +27,7 @@ class DeveloperMenu extends StatelessWidget {
   }
 
   Widget _buildOptions(BuildContext context) {
+    final AuthServiceTypeBloc authServiceTypeBloc = Provider.of<AuthServiceTypeBloc>(context);
     return StreamBuilder<AuthServiceType>(
         stream: authServiceTypeBloc.authServiceTypeStream,
         initialData: AuthServiceType.firebase,
