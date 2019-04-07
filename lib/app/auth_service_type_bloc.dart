@@ -7,7 +7,7 @@ class AuthServiceTypeBloc {
   AuthServiceTypeBloc({@required this.authServiceFacade});
   final AuthServiceFacade authServiceFacade;
 
-  final StreamController<AuthServiceType> _authServiceTypeController = StreamController<AuthServiceType>();
+  final StreamController<AuthServiceType> _authServiceTypeController = StreamController<AuthServiceType>.broadcast();
   Stream<AuthServiceType> get authServiceTypeStream => _authServiceTypeController.stream;
 
   void setAuthServiceType(AuthServiceType type) {
