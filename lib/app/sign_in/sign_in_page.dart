@@ -58,20 +58,23 @@ class SignInPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 2.0,
-        title: Text(title),
-      ),
-      drawer: DeveloperMenu(),
-      backgroundColor: Colors.grey[200],
-      body: StreamBuilder<bool>(
-        stream: bloc.isLoadingStream,
-        initialData: false,
-        builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
-          return _buildSignIn(context, snapshot.data);
-        },
-      ),
+    return StreamBuilder<bool>(
+      stream: bloc.isLoadingStream,
+      initialData: false,
+      builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+        final bool isLoading = snapshot.data;
+        return Scaffold(
+          appBar: AppBar(
+            elevation: 2.0,
+            title: Text(title),
+          ),
+          // Hide developer menu while loading in progress.
+          // This is so that it's not possible to switch auth service while a request is in progress
+          drawer: isLoading ? null : DeveloperMenu(),
+          backgroundColor: Colors.grey[200],
+          body: _buildSignIn(context, isLoading),
+        );
+      },
     );
   }
 
