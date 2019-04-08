@@ -14,6 +14,20 @@ This project aims to show how to:
 - use blocs for state management and better separation of concerns
 - handle errors and present user-friendly error messages 
 
+## Preview
+
+**Google Sign-in**
+
+![](media/google-sign-in.gif)
+
+**Facebook Sign-in**
+
+![](media/facebook-sign-in.gif)
+
+**Email & Password auth**
+
+![](media/create-user-email-password.gif)
+
 ## Supported sign-in methods
 
 - [x] Email and password
@@ -30,6 +44,7 @@ This project aims to show how to:
 - [x] Google sign-in
 - [x] Facebook sign-in
 - [x] Anonymous sign-in
+
 
 ### Email page
 
