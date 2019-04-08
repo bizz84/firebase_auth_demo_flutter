@@ -1,4 +1,6 @@
 import 'package:firebase_auth_demo_flutter/app/auth_service_type_bloc.dart';
+import 'package:firebase_auth_demo_flutter/common_widgets/segmented_control.dart';
+import 'package:firebase_auth_demo_flutter/constants/strings.dart';
 import 'package:firebase_auth_demo_flutter/services/auth_service_facade.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +18,7 @@ class DeveloperMenu extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: const <Widget>[
                 Text(
-                  'Developer menu',
+                  Strings.developerMenu,
                   style: TextStyle(
                     fontSize: 22.0,
                     color: Colors.white,
@@ -45,7 +47,7 @@ class DeveloperMenu extends StatelessWidget {
             children: <Widget>[
               SegmentedControl<AuthServiceType>(
                 header: Text(
-                  'Authentication type',
+                  Strings.authenticationType,
                   style: TextStyle(
                     fontSize: 16.0,
                   ),
@@ -53,8 +55,8 @@ class DeveloperMenu extends StatelessWidget {
                 value: type,
                 onValueChanged: (AuthServiceType type) => authServiceTypeBloc.setAuthServiceType(type),
                 children: const <AuthServiceType, Widget>{
-                  AuthServiceType.firebase: Text('Firebase'),
-                  AuthServiceType.mock: Text('Mock'),
+                  AuthServiceType.firebase: Text(Strings.firebase),
+                  AuthServiceType.mock: Text(Strings.mock),
                 },
               ),
             ],
@@ -65,31 +67,3 @@ class DeveloperMenu extends StatelessWidget {
   }
 }
 
-class SegmentedControl<T> extends StatelessWidget {
-  const SegmentedControl({this.header, this.value, this.children, this.onValueChanged});
-  final Widget header;
-  final T value;
-  final Map<T, Widget> children;
-  final ValueChanged<T> onValueChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-          child: header,
-        ),
-        SizedBox(
-          width: double.infinity,
-          child: CupertinoSegmentedControl<T>(
-            children: children,
-            groupValue: value,
-            onValueChanged: onValueChanged,
-          ),
-        ),
-      ],
-    );
-  }
-}
