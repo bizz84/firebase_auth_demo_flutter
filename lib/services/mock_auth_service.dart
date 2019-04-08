@@ -56,7 +56,7 @@ class MockAuthService implements AuthService {
 
   @override
   Future<User> currentUser() async {
-    await Future<void>.delayed(responseTime);
+    await Future<void>.delayed(startupTime);
     return _currentUser;
   }
 
@@ -88,7 +88,6 @@ class MockAuthService implements AuthService {
 
   @override
   Future<void> signOut() async {
-    await Future<void>.delayed(responseTime);
     _add(null);
   }
 

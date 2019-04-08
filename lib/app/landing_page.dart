@@ -29,18 +29,21 @@ class LandingPage extends StatelessWidget {
 
   Widget _buildContents(BuildContext context, User user) {
     if (user == null) {
-      final AuthService auth = Provider.of<AuthService>(context);
-      final SignInBloc signInBloc = SignInBloc(auth: auth);
-      return StatefulProvider<SignInBloc>(
-        valueBuilder: (BuildContext context) => signInBloc,
-        child: SignInPage(
-          bloc: signInBloc,
-          title: 'Time Tracker',
-        ),
-        onDispose: (BuildContext context, SignInBloc bloc) => bloc.dispose(),
-      );
-    } else {
-      return HomePage();
+      return _buildSignInPage(context);
     }
+    return HomePage();
+  }
+
+  Widget _buildSignInPage(BuildContext context) {
+    final AuthService auth = Provider.of<AuthService>(context);
+    final SignInBloc signInBloc = SignInBloc(auth: auth);
+    return StatefulProvider<SignInBloc>(
+      valueBuilder: (BuildContext context) => signInBloc,
+      onDispose: (BuildContext context, SignInBloc bloc) => bloc.dispose(),
+      child: SignInPage(
+        bloc: signInBloc,
+        title: 'Time Tracker',
+      ),
+    );
   }
 }

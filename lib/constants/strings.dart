@@ -33,4 +33,10 @@ class Strings {
 
   // Home page
   static const String homePage = 'Home Page';
+
+  // Developer menu
+  static const String developerMenu = 'Developer menu';
+  static const String authenticationType = 'Authentication type';
+  static const String firebase = 'Firebase';
+  static const String mock = 'Mock';
 }
