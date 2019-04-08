@@ -43,7 +43,10 @@ class MockAuthService implements AuthService {
   Future<User> createUserWithEmailAndPassword(String email, String password) async {
     await Future<void>.delayed(responseTime);
     if (_usersStore.keys.contains(email)) {
-      throw PlatformException(code: 'ERROR_EMAIL_ALREADY_IN_USE', message: 'The email address is already registered.');
+      throw PlatformException(
+        code: 'ERROR_EMAIL_ALREADY_IN_USE',
+        message: 'The email address is already registered. Sign in instead?',
+      );
     }
     final User user = User(uid: random.randomAlphaNumeric(32), email: email);
     _usersStore[email] = _UserData(password: password, user: user);
@@ -55,11 +58,17 @@ class MockAuthService implements AuthService {
   Future<User> signInWithEmailAndPassword(String email, String password) async {
     await Future<void>.delayed(responseTime);
     if (!_usersStore.keys.contains(email)) {
-      throw PlatformException(code: 'ERROR_USER_NOT_FOUND', message: 'The email address is not registered.');
+      throw PlatformException(
+        code: 'ERROR_USER_NOT_FOUND',
+        message: 'The email address is not registered. Need an account?',
+      );
     }
     final _UserData _userData = _usersStore[email];
     if (_userData.password != password) {
-      throw PlatformException(code: 'ERROR_WRONG_PASSWORD', message: 'The password is incorrect. Please try again.');
+      throw PlatformException(
+        code: 'ERROR_WRONG_PASSWORD',
+        message: 'The password is incorrect. Please try again.',
+      );
     }
     _add(_userData.user);
     return _userData.user;
