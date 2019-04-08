@@ -1,30 +1,9 @@
 import 'dart:async';
 
 import 'package:firebase_auth_demo_flutter/services/auth_service.dart';
+import 'package:flutter/services.dart';
 import 'package:meta/meta.dart';
 import 'package:random_string/random_string.dart' as random;
-
-enum AuthServiceExceptionType {
-  emailAlreadyRegistered,
-  emailNotFound,
-  incorrectPassword,
-}
-
-class AuthServiceException implements Exception {
-  AuthServiceException(this.authServiceExceptionType);
-  final AuthServiceExceptionType authServiceExceptionType;
-
-  @override
-  String toString() {
-    return messages[authServiceExceptionType];
-  }
-
-  static Map<AuthServiceExceptionType, String> messages = <AuthServiceExceptionType, String>{
-    AuthServiceExceptionType.emailAlreadyRegistered: 'This email was already registered',
-    AuthServiceExceptionType.emailNotFound: 'An account does not exist for this email',
-    AuthServiceExceptionType.incorrectPassword: 'This password is incorrect',
-  };
-}
 
 class _UserData {
   _UserData({@required this.password, @required this.user});
@@ -64,7 +43,7 @@ class MockAuthService implements AuthService {
   Future<User> createUserWithEmailAndPassword(String email, String password) async {
     await Future<void>.delayed(responseTime);
     if (_usersStore.keys.contains(email)) {
-      throw AuthServiceException(AuthServiceExceptionType.emailAlreadyRegistered);
+      throw PlatformException(code: 'ERROR_EMAIL_ALREADY_IN_USE', message: 'The email address is already registered.');
     }
     final User user = User(uid: random.randomAlphaNumeric(32), email: email);
     _usersStore[email] = _UserData(password: password, user: user);
@@ -76,11 +55,11 @@ class MockAuthService implements AuthService {
   Future<User> signInWithEmailAndPassword(String email, String password) async {
     await Future<void>.delayed(responseTime);
     if (!_usersStore.keys.contains(email)) {
-      throw AuthServiceException(AuthServiceExceptionType.emailNotFound);
+      throw PlatformException(code: 'ERROR_USER_NOT_FOUND', message: 'The email address is not registered.');
     }
     final _UserData _userData = _usersStore[email];
     if (_userData.password != password) {
-      throw AuthServiceException(AuthServiceExceptionType.incorrectPassword);
+      throw PlatformException(code: 'ERROR_WRONG_PASSWORD', message: 'The password is incorrect. Please try again.');
     }
     _add(_userData.user);
     return _userData.user;
