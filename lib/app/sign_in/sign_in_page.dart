@@ -12,8 +12,8 @@ class SignInPage extends StatelessWidget {
   final SignInBloc bloc;
   final String title;
 
-  void _showAlert(BuildContext context, PlatformException exception) {
-    PlatformExceptionAlertDialog(
+  Future<void> _showSignInError(BuildContext context, PlatformException exception) async {
+    await PlatformExceptionAlertDialog(
       title: Strings.signInFailed,
       exception: exception,
     ).show(context);
@@ -23,7 +23,7 @@ class SignInPage extends StatelessWidget {
     try {
       await bloc.signInAnonymously();
     } on PlatformException catch (e) {
-      _showAlert(context, e);
+      _showSignInError(context, e);
     }
   }
 
@@ -31,9 +31,9 @@ class SignInPage extends StatelessWidget {
     try {
       await bloc.signInWithGoogle();
     } on PlatformException catch (e) {
-      _showAlert(context, e);
-    } catch (e) {
-      print(e);
+      if (e.code != 'ERROR_ABORTED_BY_USER') {
+        _showSignInError(context, e);
+      }
     }
   }
 
@@ -41,9 +41,9 @@ class SignInPage extends StatelessWidget {
     try {
       await bloc.signInWithFacebook();
     } on PlatformException catch (e) {
-      _showAlert(context, e);
-    } catch (e) {
-      print(e);
+      if (e.code != 'ERROR_ABORTED_BY_USER') {
+        _showSignInError(context, e);
+      }
     }
   }
 

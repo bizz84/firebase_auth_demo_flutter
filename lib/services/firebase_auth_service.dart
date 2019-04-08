@@ -1,6 +1,7 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_auth_demo_flutter/services/auth_service.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -54,24 +55,24 @@ class FirebaseAuthService implements AuthService {
         ));
         return _userFromFirebase(user);
       } else {
-        throw Exception('Missing Google Auth Token');
+        throw PlatformException(code: 'ERROR_MISSING_GOOGLE_AUTH_TOKEN', message: 'Missing Google Auth Token');
       }
     } else {
-      throw Exception('Google sign in aborted');
+      throw PlatformException(code: 'ERROR_ABORTED_BY_USER', message: 'Sign in aborted by user');
     }
   }
 
   @override
   Future<User> signInWithFacebook() async {
     final FacebookLogin facebookLogin = FacebookLogin();
-    final FacebookLoginResult result = await facebookLogin.logInWithReadPermissions(['public_profile']);
+    final FacebookLoginResult result = await facebookLogin.logInWithReadPermissions(<String>['public_profile']);
     if (result.accessToken != null) {
       final FirebaseUser user = await _firebaseAuth.signInWithCredential(
         FacebookAuthProvider.getCredential(accessToken: result.accessToken.token),
       );
       return _userFromFirebase(user);
     } else {
-      throw Exception('Missing Facebook access token');
+      throw PlatformException(code: 'ERROR_ABORTED_BY_USER', message: 'Sign in aborted by user');
     }
   }
 
