@@ -11,11 +11,11 @@ class MyApp extends StatelessWidget {
   final AuthServiceFacade authServiceFacade = AuthServiceFacade();
   @override
   Widget build(BuildContext context) {
-    final AuthServiceTypeBloc bloc = AuthServiceTypeBloc(authServiceFacade: authServiceFacade);
-    return Provider<AuthService>(
-      value: authServiceFacade,
+    return StatefulProvider<AuthService>(
+      valueBuilder: (BuildContext context) => authServiceFacade,
+      onDispose: (BuildContext context, AuthService facade) => authServiceFacade.dispose(),
       child: StatefulProvider<AuthServiceTypeBloc>(
-        valueBuilder: (BuildContext context) => bloc,
+        valueBuilder: (BuildContext context) => AuthServiceTypeBloc(authServiceFacade: authServiceFacade),
         onDispose: (BuildContext context, AuthServiceTypeBloc bloc) => bloc.dispose(),
         child: MaterialApp(
           theme: ThemeData(
