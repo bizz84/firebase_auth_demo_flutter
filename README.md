@@ -39,6 +39,8 @@ This project aims to show how to:
 - [x] Error hints
 - [x] Focus order (email -> password -> submit by pressing "next" on keyboard)
 - [x] Password of at least 8 characters
+- [ ] Show/hide password
+- [ ] Password reset flow
 
 ### Authentication
 
@@ -46,6 +48,7 @@ This project aims to show how to:
 - [x] `FirebaseAuthService` implementation
 - [x] `MockAuthService` for testing
 - [x] Firebase project configuration for iOS & Android
+- [x] Toggle `FirebaseAuthService` and `MockAuthService` at runtime via developer menu
 
 ### Architecture
 
