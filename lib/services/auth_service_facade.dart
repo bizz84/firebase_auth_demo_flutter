@@ -24,7 +24,6 @@ class AuthServiceFacade implements AuthService {
     // that only events from the currently active service are processed
     _firebaseAuthSubscription = _firebaseAuthService.onAuthStateChanged.listen((User user) {
       if (authServiceType == AuthServiceType.firebase) {
-        print('firebase user: $user');
         _onAuthStateChangedController.add(user);
       }
     }, onError: (dynamic error) {
@@ -34,7 +33,6 @@ class AuthServiceFacade implements AuthService {
     });
     _mockAuthSubscription = _mockAuthService.onAuthStateChanged.listen((User user) {
       if (authServiceType == AuthServiceType.mock) {
-        print('mock user: $user');
         _onAuthStateChangedController.add(user);
       }
     }, onError: (dynamic error) {
