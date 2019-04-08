@@ -1,6 +1,7 @@
 import 'package:firebase_auth_demo_flutter/services/auth_service.dart';
 import 'package:firebase_auth_demo_flutter/services/firebase_auth_service.dart';
 import 'package:firebase_auth_demo_flutter/services/mock_auth_service.dart';
+import 'package:rxdart/rxdart.dart';
 
 enum AuthServiceType { firebase, mock }
 
@@ -13,7 +14,10 @@ class AuthServiceFacade implements AuthService {
 
   // overrides
   @override
-  Stream<User> get onAuthStateChanged => authService.onAuthStateChanged;
+  Stream<User> get onAuthStateChanged => Observable<User>.merge(<Stream<User>>[
+        _firebaseAuthService.onAuthStateChanged,
+        _mockAuthService.onAuthStateChanged,
+      ]);
 
   @override
   Future<User> currentUser() => authService.currentUser();
