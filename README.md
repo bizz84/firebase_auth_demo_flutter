@@ -17,6 +17,8 @@ This project shows how to:
 
 Feel free to use this in your own projects. 😉
 
+_NOTE: This project will be kept up to date with the latest packages and Flutter version._
+
 ## Preview
 
 **Google Sign-in**
