@@ -9,7 +9,7 @@ class LandingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AuthService auth = Provider.of<AuthService>(context);
+    final AuthService auth = Provider.of<AuthService>(context, listen: false);
     return StreamBuilder<User>(
       stream: auth.onAuthStateChanged,
       builder: (BuildContext context, AsyncSnapshot<User> snapshot) {
@@ -35,7 +35,7 @@ class LandingPage extends StatelessWidget {
   }
 
   Widget _buildSignInPage(BuildContext context) {
-    final AuthService auth = Provider.of<AuthService>(context);
+    final AuthService auth = Provider.of<AuthService>(context, listen: false);
     final SignInBloc signInBloc = SignInBloc(auth: auth);
     return StatefulProvider<SignInBloc>(
       valueBuilder: (BuildContext context) => signInBloc,

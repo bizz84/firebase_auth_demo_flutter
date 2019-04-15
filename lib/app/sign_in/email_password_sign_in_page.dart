@@ -17,7 +17,7 @@ class EmailPasswordSignInPage extends StatefulWidget {
 
   /// Creates a Provider with a EmailSignInBloc and a EmailSignInPage
   static Widget create(BuildContext context) {
-    final AuthService auth = Provider.of<AuthService>(context);
+    final AuthService auth = Provider.of<AuthService>(context, listen: false);
     return StatefulProvider<EmailPasswordSignInBloc>(
       valueBuilder: (BuildContext context) => EmailPasswordSignInBloc(auth: auth),
       onDispose: (BuildContext context, EmailPasswordSignInBloc bloc) => bloc.dispose(),
