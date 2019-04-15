@@ -1,4 +1,3 @@
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_auth_demo_flutter/services/auth_service.dart';
 import 'package:flutter/services.dart';
@@ -31,7 +30,10 @@ class FirebaseAuthService implements AuthService {
 
   @override
   Future<User> signInWithEmailAndPassword(String email, String password) async {
-    final FirebaseUser user = await _firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
+    final FirebaseUser user = await _firebaseAuth.signInWithCredential(EmailAuthProvider.getCredential(
+      email: email,
+      password: password,
+    ));
     return _userFromFirebase(user);
   }
 
