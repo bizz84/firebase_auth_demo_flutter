@@ -4,13 +4,28 @@ import 'package:firebase_auth_demo_flutter/app/sign_in/sign_in_bloc.dart';
 import 'package:firebase_auth_demo_flutter/app/sign_in/social_sign_in_button.dart';
 import 'package:firebase_auth_demo_flutter/common_widgets/platform_exception_alert_dialog.dart';
 import 'package:firebase_auth_demo_flutter/constants/strings.dart';
+import 'package:firebase_auth_demo_flutter/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 class SignInPage extends StatelessWidget {
-  const SignInPage({Key key, this.bloc, this.title}) : super(key: key);
+  const SignInPage._({Key key, this.bloc, this.title}) : super(key: key);
   final SignInBloc bloc;
   final String title;
+
+  static Widget create(BuildContext context) {
+    final AuthService auth = Provider.of<AuthService>(context, listen: false);
+    final SignInBloc signInBloc = SignInBloc(auth: auth);
+    return StatefulProvider<SignInBloc>(
+      valueBuilder: (BuildContext context) => signInBloc,
+      onDispose: (BuildContext context, SignInBloc bloc) => bloc.dispose(),
+      child: SignInPage._(
+        bloc: signInBloc,
+        title: 'Time Tracker',
+      ),
+    );
+  }
 
   Future<void> _showSignInError(BuildContext context, PlatformException exception) async {
     await PlatformExceptionAlertDialog(
