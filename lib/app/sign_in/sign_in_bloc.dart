@@ -16,7 +16,6 @@ class SignInBloc {
   Future<User> _signIn(Future<User> Function() signInMethod) async {
     try {
       _setIsLoading(true);
-      //await Future<void>.delayed(Duration(seconds: 3));
       return await signInMethod();
     } catch (e) {
       rethrow;
