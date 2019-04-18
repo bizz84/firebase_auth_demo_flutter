@@ -10,16 +10,13 @@ import 'mocks.dart';
 
 void main() {
   MockAuthService mockAuthService;
-  StreamController<User> onAuthStateChangedController;
 
   setUp(() {
     mockAuthService = MockAuthService();
-    onAuthStateChangedController = StreamController<User>();
   });
 
   tearDown(() {
     mockAuthService = null;
-    onAuthStateChangedController.close();
   });
 
   void stubSignInAnonymouslyReturnsUser() {
