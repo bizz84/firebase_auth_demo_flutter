@@ -37,6 +37,15 @@ class _EmailPasswordSignInPageState extends State<EmailPasswordSignInPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  @override
+  void dispose() {
+    _emailFocusNode.dispose();
+    _passwordFocusNode.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
   void _showSignInError(EmailPasswordSignInModel model, PlatformException exception) {
     PlatformExceptionAlertDialog(
       title: model.formType == EmailPasswordSignInFormType.signIn ? Strings.signInFailed : Strings.registrationFailed,
