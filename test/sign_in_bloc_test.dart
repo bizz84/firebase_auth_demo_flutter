@@ -10,17 +10,20 @@ import 'mocks.dart';
 
 void main() {
   MockAuthService mockAuthService;
+  SignInBloc bloc;
 
   setUp(() {
     mockAuthService = MockAuthService();
+    bloc = SignInBloc(auth: mockAuthService);
   });
 
   tearDown(() {
     mockAuthService = null;
+    bloc = null;
   });
 
   void stubSignInAnonymouslyReturnsUser() {
-    when(mockAuthService.signInAnonymously()).thenAnswer((invocation) => Future<User>.value(User(uid: '123')));
+    when(mockAuthService.signInAnonymously()).thenAnswer((_) => Future<User>.value(User(uid: '123')));
   }
 
   void stubSignInAnonymouslyThrows(Exception exception) {
@@ -33,7 +36,6 @@ void main() {
       'THEN loading stream emits true, false', () async {
     stubSignInAnonymouslyReturnsUser();
 
-    final SignInBloc bloc = SignInBloc(auth: mockAuthService);
     await bloc.signInAnonymously();
 
     expect(
@@ -55,7 +57,6 @@ void main() {
     final exception = PlatformException(code: 'ERROR_MISSING_PERMISSIONS');
     stubSignInAnonymouslyThrows(exception);
 
-    final SignInBloc bloc = SignInBloc(auth: mockAuthService);
     expect(() async => await bloc.signInAnonymously(), throwsA(exception));
 
     expect(

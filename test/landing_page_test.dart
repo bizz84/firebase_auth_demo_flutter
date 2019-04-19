@@ -27,7 +27,7 @@ void main() {
 
   void stubOnAuthStateChangedYields(Iterable<User> onAuthStateChanged) {
     onAuthStateChangedController.addStream(Stream<User>.fromIterable(onAuthStateChanged));
-    when(mockAuthService.onAuthStateChanged).thenAnswer((invocation) {
+    when(mockAuthService.onAuthStateChanged).thenAnswer((_) {
       return onAuthStateChangedController.stream;
     });
   }
