@@ -18,10 +18,10 @@ environment:
 
 dependencies:
   random_string: 0.0.2
-  firebase_auth: ^0.8.3
-  google_sign_in: ^4.0.1+1
-  flutter_facebook_login: ^2.0.0
-  provider: ^1.6.1
+  firebase_auth: 0.8.4+5
+  google_sign_in: 4.0.1+3
+  flutter_facebook_login: 2.0.0
+  provider: 1.6.1
   rxdart: ^0.21.0
   flutter:
     sdk: flutter
@@ -33,7 +33,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  mockito: ^4.0.0
+  mockito: 4.0.0
 
 
 # For information on the generic Dart part of this file, see the
