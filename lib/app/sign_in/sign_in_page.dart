@@ -22,7 +22,7 @@ class SignInPage extends StatelessWidget {
       onDispose: (BuildContext context, SignInBloc bloc) => bloc.dispose(),
       child: SignInPage._(
         bloc: signInBloc,
-        title: 'Time Tracker',
+        title: 'Firebase Auth Demo',
       ),
     );
   }
