@@ -31,6 +31,6 @@ class PlatformExceptionAlertDialog extends PlatformAlertDialog {
     'ERROR_WRONG_PASSWORD': 'The password is incorrect. Please try again.',
     'ERROR_USER_NOT_FOUND': 'The email address is not registered. Need an account?',
     'ERROR_TOO_MANY_REQUESTS': 'We have blocked all requests from this device due to unusual activity. Try again later.',
-    'ERROR_OPERATION_NOT_ALLOWED': 'Email & Password sign in is now allowed. Please contact support.',
+    'ERROR_OPERATION_NOT_ALLOWED': 'This sign in method is not allowed. Please contact support.',
   };
 }
