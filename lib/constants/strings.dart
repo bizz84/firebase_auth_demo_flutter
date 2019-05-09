@@ -35,7 +35,9 @@ class Strings {
   static const String emailHint = 'test@test.com';
   static const String passwordLabel = 'Password (8+ characters)';
   static const String invalidEmailErrorText = 'Email is invalid';
-  static const String invalidPasswordErrorText = 'Password can\'t be empty.';
+  static const String invalidEmailEmpty = 'Email can\'t be empty';
+  static const String invalidPasswordTooShort = 'Password is too short';
+  static const String invalidPasswordEmpty = 'Password can\'t be empty';
 
   // Home page
   static const String homePage = 'Home Page';

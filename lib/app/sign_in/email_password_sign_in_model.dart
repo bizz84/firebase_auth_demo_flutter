@@ -91,12 +91,14 @@ class EmailPasswordSignInModel with EmailAndPasswordValidators {
 
   String get emailErrorText {
     final bool showErrorText = submitted && !canSubmitEmail;
-    return showErrorText ? Strings.invalidEmailErrorText : null;
+    final String errorText = email.isEmpty ? Strings.invalidEmailEmpty : Strings.invalidEmailErrorText;
+    return showErrorText ? errorText : null;
   }
 
   String get passwordErrorText {
     final bool showErrorText = submitted && !canSubmitPassword;
-    return showErrorText ? Strings.invalidPasswordErrorText : null;
+    final String errorText = password.isEmpty ? Strings.invalidPasswordEmpty : Strings.invalidPasswordTooShort;
+    return showErrorText ? errorText : null;
   }
 
   @override
