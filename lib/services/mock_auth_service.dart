@@ -109,6 +109,7 @@ class MockAuthService implements AuthService {
   @override
   Future<User> signInWithGoogle() async {
     await Future<void>.delayed(responseTime);
+    throw PlatformException(code: 'ERROR_PROVIDER_NOT_ENABLED', message: 'Please enable this sign-in method in your Firebase console');
     final User user = User(uid: random.randomAlphaNumeric(32));
     _add(user);
     return user;

@@ -17,9 +17,9 @@ class SignInPage extends StatelessWidget {
   static Widget create(BuildContext context) {
     final AuthService auth = Provider.of<AuthService>(context, listen: false);
     final SignInBloc signInBloc = SignInBloc(auth: auth);
-    return StatefulProvider<SignInBloc>(
-      valueBuilder: (BuildContext context) => signInBloc,
-      onDispose: (BuildContext context, SignInBloc bloc) => bloc.dispose(),
+    return Provider<SignInBloc>(
+      builder: (BuildContext context) => signInBloc,
+      dispose: (BuildContext context, SignInBloc bloc) => bloc.dispose(),
       child: SignInPage._(
         bloc: signInBloc,
         title: 'Firebase Auth Demo',
