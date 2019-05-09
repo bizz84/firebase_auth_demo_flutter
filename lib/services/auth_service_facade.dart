@@ -67,6 +67,9 @@ class AuthServiceFacade implements AuthService {
       authService.signInWithEmailAndPassword(email, password);
 
   @override
+  Future<void> sendPasswordResetEmail(String email) => authService.sendPasswordResetEmail(email);
+
+  @override
   Future<User> signInWithFacebook() => authService.signInWithFacebook();
 
   @override

@@ -60,7 +60,7 @@ _NOTE: This project will be kept up to date with the latest packages and Flutter
 - [x] Focus order (email -> password -> submit by pressing "next" on keyboard)
 - [x] Password of at least 8 characters
 - [ ] Show/hide password
-- [ ] Password reset flow
+- [x] Password reset flow
 
 ### Authentication
 
