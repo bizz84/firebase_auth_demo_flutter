@@ -2,7 +2,7 @@
 import 'package:firebase_auth_demo_flutter/app/sign_in/validator.dart';
 import 'package:firebase_auth_demo_flutter/constants/strings.dart';
 
-enum EmailPasswordSignInFormType { signIn, register }
+enum EmailPasswordSignInFormType { signIn, register, forgotPassword }
 
 class EmailPasswordSignInModel with EmailAndPasswordValidators {
   EmailPasswordSignInModel({
@@ -37,15 +37,35 @@ class EmailPasswordSignInModel with EmailAndPasswordValidators {
 
   // Getters
   String get primaryButtonText {
-    return formType == EmailPasswordSignInFormType.signIn
-        ? Strings.signIn
-        : Strings.createAnAccount;
+    return <EmailPasswordSignInFormType,String>{
+      EmailPasswordSignInFormType.register: Strings.createAnAccount,
+      EmailPasswordSignInFormType.signIn: Strings.signIn,
+      EmailPasswordSignInFormType.forgotPassword: Strings.sendResetLink,
+    }[formType];
   }
 
   String get secondaryButtonText {
-    return formType == EmailPasswordSignInFormType.signIn
-        ? Strings.needAnAccount
-        : Strings.haveAnAccount;
+    return <EmailPasswordSignInFormType,String>{
+      EmailPasswordSignInFormType.register: Strings.haveAnAccount,
+      EmailPasswordSignInFormType.signIn: Strings.needAnAccount,
+      EmailPasswordSignInFormType.forgotPassword: Strings.backToSignIn,
+    }[formType];
+  }
+
+  EmailPasswordSignInFormType get secondaryActionFormType {
+    return <EmailPasswordSignInFormType,EmailPasswordSignInFormType>{
+      EmailPasswordSignInFormType.register: EmailPasswordSignInFormType.signIn,
+      EmailPasswordSignInFormType.signIn: EmailPasswordSignInFormType.register,
+      EmailPasswordSignInFormType.forgotPassword: EmailPasswordSignInFormType.signIn,
+    }[formType];
+  }
+
+  String get title {
+    return <EmailPasswordSignInFormType,String>{
+      EmailPasswordSignInFormType.register: Strings.register,
+      EmailPasswordSignInFormType.signIn: Strings.signIn,
+      EmailPasswordSignInFormType.forgotPassword: Strings.forgotPassword,
+    }[formType];
   }
 
   bool get canSubmitEmail {

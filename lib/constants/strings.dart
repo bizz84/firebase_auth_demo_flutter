@@ -18,13 +18,16 @@ class Strings {
 
 
   // Email & Password page
-  //static const String signIn = 'Sign in';
   static const String register = 'Register';
+  static const String forgotPassword = 'Forgot password';
+  static const String forgotPasswordQuestion = 'Forgot password?';
   static const String createAnAccount = 'Create an account';
   static const String needAnAccount = 'Need an account? Register';
   static const String haveAnAccount = 'Have an account? Sign in';
   static const String signInFailed = 'Sign in failed';
   static const String registrationFailed = 'Registration failed';
+  static const String sendResetLink = 'Send Reset Link';
+  static const String backToSignIn = 'Back to sign in';
   static const String emailLabel = 'Email';
   static const String emailHint = 'test@test.com';
   static const String passwordLabel = 'Password (8+ characters)';

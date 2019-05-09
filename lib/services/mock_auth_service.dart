@@ -75,6 +75,12 @@ class MockAuthService implements AuthService {
   }
 
   @override
+  Future<void> sendPasswordResetEmail(String email) async {
+
+  }
+
+
+  @override
   Future<void> signOut() async {
     _add(null);
   }
@@ -106,5 +112,6 @@ class MockAuthService implements AuthService {
     final User user = User(uid: random.randomAlphaNumeric(32));
     _add(user);
     return user;
+//    throw PlatformException(code: 'ERROR_PROVIDER_NOT_ENABLED', message: 'Please enable this sign-in method in your Firebase console');
   }
 }

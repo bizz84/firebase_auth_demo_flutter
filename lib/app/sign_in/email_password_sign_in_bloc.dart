@@ -18,9 +18,7 @@ class EmailPasswordSignInBloc {
 
   void updatePassword(String password) => _updateWith(password: password);
 
-  void toggleFormType() {
-    final EmailPasswordSignInFormType formType =
-        _model.formType == EmailPasswordSignInFormType.signIn ? EmailPasswordSignInFormType.register : EmailPasswordSignInFormType.signIn;
+  void updateFormType(EmailPasswordSignInFormType formType) {
     _updateWith(
       email: '',
       password: '',
@@ -38,10 +36,16 @@ class EmailPasswordSignInBloc {
         return false;
       }
       _updateWith(isLoading: true);
-      if (_model.formType == EmailPasswordSignInFormType.signIn) {
-        await auth.signInWithEmailAndPassword(_model.email, _model.password);
-      } else {
-        await auth.createUserWithEmailAndPassword(_model.email, _model.password);
+      switch (_model.formType) {
+        case EmailPasswordSignInFormType.signIn:
+          await auth.signInWithEmailAndPassword(_model.email, _model.password);
+          break;
+        case EmailPasswordSignInFormType.register:
+          await auth.createUserWithEmailAndPassword(_model.email, _model.password);
+          break;
+        case EmailPasswordSignInFormType.forgotPassword:
+          await auth.sendPasswordResetEmail(_model.email);
+          break;
       }
       return true;
     } catch (e) {

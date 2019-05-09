@@ -75,8 +75,8 @@ class _EmailPasswordSignInPageState extends State<EmailPasswordSignInPage> {
     FocusScope.of(context).requestFocus(newFocus);
   }
 
-  void _toggleFormType() {
-    widget.bloc.toggleFormType();
+  void _updateFormType(EmailPasswordSignInFormType formType) {
+    widget.bloc.updateFormType(formType);
     _emailController.clear();
     _passwordController.clear();
   }
@@ -125,8 +125,10 @@ class _EmailPasswordSignInPageState extends State<EmailPasswordSignInPage> {
       children: <Widget>[
         SizedBox(height: 8.0),
         _buildEmailField(model),
-        SizedBox(height: 8.0),
-        _buildPasswordField(model),
+        if (model.formType != EmailPasswordSignInFormType.forgotPassword) ...<Widget>[
+          SizedBox(height: 8.0),
+          _buildPasswordField(model),
+        ],
         SizedBox(height: 8.0),
         FormSubmitButton(
           text: model.primaryButtonText,
@@ -136,8 +138,13 @@ class _EmailPasswordSignInPageState extends State<EmailPasswordSignInPage> {
         SizedBox(height: 8.0),
         FlatButton(
           child: Text(model.secondaryButtonText),
-          onPressed: model.isLoading ? null : _toggleFormType,
+          onPressed: model.isLoading ? null : () => _updateFormType(model.secondaryActionFormType),
         ),
+        if (model.formType == EmailPasswordSignInFormType.signIn)
+          FlatButton(
+            child: Text(Strings.forgotPasswordQuestion),
+            onPressed: model.isLoading ? null : () => _updateFormType(EmailPasswordSignInFormType.forgotPassword),
+          ),
       ],
     );
   }
@@ -152,7 +159,7 @@ class _EmailPasswordSignInPageState extends State<EmailPasswordSignInPage> {
         return Scaffold(
           appBar: AppBar(
             elevation: 2.0,
-            title: Text(model.formType == EmailPasswordSignInFormType.signIn ? Strings.signIn : Strings.register),
+            title: Text(model.title),
           ),
           backgroundColor: Colors.grey[200],
           body: SingleChildScrollView(
