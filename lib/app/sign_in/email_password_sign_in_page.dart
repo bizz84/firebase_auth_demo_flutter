@@ -1,6 +1,7 @@
 import 'package:firebase_auth_demo_flutter/app/sign_in/email_password_sign_in_bloc.dart';
 import 'package:firebase_auth_demo_flutter/app/sign_in/email_password_sign_in_model.dart';
 import 'package:firebase_auth_demo_flutter/common_widgets/form_submit_button.dart';
+import 'package:firebase_auth_demo_flutter/common_widgets/platform_alert_dialog.dart';
 import 'package:firebase_auth_demo_flutter/common_widgets/platform_exception_alert_dialog.dart';
 import 'package:firebase_auth_demo_flutter/constants/strings.dart';
 import 'package:firebase_auth_demo_flutter/services/auth_service.dart';
@@ -48,7 +49,7 @@ class _EmailPasswordSignInPageState extends State<EmailPasswordSignInPage> {
 
   void _showSignInError(EmailPasswordSignInModel model, PlatformException exception) {
     PlatformExceptionAlertDialog(
-      title: model.formType == EmailPasswordSignInFormType.signIn ? Strings.signInFailed : Strings.registrationFailed,
+      title: model.errorAlertTitle,
       exception: exception,
     ).show(context);
   }
@@ -63,7 +64,15 @@ class _EmailPasswordSignInPageState extends State<EmailPasswordSignInPage> {
     try {
       final bool success = await widget.bloc.submit();
       if (success) {
-        Navigator.of(context).pop();
+        if (model.formType == EmailPasswordSignInFormType.forgotPassword) {
+          PlatformAlertDialog(
+            title: Strings.resetLinkSentTitle,
+            content: Strings.resetLinkSentMessage,
+            defaultActionText: Strings.ok,
+          ).show(context);
+        } else {
+          Navigator.of(context).pop();
+        }
       }
     } on PlatformException catch (e) {
       _showSignInError(model, e);

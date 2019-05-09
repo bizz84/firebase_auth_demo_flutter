@@ -60,6 +60,14 @@ class EmailPasswordSignInModel with EmailAndPasswordValidators {
     }[formType];
   }
 
+  String get errorAlertTitle {
+    return <EmailPasswordSignInFormType,String>{
+      EmailPasswordSignInFormType.register: Strings.registrationFailed,
+      EmailPasswordSignInFormType.signIn: Strings.signInFailed,
+      EmailPasswordSignInFormType.forgotPassword: Strings.passwordResetFailed,
+    }[formType];
+  }
+
   String get title {
     return <EmailPasswordSignInFormType,String>{
       EmailPasswordSignInFormType.register: Strings.register,
@@ -77,7 +85,8 @@ class EmailPasswordSignInModel with EmailAndPasswordValidators {
   }
 
   bool get canSubmit {
-    return canSubmitEmail && canSubmitPassword && !isLoading;
+    final bool canSubmitFields = formType == EmailPasswordSignInFormType.forgotPassword ? canSubmitEmail : canSubmitEmail && canSubmitPassword;
+    return canSubmitFields && !isLoading;
   }
 
   String get emailErrorText {
