@@ -142,7 +142,7 @@ class _EmailPasswordSignInPageState extends State<EmailPasswordSignInPage> {
         FormSubmitButton(
           text: model.primaryButtonText,
           loading: model.isLoading,
-          onPressed: () => _submit(model),
+          onPressed: model.isLoading ? null : () => _submit(model),
         ),
         SizedBox(height: 8.0),
         FlatButton(
