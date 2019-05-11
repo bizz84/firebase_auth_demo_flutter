@@ -1,6 +1,6 @@
 import 'package:firebase_auth_demo_flutter/app/developer_menu.dart';
 import 'package:firebase_auth_demo_flutter/app/sign_in/email_password_sign_in_page.dart';
-import 'package:firebase_auth_demo_flutter/app/sign_in/sign_in_bloc.dart';
+import 'package:firebase_auth_demo_flutter/app/sign_in/sign_in_manager.dart';
 import 'package:firebase_auth_demo_flutter/app/sign_in/social_sign_in_button.dart';
 import 'package:firebase_auth_demo_flutter/common_widgets/platform_exception_alert_dialog.dart';
 import 'package:firebase_auth_demo_flutter/constants/strings.dart';
@@ -10,20 +10,19 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 class SignInPage extends StatelessWidget {
-  const SignInPage._({Key key, this.bloc, this.title}) : super(key: key);
-  final SignInBloc bloc;
+  const SignInPage._({Key key, this.manager, this.title}) : super(key: key);
+  final SignInManager manager;
   final String title;
 
   static Widget create(BuildContext context) {
     final AuthService auth = Provider.of<AuthService>(context, listen: false);
-    return Provider<SignInBloc>(
-      builder: (BuildContext context) => SignInBloc(auth: auth),
-      dispose: (BuildContext context, SignInBloc bloc) => bloc.dispose(),
-      child: Consumer<SignInBloc>(
-        builder: (BuildContext context, SignInBloc bloc, _) => SignInPage._(
-          bloc: bloc,
-          title: 'Firebase Auth Demo',
-        ),
+    return Provider<SignInManager>(
+      builder: (BuildContext context) => SignInManager(auth: auth),
+      child: Consumer<SignInManager>(
+        builder: (BuildContext context, SignInManager bloc, _) => SignInPage._(
+              manager: bloc,
+              title: 'Firebase Auth Demo',
+            ),
       ),
     );
   }
@@ -35,17 +34,17 @@ class SignInPage extends StatelessWidget {
     ).show(context);
   }
 
-  Future<void> _signInAnonymously(BuildContext context) async {
+  Future<void> _signInAnonymously(BuildContext context, SignInModel model) async {
     try {
-      await bloc.signInAnonymously();
+      await manager.signInAnonymously(model);
     } on PlatformException catch (e) {
       _showSignInError(context, e);
     }
   }
 
-  Future<void> _signInWithGoogle(BuildContext context) async {
+  Future<void> _signInWithGoogle(BuildContext context, SignInModel model) async {
     try {
-      await bloc.signInWithGoogle();
+      await manager.signInWithGoogle(model);
     } on PlatformException catch (e) {
       if (e.code != 'ERROR_ABORTED_BY_USER') {
         _showSignInError(context, e);
@@ -53,9 +52,9 @@ class SignInPage extends StatelessWidget {
     }
   }
 
-  Future<void> _signInWithFacebook(BuildContext context) async {
+  Future<void> _signInWithFacebook(BuildContext context, SignInModel model) async {
     try {
-      await bloc.signInWithFacebook();
+      await manager.signInWithFacebook(model);
     } on PlatformException catch (e) {
       if (e.code != 'ERROR_ABORTED_BY_USER') {
         _showSignInError(context, e);
@@ -74,11 +73,9 @@ class SignInPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<bool>(
-      stream: bloc.isLoadingStream,
-      initialData: false,
-      builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
-        final bool isLoading = snapshot.data;
+    return ChangeNotifierProvider<SignInModel>(
+      builder: (BuildContext context) => SignInModel(),
+      child: Consumer<SignInModel>(builder: (BuildContext context, SignInModel model, _) {
         return Scaffold(
           appBar: AppBar(
             elevation: 2.0,
@@ -86,16 +83,16 @@ class SignInPage extends StatelessWidget {
           ),
           // Hide developer menu while loading in progress.
           // This is so that it's not possible to switch auth service while a request is in progress
-          drawer: isLoading ? null : DeveloperMenu(),
+          drawer: model.loading ? null : DeveloperMenu(),
           backgroundColor: Colors.grey[200],
-          body: _buildSignIn(context, isLoading),
+          body: _buildSignIn(context, model),
         );
-      },
+      }),
     );
   }
 
-  Widget _buildHeader(bool isLoading) {
-    if (isLoading) {
+  Widget _buildHeader(SignInModel model) {
+    if (model.loading) {
       return Center(
         child: CircularProgressIndicator(),
       );
@@ -107,7 +104,7 @@ class SignInPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSignIn(BuildContext context, bool isLoading) {
+  Widget _buildSignIn(BuildContext context, SignInModel model) {
     return Container(
       padding: EdgeInsets.all(16.0),
       child: Column(
@@ -116,13 +113,13 @@ class SignInPage extends StatelessWidget {
         children: <Widget>[
           SizedBox(
             height: 50.0,
-            child: _buildHeader(isLoading),
+            child: _buildHeader(model),
           ),
           SizedBox(height: 48.0),
           SocialSignInButton(
             assetName: 'assets/go-logo.png',
             text: Strings.signInWithGoogle,
-            onPressed: isLoading ? null : () => _signInWithGoogle(context),
+            onPressed: model.loading ? null : () => _signInWithGoogle(context, model),
             color: Colors.white,
           ),
           SizedBox(height: 8),
@@ -130,13 +127,13 @@ class SignInPage extends StatelessWidget {
             assetName: 'assets/fb-logo.png',
             text: Strings.signInWithFacebook,
             textColor: Colors.white,
-            onPressed: isLoading ? null : () => _signInWithFacebook(context),
+            onPressed: model.loading ? null : () => _signInWithFacebook(context, model),
             color: Color(0xFF334D92),
           ),
           SizedBox(height: 8),
           SignInButton(
             text: Strings.signInWithEmail,
-            onPressed: isLoading ? null : () => _signInWithEmail(context),
+            onPressed: model.loading ? null : () => _signInWithEmail(context),
             textColor: Colors.white,
             color: Colors.teal[700],
           ),
@@ -151,7 +148,7 @@ class SignInPage extends StatelessWidget {
             text: Strings.goAnonymous,
             color: Colors.lime[300],
             textColor: Colors.black,
-            onPressed: isLoading ? null : () => _signInAnonymously(context),
+            onPressed: model.loading ? null : () => _signInAnonymously(context, model),
           ),
         ],
       ),

@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:firebase_auth_demo_flutter/app/sign_in/sign_in_bloc.dart';
+import 'package:firebase_auth_demo_flutter/app/sign_in/sign_in_manager.dart';
 import 'package:firebase_auth_demo_flutter/services/auth_service.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -10,11 +10,11 @@ import 'mocks.dart';
 
 void main() {
   MockAuthService mockAuthService;
-  SignInBloc bloc;
+  SignInManager bloc;
 
   setUp(() {
     mockAuthService = MockAuthService();
-    bloc = SignInBloc(auth: mockAuthService);
+    bloc = SignInManager(auth: mockAuthService);
   });
 
   tearDown(() {
