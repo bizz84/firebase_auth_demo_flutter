@@ -1,5 +1,7 @@
 import 'package:firebase_auth_demo_flutter/app/sign_in/email_password_sign_in_bloc.dart';
+import 'package:firebase_auth_demo_flutter/app/sign_in/email_password_sign_in_manager.dart';
 import 'package:firebase_auth_demo_flutter/app/sign_in/email_password_sign_in_model.dart';
+import 'package:firebase_auth_demo_flutter/app/sign_in/email_password_sign_in_model_mutable.dart';
 import 'package:firebase_auth_demo_flutter/common_widgets/form_submit_button.dart';
 import 'package:firebase_auth_demo_flutter/common_widgets/platform_alert_dialog.dart';
 import 'package:firebase_auth_demo_flutter/common_widgets/platform_exception_alert_dialog.dart';
@@ -19,9 +21,8 @@ class EmailPasswordSignInPage extends StatefulWidget {
   /// Creates a Provider with a EmailSignInBloc and a EmailSignInPage
   static Widget create(BuildContext context) {
     final AuthService auth = Provider.of<AuthService>(context, listen: false);
-    return Provider<EmailPasswordSignInBloc>(
-      builder: (BuildContext context) => EmailPasswordSignInBloc(auth: auth),
-      dispose: (BuildContext context, EmailPasswordSignInBloc bloc) => bloc.dispose(),
+    return Provider<EmailPasswordSignInManager>(
+      builder: (BuildContext context) => EmailPasswordSignInManager(auth: auth),
       child: Consumer<EmailPasswordSignInBloc>(
         builder: (BuildContext context, EmailPasswordSignInBloc bloc, _) => EmailPasswordSignInPage._(bloc: bloc),
       ),
@@ -47,7 +48,7 @@ class _EmailPasswordSignInPageState extends State<EmailPasswordSignInPage> {
     super.dispose();
   }
 
-  void _showSignInError(EmailPasswordSignInModel model, PlatformException exception) {
+  void _showSignInError(EmailPasswordSignInModelMutable model, PlatformException exception) {
     PlatformExceptionAlertDialog(
       title: model.errorAlertTitle,
       exception: exception,
@@ -59,7 +60,7 @@ class _EmailPasswordSignInPageState extends State<EmailPasswordSignInPage> {
     _passwordFocusNode.unfocus();
   }
 
-  Future<void> _submit(EmailPasswordSignInModel model) async {
+  Future<void> _submit(EmailPasswordSignInModelMutable model) async {
     _unfocus();
     try {
       final bool success = await widget.bloc.submit();
@@ -79,7 +80,7 @@ class _EmailPasswordSignInPageState extends State<EmailPasswordSignInPage> {
     }
   }
 
-  void _emailEditingComplete(EmailPasswordSignInModel model) {
+  void _emailEditingComplete(EmailPasswordSignInModelMutable model) {
     final FocusNode newFocus = model.canSubmitEmail ? _passwordFocusNode : _emailFocusNode;
     FocusScope.of(context).requestFocus(newFocus);
   }
@@ -90,7 +91,7 @@ class _EmailPasswordSignInPageState extends State<EmailPasswordSignInPage> {
     _passwordController.clear();
   }
 
-  Widget _buildEmailField(EmailPasswordSignInModel model) {
+  Widget _buildEmailField(EmailPasswordSignInModelMutable model) {
     return TextField(
       controller: _emailController,
       focusNode: _emailFocusNode,
@@ -111,7 +112,7 @@ class _EmailPasswordSignInPageState extends State<EmailPasswordSignInPage> {
     );
   }
 
-  Widget _buildPasswordField(EmailPasswordSignInModel model) {
+  Widget _buildPasswordField(EmailPasswordSignInModelMutable model) {
     return TextField(
       controller: _passwordController,
       focusNode: _passwordFocusNode,
@@ -128,7 +129,7 @@ class _EmailPasswordSignInPageState extends State<EmailPasswordSignInPage> {
     );
   }
 
-  Widget _buildContent(EmailPasswordSignInModel model) {
+  Widget _buildContent(EmailPasswordSignInModelMutable model) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
@@ -160,31 +161,57 @@ class _EmailPasswordSignInPageState extends State<EmailPasswordSignInPage> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<EmailPasswordSignInModel>(
-      stream: widget.bloc.modelStream,
-      initialData: EmailPasswordSignInModel(),
-      builder: (BuildContext context, AsyncSnapshot<EmailPasswordSignInModel> snapshot) {
-        final EmailPasswordSignInModel model = snapshot.data;
-        return Scaffold(
-          appBar: AppBar(
-            elevation: 2.0,
-            title: Text(model.title),
-          ),
-          backgroundColor: Colors.grey[200],
-          body: SingleChildScrollView(
-            child: Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Card(
-                child: Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: _buildContent(model),
-                  //child: _buildEmailSignInForm(),
+    return ChangeNotifierProvider<EmailPasswordSignInModelMutable>(
+      builder: (context) => EmailPasswordSignInModelMutable(),
+      child: Consumer<EmailPasswordSignInModelMutable>(
+        builder: (context, model, _) {
+          return Scaffold(
+            appBar: AppBar(
+              elevation: 2.0,
+              title: Text(model.title),
+            ),
+            backgroundColor: Colors.grey[200],
+            body: SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Card(
+                  child: Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: _buildContent(model),
+                    //child: _buildEmailSignInForm(),
+                  ),
                 ),
               ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
+//    return StreamBuilder<EmailPasswordSignInModel>(
+//      stream: widget.bloc.modelStream,
+//      initialData: EmailPasswordSignInModel(),
+//      builder: (BuildContext context, AsyncSnapshot<EmailPasswordSignInModel> snapshot) {
+//        final EmailPasswordSignInModel model = snapshot.data;
+//        return Scaffold(
+//          appBar: AppBar(
+//            elevation: 2.0,
+//            title: Text(model.title),
+//          ),
+//          backgroundColor: Colors.grey[200],
+//          body: SingleChildScrollView(
+//            child: Padding(
+//              padding: EdgeInsets.all(16.0),
+//              child: Card(
+//                child: Padding(
+//                  padding: EdgeInsets.all(16.0),
+//                  child: _buildContent(model),
+//                  //child: _buildEmailSignInForm(),
+//                ),
+//              ),
+//            ),
+//          ),
+//        );
+//      },
+//    );
   }
 }
