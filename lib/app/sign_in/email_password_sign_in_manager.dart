@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:firebase_auth_demo_flutter/app/sign_in/email_password_sign_in_model.dart';
-import 'package:firebase_auth_demo_flutter/app/sign_in/email_password_sign_in_model_mutable.dart';
 import 'package:firebase_auth_demo_flutter/services/auth_service.dart';
 import 'package:flutter/foundation.dart';
 
@@ -9,22 +8,7 @@ class EmailPasswordSignInManager {
   EmailPasswordSignInManager({@required this.auth});
   final AuthService auth;
 
-  EmailPasswordSignInModelMutable model = EmailPasswordSignInModelMutable();
-
-  // Setters
-  void updateEmail(String email) => model.updateWith(email: email);
-
-  void updatePassword(String password) => model.updateWith(password: password);
-
-  void updateFormType(EmailPasswordSignInFormType formType) {
-    model.updateWith(
-      email: '',
-      password: '',
-      formType: formType,
-      isLoading: false,
-      submitted: false,
-    );
-  }
+  EmailPasswordSignInModel model = EmailPasswordSignInModel();
 
   // logic
   Future<bool> submit() async {

@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 
 enum EmailPasswordSignInFormType { signIn, register, forgotPassword }
 
-class EmailPasswordSignInModel with EmailAndPasswordValidators {
+class EmailPasswordSignInModel with EmailAndPasswordValidators, ChangeNotifier {
   EmailPasswordSignInModel({
     this.email = '',
     this.password = '',
@@ -14,26 +14,39 @@ class EmailPasswordSignInModel with EmailAndPasswordValidators {
     this.submitted = false,
   });
 
-  final String email;
-  final String password;
-  final EmailPasswordSignInFormType formType;
-  final bool isLoading;
-  final bool submitted;
+  String email;
+  String password;
+  EmailPasswordSignInFormType formType;
+  bool isLoading;
+  bool submitted;
 
-  EmailPasswordSignInModel copyWith({
+  void updateEmail(String email) => updateWith(email: email);
+
+  void updatePassword(String password) => updateWith(password: password);
+
+  void updateFormType(EmailPasswordSignInFormType formType) {
+    updateWith(
+      email: '',
+      password: '',
+      formType: formType,
+      isLoading: false,
+      submitted: false,
+    );
+  }
+  void updateWith({
     String email,
     String password,
     EmailPasswordSignInFormType formType,
     bool isLoading,
     bool submitted,
   }) {
-    return EmailPasswordSignInModel(
-      email: email ?? this.email,
-      password: password ?? this.password,
-      formType: formType ?? this.formType,
-      isLoading: isLoading ?? this.isLoading,
-      submitted: submitted ?? this.submitted,
-    );
+
+    this.email = email ?? this.email;
+    this.password = password ?? this.password;
+    this.formType = formType ?? this.formType;
+    this.isLoading = isLoading ?? this.isLoading;
+    this.submitted = submitted ?? this.submitted;
+    notifyListeners();
   }
 
   // Getters
