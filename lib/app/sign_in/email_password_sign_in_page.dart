@@ -61,7 +61,7 @@ class _EmailPasswordSignInPageState extends State<EmailPasswordSignInPage> {
   Future<void> _submit(EmailPasswordSignInModel model) async {
     _unfocus();
     try {
-      final bool success = await widget.manager.submit();
+      final bool success = await widget.manager.submit(model);
       if (success) {
         if (model.formType == EmailPasswordSignInFormType.forgotPassword) {
           PlatformAlertDialog(
@@ -160,7 +160,7 @@ class _EmailPasswordSignInPageState extends State<EmailPasswordSignInPage> {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<EmailPasswordSignInModel>(
-      builder: (BuildContext context) => widget.manager.model,
+      builder: (BuildContext context) => EmailPasswordSignInModel(),
       child: Consumer<EmailPasswordSignInModel>(
         builder: (BuildContext context, EmailPasswordSignInModel model, _) {
           return Scaffold(

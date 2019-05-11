@@ -8,10 +8,8 @@ class EmailPasswordSignInManager {
   EmailPasswordSignInManager({@required this.auth});
   final AuthService auth;
 
-  EmailPasswordSignInModel model = EmailPasswordSignInModel();
-
   // logic
-  Future<bool> submit() async {
+  Future<bool> submit(EmailPasswordSignInModel model) async {
     try {
       model.updateWith(submitted: true);
       if (!model.canSubmit) {
