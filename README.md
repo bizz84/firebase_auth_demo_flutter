@@ -20,6 +20,8 @@ _NOTE: This project will be kept up to date with the latest packages and Flutter
 
 ## Preview
 
+![](media/firebase-auth-screens.png)
+
 **Google Sign-in**
 
 ![](media/google-sign-in.gif)
