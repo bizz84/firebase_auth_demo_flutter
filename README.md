@@ -9,9 +9,8 @@ It aims to be a reference implementation. Think of it as "authentication done ri
 This project shows how to:
 
 - use the various Firebase sign-in methods
-- abstract away Firebase authentication code
 - build a robust authentication flow
-- use blocs for state management and better separation of concerns
+- use appropriate state management techniques to separate UI, logic and Firebase authentication code
 - handle errors and present user-friendly error messages
 - write production-ready code following best practices
 
