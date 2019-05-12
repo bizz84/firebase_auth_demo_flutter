@@ -31,7 +31,7 @@ _NOTE: This project will be kept up to date with the latest packages and Flutter
 
 **Email & Password auth**
 
-![](media/create-user-email-password.gif)
+![](media/email-password-sign-in.gif)
 
 ## Supported sign-in methods
 
