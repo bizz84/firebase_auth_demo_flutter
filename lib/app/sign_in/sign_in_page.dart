@@ -19,8 +19,8 @@ class SignInPage extends StatelessWidget {
     return Provider<SignInManager>(
       builder: (BuildContext context) => SignInManager(auth: auth),
       child: Consumer<SignInManager>(
-        builder: (BuildContext context, SignInManager bloc, _) => SignInPage._(
-              manager: bloc,
+        builder: (BuildContext context, SignInManager manager, _) => SignInPage._(
+              manager: manager,
               title: 'Firebase Auth Demo',
             ),
       ),
