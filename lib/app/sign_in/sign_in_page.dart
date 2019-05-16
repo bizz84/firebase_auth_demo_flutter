@@ -5,25 +5,33 @@ import 'package:firebase_auth_demo_flutter/app/sign_in/social_sign_in_button.dar
 import 'package:firebase_auth_demo_flutter/common_widgets/platform_exception_alert_dialog.dart';
 import 'package:firebase_auth_demo_flutter/constants/strings.dart';
 import 'package:firebase_auth_demo_flutter/services/auth_service.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
+// P<ValueNotifier> -> P<SignInManager>(vn) -> SignInPage(vl)
+
 class SignInPage extends StatelessWidget {
-  SignInPage._({Key key, this.manager, this.title}) : super(key: key);
+  SignInPage._({Key key, this.isLoading, this.manager, this.title}) : super(key: key);
   final SignInManager manager;
   final String title;
-
-  final ValueNotifier<bool> _loading = ValueNotifier<bool>(false);
+  final ValueListenable<bool> isLoading;
 
   static Widget create(BuildContext context) {
     final AuthService auth = Provider.of<AuthService>(context, listen: false);
-    return Provider<SignInManager>(
-      builder: (BuildContext context) => SignInManager(auth: auth),
-      child: Consumer<SignInManager>(
-        builder: (BuildContext context, SignInManager manager, _) => SignInPage._(
-              manager: manager,
-              title: 'Firebase Auth Demo',
+    return Provider<ValueNotifier<bool>>(
+      builder: (BuildContext context) => ValueNotifier<bool>(false),
+      child: Consumer<ValueNotifier<bool>>(
+        builder: (BuildContext context, ValueNotifier<bool> isLoading, _) => Provider<SignInManager>(
+              builder: (BuildContext context) => SignInManager(auth: auth, isLoading: isLoading),
+              child: Consumer<SignInManager>(
+                builder: (BuildContext context, SignInManager manager, _) => SignInPage._(
+                      isLoading: isLoading,
+                      manager: manager,
+                      title: 'Firebase Auth Demo',
+                    ),
+              ),
             ),
       ),
     );
@@ -38,7 +46,7 @@ class SignInPage extends StatelessWidget {
 
   Future<void> _signInAnonymously(BuildContext context) async {
     try {
-      await manager.signInAnonymously(_loading);
+      await manager.signInAnonymously();
     } on PlatformException catch (e) {
       _showSignInError(context, e);
     }
@@ -46,7 +54,7 @@ class SignInPage extends StatelessWidget {
 
   Future<void> _signInWithGoogle(BuildContext context) async {
     try {
-      await manager.signInWithGoogle(_loading);
+      await manager.signInWithGoogle();
     } on PlatformException catch (e) {
       if (e.code != 'ERROR_ABORTED_BY_USER') {
         _showSignInError(context, e);
@@ -56,7 +64,7 @@ class SignInPage extends StatelessWidget {
 
   Future<void> _signInWithFacebook(BuildContext context) async {
     try {
-      await manager.signInWithFacebook(_loading);
+      await manager.signInWithFacebook();
     } on PlatformException catch (e) {
       if (e.code != 'ERROR_ABORTED_BY_USER') {
         _showSignInError(context, e);
@@ -76,7 +84,7 @@ class SignInPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<bool>(
-      valueListenable: _loading,
+      valueListenable: isLoading,
       builder: (BuildContext context, bool isLoading, Widget child) {
         return Scaffold(
           appBar: AppBar(

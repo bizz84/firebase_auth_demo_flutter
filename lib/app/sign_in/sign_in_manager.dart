@@ -5,10 +5,11 @@ import 'package:flutter/foundation.dart';
 import 'package:meta/meta.dart';
 
 class SignInManager {
-  SignInManager({@required this.auth});
+  SignInManager({@required this.auth, @required this.isLoading});
   final AuthService auth;
+  final ValueNotifier<bool> isLoading;
 
-  Future<User> _signIn(ValueNotifier<bool> isLoading, Future<User> Function() signInMethod) async {
+  Future<User> _signIn(Future<User> Function() signInMethod) async {
     try {
       isLoading.value = true;
       return await signInMethod();
@@ -19,15 +20,15 @@ class SignInManager {
     }
   }
 
-  Future<User> signInAnonymously(ValueNotifier<bool> isLoading) async {
-    return await _signIn(isLoading, auth.signInAnonymously);
+  Future<User> signInAnonymously() async {
+    return await _signIn(auth.signInAnonymously);
   }
 
-  Future<void> signInWithGoogle(ValueNotifier<bool> isLoading) async {
-    return await _signIn(isLoading, auth.signInWithGoogle);
+  Future<void> signInWithGoogle() async {
+    return await _signIn(auth.signInWithGoogle);
   }
 
-  Future<void> signInWithFacebook(ValueNotifier<bool> isLoading) async {
-    return await _signIn(isLoading, auth.signInWithFacebook);
+  Future<void> signInWithFacebook() async {
+    return await _signIn(auth.signInWithFacebook);
   }
 }
