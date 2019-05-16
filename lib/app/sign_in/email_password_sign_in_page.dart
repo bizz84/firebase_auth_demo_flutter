@@ -9,9 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-/// This class relies on a EmailSignInBloc + StreamBuilder to manage its state.
-/// However, it still needs to be a StatefulWidget due to an issue when
-/// TextEditingController and StreamBuilder are used together.
 class EmailPasswordSignInPage extends StatefulWidget {
   const EmailPasswordSignInPage._({Key key, this.manager}) : super(key: key);
   final EmailPasswordSignInManager manager;
@@ -22,7 +19,7 @@ class EmailPasswordSignInPage extends StatefulWidget {
     return Provider<EmailPasswordSignInManager>(
       builder: (BuildContext context) => EmailPasswordSignInManager(auth: auth),
       child: Consumer<EmailPasswordSignInManager>(
-        builder: (BuildContext context, EmailPasswordSignInManager bloc, _) => EmailPasswordSignInPage._(manager: bloc),
+        builder: (BuildContext context, EmailPasswordSignInManager manager, _) => EmailPasswordSignInPage._(manager: manager),
       ),
     );
   }
