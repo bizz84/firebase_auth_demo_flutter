@@ -179,7 +179,6 @@ class _EmailPasswordSignInPageState extends State<EmailPasswordSignInPage> {
             child: Padding(
               padding: EdgeInsets.all(16.0),
               child: _buildContent(),
-              //child: _buildEmailSignInForm(),
             ),
           ),
         ),
