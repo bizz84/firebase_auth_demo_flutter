@@ -3,4 +3,3 @@ import 'package:mockito/mockito.dart';
 
 class MockAuthService extends Mock implements AuthService {}
 
-

@@ -2,24 +2,40 @@ import 'dart:async';
 
 import 'package:firebase_auth_demo_flutter/app/sign_in/sign_in_manager.dart';
 import 'package:firebase_auth_demo_flutter/services/auth_service.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
 import 'mocks.dart';
 
+class MockValueNotifier<T> extends ValueNotifier<T> {
+  MockValueNotifier(T value) : super(value);
+
+  List<T> values = <T>[];
+
+  @override
+  set value(T newValue) {
+    values.add(newValue);
+    super.value = newValue;
+  }
+}
+
 void main() {
   MockAuthService mockAuthService;
-  SignInManager bloc;
+  SignInManager manager;
+  MockValueNotifier<bool> isLoading;
 
   setUp(() {
     mockAuthService = MockAuthService();
-    bloc = SignInManager(auth: mockAuthService);
+    isLoading = MockValueNotifier<bool>(false);
+    manager = SignInManager(auth: mockAuthService, isLoading: isLoading);
   });
 
   tearDown(() {
     mockAuthService = null;
-    bloc = null;
+    manager = null;
+    isLoading = null;
   });
 
   void stubSignInAnonymouslyReturnsUser() {
@@ -31,42 +47,26 @@ void main() {
   }
 
   test(
-      'WHEN bloc signs in anonymously'
+      'WHEN manager signs in anonymously'
       'AND auth returns valid user'
-      'THEN loading stream emits true, false', () async {
+      'THEN isLoading values are [ true, false ]', () async {
     stubSignInAnonymouslyReturnsUser();
 
-    await bloc.signInAnonymously();
+    await manager.signInAnonymously();
 
-    expect(
-      bloc.isLoadingStream,
-      emitsInOrder(
-        <bool>[
-          true,
-          false,
-        ],
-      ),
-    );
+    expect(isLoading.values, <bool>[true, false]);
   });
 
   test(
-      'WHEN bloc signs in anonymously'
+      'WHEN manager signs in anonymously'
       'AND auth throws an exception'
-      'THEN bloc throws an exception'
-      'AND loading stream emits true, false', () async {
+      'THEN manager throws an exception'
+      'THEN isLoading values are [ true, false ]', () async {
     final exception = PlatformException(code: 'ERROR_MISSING_PERMISSIONS');
     stubSignInAnonymouslyThrows(exception);
 
-    expect(() async => await bloc.signInAnonymously(), throwsA(exception));
+    expect(() async => await manager.signInAnonymously(), throwsA(exception));
 
-    expect(
-      bloc.isLoadingStream,
-      emitsInOrder(
-        <bool>[
-          true,
-          false,
-        ],
-      ),
-    );
+    expect(isLoading.values, <bool>[true, false]);
   });
 }
