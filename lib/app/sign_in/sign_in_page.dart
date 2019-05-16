@@ -10,9 +10,11 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 class SignInPage extends StatelessWidget {
-  const SignInPage._({Key key, this.manager, this.title}) : super(key: key);
+  SignInPage._({Key key, this.manager, this.title}) : super(key: key);
   final SignInManager manager;
   final String title;
+
+  final ValueNotifier<bool> _loading = ValueNotifier<bool>(false);
 
   static Widget create(BuildContext context) {
     final AuthService auth = Provider.of<AuthService>(context, listen: false);
@@ -34,17 +36,17 @@ class SignInPage extends StatelessWidget {
     ).show(context);
   }
 
-  Future<void> _signInAnonymously(BuildContext context, SignInModel model) async {
+  Future<void> _signInAnonymously(BuildContext context) async {
     try {
-      await manager.signInAnonymously(model);
+      await manager.signInAnonymously(_loading);
     } on PlatformException catch (e) {
       _showSignInError(context, e);
     }
   }
 
-  Future<void> _signInWithGoogle(BuildContext context, SignInModel model) async {
+  Future<void> _signInWithGoogle(BuildContext context) async {
     try {
-      await manager.signInWithGoogle(model);
+      await manager.signInWithGoogle(_loading);
     } on PlatformException catch (e) {
       if (e.code != 'ERROR_ABORTED_BY_USER') {
         _showSignInError(context, e);
@@ -52,9 +54,9 @@ class SignInPage extends StatelessWidget {
     }
   }
 
-  Future<void> _signInWithFacebook(BuildContext context, SignInModel model) async {
+  Future<void> _signInWithFacebook(BuildContext context) async {
     try {
-      await manager.signInWithFacebook(model);
+      await manager.signInWithFacebook(_loading);
     } on PlatformException catch (e) {
       if (e.code != 'ERROR_ABORTED_BY_USER') {
         _showSignInError(context, e);
@@ -73,9 +75,9 @@ class SignInPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<SignInModel>(
-      builder: (BuildContext context) => SignInModel(),
-      child: Consumer<SignInModel>(builder: (BuildContext context, SignInModel model, _) {
+    return ValueListenableBuilder<bool>(
+      valueListenable: _loading,
+      builder: (BuildContext context, bool isLoading, Widget child) {
         return Scaffold(
           appBar: AppBar(
             elevation: 2.0,
@@ -83,16 +85,16 @@ class SignInPage extends StatelessWidget {
           ),
           // Hide developer menu while loading in progress.
           // This is so that it's not possible to switch auth service while a request is in progress
-          drawer: model.loading ? null : DeveloperMenu(),
+          drawer: isLoading ? null : DeveloperMenu(),
           backgroundColor: Colors.grey[200],
-          body: _buildSignIn(context, model),
+          body: _buildSignIn(context, isLoading),
         );
-      }),
+      },
     );
   }
 
-  Widget _buildHeader(SignInModel model) {
-    if (model.loading) {
+  Widget _buildHeader(bool isLoading) {
+    if (isLoading) {
       return Center(
         child: CircularProgressIndicator(),
       );
@@ -104,7 +106,7 @@ class SignInPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSignIn(BuildContext context, SignInModel model) {
+  Widget _buildSignIn(BuildContext context, bool isLoading) {
     return Container(
       padding: EdgeInsets.all(16.0),
       child: Column(
@@ -113,13 +115,13 @@ class SignInPage extends StatelessWidget {
         children: <Widget>[
           SizedBox(
             height: 50.0,
-            child: _buildHeader(model),
+            child: _buildHeader(isLoading),
           ),
           SizedBox(height: 48.0),
           SocialSignInButton(
             assetName: 'assets/go-logo.png',
             text: Strings.signInWithGoogle,
-            onPressed: model.loading ? null : () => _signInWithGoogle(context, model),
+            onPressed: isLoading ? null : () => _signInWithGoogle(context),
             color: Colors.white,
           ),
           SizedBox(height: 8),
@@ -127,13 +129,13 @@ class SignInPage extends StatelessWidget {
             assetName: 'assets/fb-logo.png',
             text: Strings.signInWithFacebook,
             textColor: Colors.white,
-            onPressed: model.loading ? null : () => _signInWithFacebook(context, model),
+            onPressed: isLoading ? null : () => _signInWithFacebook(context),
             color: Color(0xFF334D92),
           ),
           SizedBox(height: 8),
           SignInButton(
             text: Strings.signInWithEmail,
-            onPressed: model.loading ? null : () => _signInWithEmail(context),
+            onPressed: isLoading ? null : () => _signInWithEmail(context),
             textColor: Colors.white,
             color: Colors.teal[700],
           ),
@@ -148,7 +150,7 @@ class SignInPage extends StatelessWidget {
             text: Strings.goAnonymous,
             color: Colors.lime[300],
             textColor: Colors.black,
-            onPressed: model.loading ? null : () => _signInAnonymously(context, model),
+            onPressed: isLoading ? null : () => _signInAnonymously(context),
           ),
         ],
       ),

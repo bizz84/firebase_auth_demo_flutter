@@ -4,40 +4,30 @@ import 'package:firebase_auth_demo_flutter/services/auth_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:meta/meta.dart';
 
-class SignInModel with ChangeNotifier {
-  bool _loading = false;
-
-  bool get loading => _loading;
-  set loading(bool newValue) {
-    _loading = newValue;
-    notifyListeners();
-  }
-}
-
 class SignInManager {
   SignInManager({@required this.auth});
   final AuthService auth;
 
-  Future<User> _signIn(SignInModel model, Future<User> Function() signInMethod) async {
+  Future<User> _signIn(ValueNotifier<bool> isLoading, Future<User> Function() signInMethod) async {
     try {
-      model.loading = true;
+      isLoading.value = true;
       return await signInMethod();
     } catch (e) {
       rethrow;
     } finally {
-      model.loading = false;
+      isLoading.value = false;
     }
   }
 
-  Future<User> signInAnonymously(SignInModel model) async {
-    return await _signIn(model, auth.signInAnonymously);
+  Future<User> signInAnonymously(ValueNotifier<bool> isLoading) async {
+    return await _signIn(isLoading, auth.signInAnonymously);
   }
 
-  Future<void> signInWithGoogle(SignInModel model) async {
-    return await _signIn(model, auth.signInWithGoogle);
+  Future<void> signInWithGoogle(ValueNotifier<bool> isLoading) async {
+    return await _signIn(isLoading, auth.signInWithGoogle);
   }
 
-  Future<void> signInWithFacebook(SignInModel model) async {
-    return await _signIn(model, auth.signInWithFacebook);
+  Future<void> signInWithFacebook(ValueNotifier<bool> isLoading) async {
+    return await _signIn(isLoading, auth.signInWithFacebook);
   }
 }
