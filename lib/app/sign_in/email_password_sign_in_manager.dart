@@ -5,11 +5,12 @@ import 'package:firebase_auth_demo_flutter/services/auth_service.dart';
 import 'package:flutter/foundation.dart';
 
 class EmailPasswordSignInManager {
-  EmailPasswordSignInManager({@required this.auth});
+  EmailPasswordSignInManager({@required this.auth, @required this.model});
   final AuthService auth;
+  final EmailPasswordSignInModel model;
 
   // logic
-  Future<bool> submit(EmailPasswordSignInModel model) async {
+  Future<bool> submit() async {
     try {
       model.updateWith(submitted: true);
       if (!model.canSubmit) {

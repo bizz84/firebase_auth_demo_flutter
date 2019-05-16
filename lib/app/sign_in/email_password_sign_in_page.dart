@@ -10,16 +10,23 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 class EmailPasswordSignInPage extends StatefulWidget {
-  const EmailPasswordSignInPage._({Key key, this.manager}) : super(key: key);
+  const EmailPasswordSignInPage._({Key key, @required this.manager, @required this.model}) : super(key: key);
   final EmailPasswordSignInManager manager;
+  final EmailPasswordSignInModel model;
 
   /// Creates a Provider with a EmailSignInBloc and a EmailSignInPage
   static Widget create(BuildContext context) {
     final AuthService auth = Provider.of<AuthService>(context, listen: false);
-    return Provider<EmailPasswordSignInManager>(
-      builder: (BuildContext context) => EmailPasswordSignInManager(auth: auth),
-      child: Consumer<EmailPasswordSignInManager>(
-        builder: (BuildContext context, EmailPasswordSignInManager manager, _) => EmailPasswordSignInPage._(manager: manager),
+    return ChangeNotifierProvider<EmailPasswordSignInModel>(
+      builder: (BuildContext context) => EmailPasswordSignInModel(),
+      child: Consumer<EmailPasswordSignInModel>(
+        builder: (BuildContext context, EmailPasswordSignInModel model, _) => Provider<EmailPasswordSignInManager>(
+              builder: (BuildContext context) => EmailPasswordSignInManager(auth: auth, model: model),
+              child: Consumer<EmailPasswordSignInManager>(
+                builder: (BuildContext context, EmailPasswordSignInManager manager, _) =>
+                    EmailPasswordSignInPage._(manager: manager, model: model),
+              ),
+            ),
       ),
     );
   }
@@ -33,6 +40,8 @@ class _EmailPasswordSignInPageState extends State<EmailPasswordSignInPage> {
   final FocusNode _passwordFocusNode = FocusNode();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+
+  EmailPasswordSignInModel get model => widget.model;
 
   @override
   void dispose() {
@@ -55,10 +64,10 @@ class _EmailPasswordSignInPageState extends State<EmailPasswordSignInPage> {
     _passwordFocusNode.unfocus();
   }
 
-  Future<void> _submit(EmailPasswordSignInModel model) async {
+  Future<void> _submit() async {
     _unfocus();
     try {
-      final bool success = await widget.manager.submit(model);
+      final bool success = await widget.manager.submit();
       if (success) {
         if (model.formType == EmailPasswordSignInFormType.forgotPassword) {
           PlatformAlertDialog(
@@ -75,18 +84,18 @@ class _EmailPasswordSignInPageState extends State<EmailPasswordSignInPage> {
     }
   }
 
-  void _emailEditingComplete(EmailPasswordSignInModel model) {
+  void _emailEditingComplete() {
     final FocusNode newFocus = model.canSubmitEmail ? _passwordFocusNode : _emailFocusNode;
     FocusScope.of(context).requestFocus(newFocus);
   }
 
-  void _updateFormType(EmailPasswordSignInModel model, EmailPasswordSignInFormType formType) {
+  void _updateFormType(EmailPasswordSignInFormType formType) {
     model.updateFormType(formType);
     _emailController.clear();
     _passwordController.clear();
   }
 
-  Widget _buildEmailField(EmailPasswordSignInModel model) {
+  Widget _buildEmailField() {
     return TextField(
       controller: _emailController,
       focusNode: _emailFocusNode,
@@ -100,14 +109,14 @@ class _EmailPasswordSignInPageState extends State<EmailPasswordSignInPage> {
       textInputAction: TextInputAction.next,
       keyboardType: TextInputType.emailAddress,
       onChanged: model.updateEmail,
-      onEditingComplete: () => _emailEditingComplete(model),
+      onEditingComplete: _emailEditingComplete,
       inputFormatters: <TextInputFormatter>[
         model.emailInputFormatter,
       ],
     );
   }
 
-  Widget _buildPasswordField(EmailPasswordSignInModel model) {
+  Widget _buildPasswordField() {
     return TextField(
       controller: _passwordController,
       focusNode: _passwordFocusNode,
@@ -120,35 +129,36 @@ class _EmailPasswordSignInPageState extends State<EmailPasswordSignInPage> {
       autocorrect: false,
       textInputAction: TextInputAction.done,
       onChanged: model.updatePassword,
-      onEditingComplete: () => _submit(model),
+      onEditingComplete: _submit,
     );
   }
 
-  Widget _buildContent(EmailPasswordSignInModel model) {
+  Widget _buildContent() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
         SizedBox(height: 8.0),
-        _buildEmailField(model),
+        _buildEmailField(),
         if (model.formType != EmailPasswordSignInFormType.forgotPassword) ...<Widget>[
           SizedBox(height: 8.0),
-          _buildPasswordField(model),
+          _buildPasswordField(),
         ],
         SizedBox(height: 8.0),
         FormSubmitButton(
           text: model.primaryButtonText,
           loading: model.isLoading,
-          onPressed: model.isLoading ? null : () => _submit(model),
+          onPressed: model.isLoading ? null : _submit,
         ),
         SizedBox(height: 8.0),
         FlatButton(
           child: Text(model.secondaryButtonText),
-          onPressed: model.isLoading ? null : () => _updateFormType(model, model.secondaryActionFormType),
+          onPressed: model.isLoading ? null : () => _updateFormType(model.secondaryActionFormType),
         ),
         if (model.formType == EmailPasswordSignInFormType.signIn)
           FlatButton(
             child: Text(Strings.forgotPasswordQuestion),
-            onPressed: model.isLoading ? null : () => _updateFormType(model, EmailPasswordSignInFormType.forgotPassword),
+            onPressed:
+                model.isLoading ? null : () => _updateFormType(EmailPasswordSignInFormType.forgotPassword),
           ),
       ],
     );
@@ -156,30 +166,23 @@ class _EmailPasswordSignInPageState extends State<EmailPasswordSignInPage> {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<EmailPasswordSignInModel>(
-      builder: (BuildContext context) => EmailPasswordSignInModel(),
-      child: Consumer<EmailPasswordSignInModel>(
-        builder: (BuildContext context, EmailPasswordSignInModel model, _) {
-          return Scaffold(
-            appBar: AppBar(
-              elevation: 2.0,
-              title: Text(model.title),
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 2.0,
+        title: Text(widget.model.title),
+      ),
+      backgroundColor: Colors.grey[200],
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Card(
+            child: Padding(
+              padding: EdgeInsets.all(16.0),
+              child: _buildContent(),
+              //child: _buildEmailSignInForm(),
             ),
-            backgroundColor: Colors.grey[200],
-            body: SingleChildScrollView(
-              child: Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Card(
-                  child: Padding(
-                    padding: EdgeInsets.all(16.0),
-                    child: _buildContent(model),
-                    //child: _buildEmailSignInForm(),
-                  ),
-                ),
-              ),
-            ),
-          );
-        },
+          ),
+        ),
       ),
     );
   }
