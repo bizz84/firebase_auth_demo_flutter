@@ -10,14 +10,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-// P<ValueNotifier> -> P<SignInManager>(vn) -> SignInPage(vl)
 
 class SignInPage extends StatelessWidget {
   SignInPage._({Key key, this.isLoading, this.manager, this.title}) : super(key: key);
   final SignInManager manager;
   final String title;
-  final ValueListenable<bool> isLoading;
+  final bool isLoading;
 
+  // P<ValueNotifier>
+  //   P<SignInManager>(valueNotifier)
+  //     ValueListenableBuilder(valueListener)
+  //       SignInPage(value)
   static Widget create(BuildContext context) {
     final AuthService auth = Provider.of<AuthService>(context, listen: false);
     return Provider<ValueNotifier<bool>>(
@@ -26,10 +29,13 @@ class SignInPage extends StatelessWidget {
         builder: (BuildContext context, ValueNotifier<bool> isLoading, _) => Provider<SignInManager>(
               builder: (BuildContext context) => SignInManager(auth: auth, isLoading: isLoading),
               child: Consumer<SignInManager>(
-                builder: (BuildContext context, SignInManager manager, _) => SignInPage._(
-                      isLoading: isLoading,
-                      manager: manager,
-                      title: 'Firebase Auth Demo',
+                builder: (BuildContext context, SignInManager manager, _) => ValueListenableBuilder<bool>(
+                      valueListenable: isLoading,
+                      builder: (BuildContext context, bool isLoading, Widget child) => SignInPage._(
+                            isLoading: isLoading,
+                            manager: manager,
+                            title: 'Firebase Auth Demo',
+                          ),
                     ),
               ),
             ),
@@ -83,25 +89,20 @@ class SignInPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<bool>(
-      valueListenable: isLoading,
-      builder: (BuildContext context, bool isLoading, Widget child) {
-        return Scaffold(
-          appBar: AppBar(
-            elevation: 2.0,
-            title: Text(title),
-          ),
-          // Hide developer menu while loading in progress.
-          // This is so that it's not possible to switch auth service while a request is in progress
-          drawer: isLoading ? null : DeveloperMenu(),
-          backgroundColor: Colors.grey[200],
-          body: _buildSignIn(context, isLoading),
-        );
-      },
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 2.0,
+        title: Text(title),
+      ),
+      // Hide developer menu while loading in progress.
+      // This is so that it's not possible to switch auth service while a request is in progress
+      drawer: isLoading ? null : DeveloperMenu(),
+      backgroundColor: Colors.grey[200],
+      body: _buildSignIn(context),
     );
   }
 
-  Widget _buildHeader(bool isLoading) {
+  Widget _buildHeader() {
     if (isLoading) {
       return Center(
         child: CircularProgressIndicator(),
@@ -114,7 +115,7 @@ class SignInPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSignIn(BuildContext context, bool isLoading) {
+  Widget _buildSignIn(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(16.0),
       child: Column(
@@ -123,7 +124,7 @@ class SignInPage extends StatelessWidget {
         children: <Widget>[
           SizedBox(
             height: 50.0,
-            child: _buildHeader(isLoading),
+            child: _buildHeader(),
           ),
           SizedBox(height: 48.0),
           SocialSignInButton(
