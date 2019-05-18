@@ -9,27 +9,29 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-class EmailPasswordSignInPage extends StatefulWidget {
-  const EmailPasswordSignInPage._({Key key, @required this.manager, @required this.model}) : super(key: key);
-  final EmailPasswordSignInManager manager;
-  final EmailPasswordSignInModel model;
-
-  /// Creates a Provider with a EmailSignInBloc and a EmailSignInPage
-  static Widget create(BuildContext context) {
+class EmailPasswordSignInPageBuilder extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
     final AuthService auth = Provider.of<AuthService>(context, listen: false);
     return ChangeNotifierProvider<EmailPasswordSignInModel>(
       builder: (BuildContext context) => EmailPasswordSignInModel(),
       child: Consumer<EmailPasswordSignInModel>(
         builder: (BuildContext context, EmailPasswordSignInModel model, _) => Provider<EmailPasswordSignInManager>(
-              builder: (BuildContext context) => EmailPasswordSignInManager(auth: auth, model: model),
-              child: Consumer<EmailPasswordSignInManager>(
-                builder: (BuildContext context, EmailPasswordSignInManager manager, _) =>
-                    EmailPasswordSignInPage._(manager: manager, model: model),
-              ),
-            ),
+          builder: (BuildContext context) => EmailPasswordSignInManager(auth: auth, model: model),
+          child: Consumer<EmailPasswordSignInManager>(
+            builder: (BuildContext context, EmailPasswordSignInManager manager, _) =>
+                EmailPasswordSignInPage._(manager: manager, model: model),
+          ),
+        ),
       ),
     );
   }
+}
+
+class EmailPasswordSignInPage extends StatefulWidget {
+  const EmailPasswordSignInPage._({Key key, @required this.manager, @required this.model}) : super(key: key);
+  final EmailPasswordSignInManager manager;
+  final EmailPasswordSignInModel model;
 
   @override
   _EmailPasswordSignInPageState createState() => _EmailPasswordSignInPageState();

@@ -10,38 +10,42 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
+class SignInPageBuilder extends StatelessWidget {
+
+  // P<ValueNotifier>
+  //   P<SignInManager>(valueNotifier)
+  //     ValueListenableBuilder(valueListener)
+  //       SignInPage(value)
+  @override
+  Widget build(BuildContext context) {
+    final AuthService auth = Provider.of<AuthService>(context, listen: false);
+    return Provider<ValueNotifier<bool>>(
+      builder: (BuildContext context) => ValueNotifier<bool>(false),
+      child: Consumer<ValueNotifier<bool>>(
+        builder: (BuildContext context, ValueNotifier<bool> isLoading, _) => Provider<SignInManager>(
+          builder: (BuildContext context) => SignInManager(auth: auth, isLoading: isLoading),
+          child: Consumer<SignInManager>(
+            builder: (BuildContext context, SignInManager manager, _) => ValueListenableBuilder<bool>(
+              valueListenable: isLoading,
+              builder: (BuildContext context, bool isLoading, Widget child) => SignInPage._(
+                isLoading: isLoading,
+                manager: manager,
+                title: 'Firebase Auth Demo',
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 
 class SignInPage extends StatelessWidget {
   SignInPage._({Key key, this.isLoading, this.manager, this.title}) : super(key: key);
   final SignInManager manager;
   final String title;
   final bool isLoading;
-
-  // P<ValueNotifier>
-  //   P<SignInManager>(valueNotifier)
-  //     ValueListenableBuilder(valueListener)
-  //       SignInPage(value)
-  static Widget create(BuildContext context) {
-    final AuthService auth = Provider.of<AuthService>(context, listen: false);
-    return Provider<ValueNotifier<bool>>(
-      builder: (BuildContext context) => ValueNotifier<bool>(false),
-      child: Consumer<ValueNotifier<bool>>(
-        builder: (BuildContext context, ValueNotifier<bool> isLoading, _) => Provider<SignInManager>(
-              builder: (BuildContext context) => SignInManager(auth: auth, isLoading: isLoading),
-              child: Consumer<SignInManager>(
-                builder: (BuildContext context, SignInManager manager, _) => ValueListenableBuilder<bool>(
-                      valueListenable: isLoading,
-                      builder: (BuildContext context, bool isLoading, Widget child) => SignInPage._(
-                            isLoading: isLoading,
-                            manager: manager,
-                            title: 'Firebase Auth Demo',
-                          ),
-                    ),
-              ),
-            ),
-      ),
-    );
-  }
 
   Future<void> _showSignInError(BuildContext context, PlatformException exception) async {
     await PlatformExceptionAlertDialog(
@@ -82,7 +86,7 @@ class SignInPage extends StatelessWidget {
     Navigator.of(context).push(
       MaterialPageRoute<void>(
         fullscreenDialog: true,
-        builder: (BuildContext context) => EmailPasswordSignInPage.create(context),
+        builder: (BuildContext context) => EmailPasswordSignInPageBuilder(),
       ),
     );
   }

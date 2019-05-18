@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class LandingPage extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     final AuthService auth = Provider.of<AuthService>(context, listen: false);
@@ -28,7 +27,7 @@ class LandingPage extends StatelessWidget {
 
   Widget _buildContents(BuildContext context, User user) {
     if (user == null) {
-      return SignInPage.create(context);
+      return SignInPageBuilder();
     }
     return HomePage();
   }
