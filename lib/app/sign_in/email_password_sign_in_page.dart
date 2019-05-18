@@ -171,7 +171,7 @@ class _EmailPasswordSignInPageState extends State<EmailPasswordSignInPage> {
     return Scaffold(
       appBar: AppBar(
         elevation: 2.0,
-        title: Text(widget.model.title),
+        title: Text(model.title),
       ),
       backgroundColor: Colors.grey[200],
       body: SingleChildScrollView(
