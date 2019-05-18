@@ -35,7 +35,7 @@ void main() {
   Future<void> pumpLandingPage(WidgetTester tester) async {
     await tester.pumpWidget(
       Provider<AuthService>(
-        builder: (BuildContext context) => mockAuthService,
+        builder: (_) => mockAuthService,
         child: MaterialApp(home: LandingPage()),
       ),
     );

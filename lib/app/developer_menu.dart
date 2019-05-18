@@ -40,7 +40,7 @@ class DeveloperMenu extends StatelessWidget {
     final AuthServiceTypeBloc authServiceTypeBloc = Provider.of<AuthServiceTypeBloc>(context);
     return StreamBuilder<AuthServiceType>(
       stream: authServiceTypeBloc.authServiceTypeStream,
-      builder: (BuildContext context, AsyncSnapshot<AuthServiceType> snapshot) {
+      builder: (_, AsyncSnapshot<AuthServiceType> snapshot) {
         final AuthServiceType type = snapshot.data;
         return Expanded(
           child: ListView(

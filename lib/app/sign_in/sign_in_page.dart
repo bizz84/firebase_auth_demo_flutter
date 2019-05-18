@@ -14,10 +14,10 @@ class SignInPageBuilder extends StatelessWidget {
   Widget build(BuildContext context) {
     final AuthService auth = Provider.of<AuthService>(context, listen: false);
     return Provider<SignInBloc>(
-      builder: (BuildContext context) => SignInBloc(auth: auth),
-      dispose: (BuildContext context, SignInBloc bloc) => bloc.dispose(),
+      builder: (_) => SignInBloc(auth: auth),
+      dispose: (_, SignInBloc bloc) => bloc.dispose(),
       child: Consumer<SignInBloc>(
-        builder: (BuildContext context, SignInBloc bloc, _) => SignInPage._(bloc: bloc, title: 'Firebase Auth Demo'),
+        builder: (_, SignInBloc bloc, __) => SignInPage._(bloc: bloc, title: 'Firebase Auth Demo'),
       ),
     );
   }
@@ -67,7 +67,7 @@ class SignInPage extends StatelessWidget {
     Navigator.of(context).push(
       MaterialPageRoute<void>(
         fullscreenDialog: true,
-        builder: (BuildContext context) => EmailPasswordSignInPageBuilder(),
+        builder: (_) => EmailPasswordSignInPageBuilder(),
       ),
     );
   }
@@ -77,7 +77,7 @@ class SignInPage extends StatelessWidget {
     return StreamBuilder<bool>(
       stream: bloc.isLoadingStream,
       initialData: false,
-      builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+      builder: (_, AsyncSnapshot<bool> snapshot) {
         final bool isLoading = snapshot.data;
         return Scaffold(
           appBar: AppBar(

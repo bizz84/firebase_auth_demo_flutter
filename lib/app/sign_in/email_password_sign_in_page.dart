@@ -14,10 +14,10 @@ class EmailPasswordSignInPageBuilder extends StatelessWidget {
   Widget build(BuildContext context) {
     final AuthService auth = Provider.of<AuthService>(context, listen: false);
     return Provider<EmailPasswordSignInBloc>(
-      builder: (BuildContext context) => EmailPasswordSignInBloc(auth: auth),
-      dispose: (BuildContext context, EmailPasswordSignInBloc bloc) => bloc.dispose(),
+      builder: (_) => EmailPasswordSignInBloc(auth: auth),
+      dispose: (_, EmailPasswordSignInBloc bloc) => bloc.dispose(),
       child: Consumer<EmailPasswordSignInBloc>(
-        builder: (BuildContext context, EmailPasswordSignInBloc bloc, _) => EmailPasswordSignInPage._(bloc: bloc),
+        builder: (_, EmailPasswordSignInBloc bloc, __) => EmailPasswordSignInPage._(bloc: bloc),
       ),
     );
   }
@@ -165,7 +165,7 @@ class _EmailPasswordSignInPageState extends State<EmailPasswordSignInPage> {
     return StreamBuilder<EmailPasswordSignInModel>(
       stream: widget.bloc.modelStream,
       initialData: EmailPasswordSignInModel(),
-      builder: (BuildContext context, AsyncSnapshot<EmailPasswordSignInModel> snapshot) {
+      builder: (_, AsyncSnapshot<EmailPasswordSignInModel> snapshot) {
         final EmailPasswordSignInModel model = snapshot.data;
         return Scaffold(
           appBar: AppBar(
