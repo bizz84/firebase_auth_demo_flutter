@@ -11,7 +11,6 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 class SignInPageBuilder extends StatelessWidget {
-
   // P<ValueNotifier>
   //   P<SignInManager>(valueNotifier)
   //     ValueListenableBuilder(valueListener)
@@ -21,25 +20,25 @@ class SignInPageBuilder extends StatelessWidget {
     final AuthService auth = Provider.of<AuthService>(context, listen: false);
     return Provider<ValueNotifier<bool>>(
       builder: (_) => ValueNotifier<bool>(false),
+      dispose: (_, ValueNotifier<bool> valueNotifier) => valueNotifier.dispose(),
       child: Consumer<ValueNotifier<bool>>(
         builder: (_, ValueNotifier<bool> isLoading, __) => Provider<SignInManager>(
-          builder: (_) => SignInManager(auth: auth, isLoading: isLoading),
-          child: Consumer<SignInManager>(
-            builder: (_, SignInManager manager, __) => ValueListenableBuilder<bool>(
-              valueListenable: isLoading,
-              builder: (_, bool isLoading, __) => SignInPage._(
-                isLoading: isLoading,
-                manager: manager,
-                title: 'Firebase Auth Demo',
+              builder: (_) => SignInManager(auth: auth, isLoading: isLoading),
+              child: Consumer<SignInManager>(
+                builder: (_, SignInManager manager, __) => ValueListenableBuilder<bool>(
+                      valueListenable: isLoading,
+                      builder: (_, bool isLoading, __) => SignInPage._(
+                            isLoading: isLoading,
+                            manager: manager,
+                            title: 'Firebase Auth Demo',
+                          ),
+                    ),
               ),
             ),
-          ),
-        ),
       ),
     );
   }
 }
-
 
 class SignInPage extends StatelessWidget {
   SignInPage._({Key key, this.isLoading, this.manager, this.title}) : super(key: key);
