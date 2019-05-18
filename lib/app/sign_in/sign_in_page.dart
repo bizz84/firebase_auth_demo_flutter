@@ -20,14 +20,14 @@ class SignInPageBuilder extends StatelessWidget {
   Widget build(BuildContext context) {
     final AuthService auth = Provider.of<AuthService>(context, listen: false);
     return Provider<ValueNotifier<bool>>(
-      builder: (BuildContext context) => ValueNotifier<bool>(false),
+      builder: (_) => ValueNotifier<bool>(false),
       child: Consumer<ValueNotifier<bool>>(
-        builder: (BuildContext context, ValueNotifier<bool> isLoading, _) => Provider<SignInManager>(
-          builder: (BuildContext context) => SignInManager(auth: auth, isLoading: isLoading),
+        builder: (_, ValueNotifier<bool> isLoading, __) => Provider<SignInManager>(
+          builder: (_) => SignInManager(auth: auth, isLoading: isLoading),
           child: Consumer<SignInManager>(
-            builder: (BuildContext context, SignInManager manager, _) => ValueListenableBuilder<bool>(
+            builder: (_, SignInManager manager, __) => ValueListenableBuilder<bool>(
               valueListenable: isLoading,
-              builder: (BuildContext context, bool isLoading, Widget child) => SignInPage._(
+              builder: (_, bool isLoading, __) => SignInPage._(
                 isLoading: isLoading,
                 manager: manager,
                 title: 'Firebase Auth Demo',
@@ -86,7 +86,7 @@ class SignInPage extends StatelessWidget {
     Navigator.of(context).push(
       MaterialPageRoute<void>(
         fullscreenDialog: true,
-        builder: (BuildContext context) => EmailPasswordSignInPageBuilder(),
+        builder: (_) => EmailPasswordSignInPageBuilder(),
       ),
     );
   }

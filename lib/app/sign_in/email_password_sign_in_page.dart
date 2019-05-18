@@ -14,12 +14,12 @@ class EmailPasswordSignInPageBuilder extends StatelessWidget {
   Widget build(BuildContext context) {
     final AuthService auth = Provider.of<AuthService>(context, listen: false);
     return ChangeNotifierProvider<EmailPasswordSignInModel>(
-      builder: (BuildContext context) => EmailPasswordSignInModel(),
+      builder: (_) => EmailPasswordSignInModel(),
       child: Consumer<EmailPasswordSignInModel>(
-        builder: (BuildContext context, EmailPasswordSignInModel model, _) => Provider<EmailPasswordSignInManager>(
-          builder: (BuildContext context) => EmailPasswordSignInManager(auth: auth, model: model),
+        builder: (_, EmailPasswordSignInModel model, __) => Provider<EmailPasswordSignInManager>(
+          builder: (_) => EmailPasswordSignInManager(auth: auth, model: model),
           child: Consumer<EmailPasswordSignInManager>(
-            builder: (BuildContext context, EmailPasswordSignInManager manager, _) =>
+            builder: (_, EmailPasswordSignInManager manager, __) =>
                 EmailPasswordSignInPage._(manager: manager, model: model),
           ),
         ),
