@@ -9,24 +9,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-class SignInPage extends StatelessWidget {
-  const SignInPage._({Key key, this.bloc, this.title}) : super(key: key);
-  final SignInBloc bloc;
-  final String title;
-
-  static Widget create(BuildContext context) {
+class SignInPageBuilder extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
     final AuthService auth = Provider.of<AuthService>(context, listen: false);
     return Provider<SignInBloc>(
       builder: (BuildContext context) => SignInBloc(auth: auth),
       dispose: (BuildContext context, SignInBloc bloc) => bloc.dispose(),
       child: Consumer<SignInBloc>(
-        builder: (BuildContext context, SignInBloc bloc, _) => SignInPage._(
-          bloc: bloc,
-          title: 'Firebase Auth Demo',
-        ),
+        builder: (BuildContext context, SignInBloc bloc, _) => SignInPage._(bloc: bloc, title: 'Firebase Auth Demo'),
       ),
     );
   }
+}
+
+class SignInPage extends StatelessWidget {
+  const SignInPage._({Key key, this.bloc, this.title}) : super(key: key);
+  final SignInBloc bloc;
+  final String title;
 
   Future<void> _showSignInError(BuildContext context, PlatformException exception) async {
     await PlatformExceptionAlertDialog(
@@ -67,7 +67,7 @@ class SignInPage extends StatelessWidget {
     Navigator.of(context).push(
       MaterialPageRoute<void>(
         fullscreenDialog: true,
-        builder: (BuildContext context) => EmailPasswordSignInPage.create(context),
+        builder: (BuildContext context) => EmailPasswordSignInPageBuilder(),
       ),
     );
   }
