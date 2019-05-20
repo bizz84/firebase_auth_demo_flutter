@@ -13,26 +13,21 @@ import 'package:provider/provider.dart';
 class SignInPageBuilder extends StatelessWidget {
   // P<ValueNotifier>
   //   P<SignInManager>(valueNotifier)
-  //     ValueListenableBuilder(valueListener)
-  //       SignInPage(value)
+  //     SignInPage(value)
   @override
   Widget build(BuildContext context) {
     final AuthService auth = Provider.of<AuthService>(context, listen: false);
-    return Provider<ValueNotifier<bool>>(
+    return ChangeNotifierProvider<ValueNotifier<bool>>(
       builder: (_) => ValueNotifier<bool>(false),
-      dispose: (_, ValueNotifier<bool> valueNotifier) => valueNotifier.dispose(),
       child: Consumer<ValueNotifier<bool>>(
         builder: (_, ValueNotifier<bool> isLoading, __) => Provider<SignInManager>(
               builder: (_) => SignInManager(auth: auth, isLoading: isLoading),
               child: Consumer<SignInManager>(
-                builder: (_, SignInManager manager, __) => ValueListenableBuilder<bool>(
-                      valueListenable: isLoading,
-                      builder: (_, bool isLoading, __) => SignInPage._(
-                            isLoading: isLoading,
+                builder: (_, SignInManager manager, __) => SignInPage._(
+                            isLoading: isLoading.value,
                             manager: manager,
                             title: 'Firebase Auth Demo',
                           ),
-                    ),
               ),
             ),
       ),
