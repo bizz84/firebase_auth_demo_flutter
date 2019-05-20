@@ -1,4 +1,3 @@
-import 'package:firebase_auth_demo_flutter/app/sign_in/email_password_sign_in_manager.dart';
 import 'package:firebase_auth_demo_flutter/app/sign_in/email_password_sign_in_model.dart';
 import 'package:firebase_auth_demo_flutter/common_widgets/form_submit_button.dart';
 import 'package:firebase_auth_demo_flutter/common_widgets/platform_alert_dialog.dart';
@@ -14,23 +13,16 @@ class EmailPasswordSignInPageBuilder extends StatelessWidget {
   Widget build(BuildContext context) {
     final AuthService auth = Provider.of<AuthService>(context, listen: false);
     return ChangeNotifierProvider<EmailPasswordSignInModel>(
-      builder: (_) => EmailPasswordSignInModel(),
+      builder: (_) => EmailPasswordSignInModel(auth: auth),
       child: Consumer<EmailPasswordSignInModel>(
-        builder: (_, EmailPasswordSignInModel model, __) => Provider<EmailPasswordSignInManager>(
-          builder: (_) => EmailPasswordSignInManager(auth: auth, model: model),
-          child: Consumer<EmailPasswordSignInManager>(
-            builder: (_, EmailPasswordSignInManager manager, __) =>
-                EmailPasswordSignInPage._(manager: manager, model: model),
-          ),
-        ),
+        builder: (_, EmailPasswordSignInModel model, __) => EmailPasswordSignInPage._(model: model),
       ),
     );
   }
 }
 
 class EmailPasswordSignInPage extends StatefulWidget {
-  const EmailPasswordSignInPage._({Key key, @required this.manager, @required this.model}) : super(key: key);
-  final EmailPasswordSignInManager manager;
+  const EmailPasswordSignInPage._({Key key, @required this.model}) : super(key: key);
   final EmailPasswordSignInModel model;
 
   @override
@@ -69,7 +61,7 @@ class _EmailPasswordSignInPageState extends State<EmailPasswordSignInPage> {
   Future<void> _submit() async {
     _unfocus();
     try {
-      final bool success = await widget.manager.submit();
+      final bool success = await model.submit();
       if (success) {
         if (model.formType == EmailPasswordSignInFormType.forgotPassword) {
           PlatformAlertDialog(
