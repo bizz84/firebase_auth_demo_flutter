@@ -102,6 +102,7 @@ class _EmailPasswordSignInPageState extends State<EmailPasswordSignInPage> {
       autocorrect: false,
       textInputAction: TextInputAction.next,
       keyboardType: TextInputType.emailAddress,
+      keyboardAppearance: Brightness.light,
       onChanged: model.updateEmail,
       onEditingComplete: _emailEditingComplete,
       inputFormatters: <TextInputFormatter>[
@@ -122,6 +123,7 @@ class _EmailPasswordSignInPageState extends State<EmailPasswordSignInPage> {
       obscureText: true,
       autocorrect: false,
       textInputAction: TextInputAction.done,
+      keyboardAppearance: Brightness.light,
       onChanged: model.updatePassword,
       onEditingComplete: _submit,
     );
