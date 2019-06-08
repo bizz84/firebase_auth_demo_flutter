@@ -1,38 +1,81 @@
 
 import 'package:firebase_auth_demo_flutter/app/sign_in/validator.dart';
 import 'package:firebase_auth_demo_flutter/constants/strings.dart';
+import 'package:firebase_auth_demo_flutter/services/auth_service.dart';
+import 'package:flutter/foundation.dart';
 
 enum EmailPasswordSignInFormType { signIn, register, forgotPassword }
 
-class EmailPasswordSignInModel with EmailAndPasswordValidators {
+class EmailPasswordSignInModel with EmailAndPasswordValidators, ChangeNotifier {
   EmailPasswordSignInModel({
+    @required this.auth,
     this.email = '',
     this.password = '',
     this.formType = EmailPasswordSignInFormType.signIn,
     this.isLoading = false,
     this.submitted = false,
   });
+  final AuthService auth;
 
-  final String email;
-  final String password;
-  final EmailPasswordSignInFormType formType;
-  final bool isLoading;
-  final bool submitted;
+  String email;
+  String password;
+  EmailPasswordSignInFormType formType;
+  bool isLoading;
+  bool submitted;
 
-  EmailPasswordSignInModel copyWith({
+  Future<bool> submit() async {
+    try {
+      updateWith(submitted: true);
+      if (!canSubmit) {
+        return false;
+      }
+      updateWith(isLoading: true);
+      switch (formType) {
+        case EmailPasswordSignInFormType.signIn:
+          await auth.signInWithEmailAndPassword(email, password);
+          break;
+        case EmailPasswordSignInFormType.register:
+          await auth.createUserWithEmailAndPassword(email, password);
+          break;
+        case EmailPasswordSignInFormType.forgotPassword:
+          await auth.sendPasswordResetEmail(email);
+          break;
+      }
+      return true;
+    } catch (e) {
+      rethrow;
+    } finally {
+      updateWith(isLoading: false);
+    }
+  }
+
+  void updateEmail(String email) => updateWith(email: email);
+
+  void updatePassword(String password) => updateWith(password: password);
+
+  void updateFormType(EmailPasswordSignInFormType formType) {
+    updateWith(
+      email: '',
+      password: '',
+      formType: formType,
+      isLoading: false,
+      submitted: false,
+    );
+  }
+  void updateWith({
     String email,
     String password,
     EmailPasswordSignInFormType formType,
     bool isLoading,
     bool submitted,
   }) {
-    return EmailPasswordSignInModel(
-      email: email ?? this.email,
-      password: password ?? this.password,
-      formType: formType ?? this.formType,
-      isLoading: isLoading ?? this.isLoading,
-      submitted: submitted ?? this.submitted,
-    );
+
+    this.email = email ?? this.email;
+    this.password = password ?? this.password;
+    this.formType = formType ?? this.formType;
+    this.isLoading = isLoading ?? this.isLoading;
+    this.submitted = submitted ?? this.submitted;
+    notifyListeners();
   }
 
   // Getters

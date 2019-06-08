@@ -73,7 +73,7 @@ _NOTE: This project will be kept up to date with the latest packages and Flutter
 
 ### Architecture
 
-- [x] Logic inside BLoCs for better separation of concerns
+- [x] Logic inside models for better separation of concerns (using ChangeNotifier)
 
 ### Other
 
