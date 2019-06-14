@@ -38,15 +38,35 @@ _NOTE: This project will be kept up to date with the latest packages and Flutter
 
 ![](media/email-password-sign-in.gif)
 
-## Supported sign-in methods
+## FirebaseAuth features
 
-- [x] Email and password
-- [x] Google
-- [x] Facebook
+### Supported sign-in methods
+
 - [x] Anonymous
+- [x] Email & Password
 - [ ] Email link (passwordless)
+- [x] Facebook
+- [ ] GitHub
+- [x] Google
 - [ ] Phone
+- [ ] Twitter
 
+### Link account with third-party providers
+
+- [ ] Email & Password
+- [ ] Facebook
+- [ ] GitHub
+- [ ] Google
+- [ ] Phone
+- [ ] Twitter
+
+### Other authentication features
+
+- [ ] Email verification (for email & password sign-in)
+- [x] Password reset
+- [ ] Sign-in with custom token
+
+## Application features
 
 ### Sign-in Page
 
@@ -56,7 +76,7 @@ _NOTE: This project will be kept up to date with the latest packages and Flutter
 - [x] Anonymous sign-in
 
 
-### Email page
+### Email & password page
 
 - [x] Custom submit button with loading state
 - [x] Disable all input widgets while authentication is in progress
