@@ -113,4 +113,9 @@ class MockAuthService implements AuthService {
     _add(user);
     return user;
   }
+
+  @override
+  void dispose() {
+    _onAuthStateChangedController.close();
+  }
 }

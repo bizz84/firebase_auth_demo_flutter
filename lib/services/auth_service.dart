@@ -23,4 +23,5 @@ abstract class AuthService {
   Future<User> signInWithFacebook();
   Future<void> signOut();
   Stream<User> get onAuthStateChanged;
+  void dispose();
 }

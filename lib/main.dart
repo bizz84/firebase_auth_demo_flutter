@@ -8,21 +8,24 @@ import 'package:provider/provider.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
-  final AuthServiceFacade authServiceFacade = AuthServiceFacade();
   @override
   Widget build(BuildContext context) {
-    return Provider<AuthService>(
-      builder: (_) => authServiceFacade,
-      dispose: (_, AuthService facade) => authServiceFacade.dispose(),
-      child: Provider<AuthServiceTypeBloc>(
-        builder: (_) => AuthServiceTypeBloc(authServiceFacade: authServiceFacade),
-        dispose: (_, AuthServiceTypeBloc bloc) => bloc.dispose(),
-        child: MaterialApp(
-          theme: ThemeData(
-            primarySwatch: Colors.indigo,
-          ),
-          home: LandingPage(),
+    return MultiProvider(
+      providers: <SingleChildCloneableWidget>[
+        Provider<AuthService>(
+          builder: (_) => AuthServiceFacade(),
+          dispose: (_, AuthService authService) => authService.dispose(),
         ),
+        ProxyProvider<AuthService, AuthServiceTypeBloc>(
+          builder: (_, AuthService authService, __) => AuthServiceTypeBloc(authServiceFacade: authService),
+          dispose: (_, AuthServiceTypeBloc bloc) => bloc.dispose(),
+        ),
+      ],
+      child: MaterialApp(
+        theme: ThemeData(
+          primarySwatch: Colors.indigo,
+        ),
+        home: LandingPage(),
       ),
     );
   }
