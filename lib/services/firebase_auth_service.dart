@@ -97,4 +97,7 @@ class FirebaseAuthService implements AuthService {
     await facebookLogin.logOut();
     return _firebaseAuth.signOut();
   }
+
+  @override
+  void dispose() {}
 }

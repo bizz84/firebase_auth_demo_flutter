@@ -42,10 +42,12 @@ class AuthServiceFacade implements AuthService {
     });
   }
 
+  @override
   void dispose() {
     _firebaseAuthSubscription?.cancel();
     _mockAuthSubscription?.cancel();
     _onAuthStateChangedController?.close();
+    _mockAuthService.dispose();
   }
 
   final StreamController<User> _onAuthStateChangedController = StreamController<User>();

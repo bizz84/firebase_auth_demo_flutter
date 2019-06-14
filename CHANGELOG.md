@@ -1,3 +1,7 @@
+# 0.0.2
+
+- Update app to use ProxyProvider ([#14](https://github.com/bizz84/firebase_auth_demo_flutter/pull/14))
+
 # 0.0.1
 
 ## FirebaseAuth features
