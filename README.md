@@ -97,7 +97,8 @@ _NOTE: This project will be kept up to date with the latest packages and Flutter
 
 ### Architecture
 
-- [x] Logic inside models for better separation of concerns (using ChangeNotifier)
+- [x] Logic inside models for better separation of concerns (using [`ChangeNotifier`](https://api.flutter.dev/flutter/foundation/ChangeNotifier-class.html))
+- [x] Use [Provider package](https://pub.dev/packages/provider) for dependency injection
 
 ### Other
 
