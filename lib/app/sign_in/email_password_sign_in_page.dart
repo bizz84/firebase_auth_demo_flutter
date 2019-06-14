@@ -116,7 +116,7 @@ class _EmailPasswordSignInPageState extends State<EmailPasswordSignInPage> {
       controller: _passwordController,
       focusNode: _passwordFocusNode,
       decoration: InputDecoration(
-        labelText: Strings.passwordLabel,
+        labelText: model.passwordLabelText,
         errorText: model.passwordErrorText,
         enabled: !model.isLoading,
       ),

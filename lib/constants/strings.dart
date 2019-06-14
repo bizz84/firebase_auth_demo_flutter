@@ -33,7 +33,8 @@ class Strings {
   static const String resetLinkSentMessage = 'Check your email to reset your password';
   static const String emailLabel = 'Email';
   static const String emailHint = 'test@test.com';
-  static const String passwordLabel = 'Password (8+ characters)';
+  static const String password8CharactersLabel = 'Password (8+ characters)';
+  static const String passwordLabel = 'Password';
   static const String invalidEmailErrorText = 'Email is invalid';
   static const String invalidEmailEmpty = 'Email can\'t be empty';
   static const String invalidPasswordTooShort = 'Password is too short';

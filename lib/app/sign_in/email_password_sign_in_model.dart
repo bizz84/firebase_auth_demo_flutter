@@ -78,6 +78,13 @@ class EmailPasswordSignInModel with EmailAndPasswordValidators, ChangeNotifier {
     notifyListeners();
   }
 
+  String get passwordLabelText {
+    if (formType == EmailPasswordSignInFormType.register) {
+      return Strings.password8CharactersLabel;
+    }
+    return Strings.passwordLabel;
+  }
+
   // Getters
   String get primaryButtonText {
     return <EmailPasswordSignInFormType,String>{
@@ -124,7 +131,10 @@ class EmailPasswordSignInModel with EmailAndPasswordValidators, ChangeNotifier {
   }
 
   bool get canSubmitPassword {
-    return passwordSubmitValidator.isValid(password);
+    if (formType == EmailPasswordSignInFormType.register) {
+      return passwordRegisterSubmitValidator.isValid(password);
+    }
+    return passwordSignInSubmitValidator.isValid(password);
   }
 
   bool get canSubmit {
