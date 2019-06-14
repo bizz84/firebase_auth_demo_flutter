@@ -1,5 +1,9 @@
 # Reference Authentication Flow with Flutter & Firebase
 
+YouTube video walk-through here: 
+
+[![Flutter & Firebase: Reference Authentication Flow - Intro](media/firebase-auth-banner-youtube.png)](https://www.youtube.com/watch?v=RJEnTRBxaSg)
+
 This project shows how to implement a full authentication flow in Flutter, using various Firebase sign-in methods.
 
 It aims to be a reference implementation. Think of it as "authentication done right".
