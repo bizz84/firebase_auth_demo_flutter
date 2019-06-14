@@ -48,13 +48,13 @@ class EmailEditingRegexValidator extends RegexValidator {
   EmailEditingRegexValidator()
       : super(
             regexSource:
-                '^[a-zA-Z0-9_.+-]*(@([a-zA-Z0-9-]*(\\.[a-zA-Z0-9-]*)?)?)?\$');
+                '^[a-zA-Z0-9_.+-]*(@([a-zA-Z0-9-]*(\\.[a-zA-Z0-9-]*){0,2})?)?\$');
 }
 
 class EmailSubmitRegexValidator extends RegexValidator {
   EmailSubmitRegexValidator()
       : super(
-            regexSource: '(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-]+\$)');
+            regexSource: '^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+){1,2}\$');
 }
 
 class NonEmptyStringValidator extends StringValidator {
