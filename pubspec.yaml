@@ -22,7 +22,6 @@ dependencies:
   google_sign_in: 4.0.2
   flutter_facebook_login: 2.0.1
   provider: 3.0.0
-  rxdart: 0.22.0
   flutter:
     sdk: flutter
 

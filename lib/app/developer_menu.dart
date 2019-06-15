@@ -1,12 +1,13 @@
-import 'package:firebase_auth_demo_flutter/app/auth_service_type_bloc.dart';
 import 'package:firebase_auth_demo_flutter/common_widgets/segmented_control.dart';
 import 'package:firebase_auth_demo_flutter/constants/strings.dart';
+import 'package:firebase_auth_demo_flutter/services/auth_service.dart';
 import 'package:firebase_auth_demo_flutter/services/auth_service_facade.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class DeveloperMenu extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -37,11 +38,10 @@ class DeveloperMenu extends StatelessWidget {
   }
 
   Widget _buildOptions(BuildContext context) {
-    final AuthServiceTypeBloc authServiceTypeBloc = Provider.of<AuthServiceTypeBloc>(context);
-    return StreamBuilder<AuthServiceType>(
-      stream: authServiceTypeBloc.authServiceTypeStream,
-      builder: (_, AsyncSnapshot<AuthServiceType> snapshot) {
-        final AuthServiceType type = snapshot.data;
+    final AuthServiceFacade authServiceFacade = Provider.of<AuthService>(context, listen: false);
+    return ValueListenableBuilder<AuthServiceType>(
+      valueListenable: authServiceFacade.authServiceTypeNotifier,
+      builder: (_, AuthServiceType type, __) {
         return Expanded(
           child: ListView(
             children: <Widget>[
@@ -53,7 +53,7 @@ class DeveloperMenu extends StatelessWidget {
                   ),
                 ),
                 value: type,
-                onValueChanged: (AuthServiceType type) => authServiceTypeBloc.setAuthServiceType(type),
+                onValueChanged: (AuthServiceType type) => authServiceFacade.authServiceTypeNotifier.value = type,
                 children: const <AuthServiceType, Widget>{
                   AuthServiceType.firebase: Text(Strings.firebase),
                   AuthServiceType.mock: Text(Strings.mock),
