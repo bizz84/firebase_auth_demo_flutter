@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class DeveloperMenu extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -38,32 +37,38 @@ class DeveloperMenu extends StatelessWidget {
   }
 
   Widget _buildOptions(BuildContext context) {
-    final AuthServiceFacade authServiceFacade = Provider.of<AuthService>(context, listen: false);
+    return Expanded(
+      child: ListView(
+        children: <Widget>[
+          AuthServiceTypeSelector(),
+        ],
+      ),
+    );
+  }
+}
+
+class AuthServiceTypeSelector extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final AuthServiceFacade authServiceFacade =
+        Provider.of<AuthService>(context, listen: false);
     return ValueListenableBuilder<AuthServiceType>(
       valueListenable: authServiceFacade.authServiceTypeNotifier,
       builder: (_, AuthServiceType type, __) {
-        return Expanded(
-          child: ListView(
-            children: <Widget>[
-              SegmentedControl<AuthServiceType>(
-                header: Text(
-                  Strings.authenticationType,
-                  style: TextStyle(
-                    fontSize: 16.0,
-                  ),
-                ),
-                value: type,
-                onValueChanged: (AuthServiceType type) => authServiceFacade.authServiceTypeNotifier.value = type,
-                children: const <AuthServiceType, Widget>{
-                  AuthServiceType.firebase: Text(Strings.firebase),
-                  AuthServiceType.mock: Text(Strings.mock),
-                },
-              ),
-            ],
+        return SegmentedControl<AuthServiceType>(
+          header: Text(
+            Strings.authenticationType,
+            style: TextStyle(fontSize: 16.0),
           ),
+          value: type,
+          onValueChanged: (AuthServiceType type) =>
+              authServiceFacade.authServiceTypeNotifier.value = type,
+          children: const <AuthServiceType, Widget>{
+            AuthServiceType.firebase: Text(Strings.firebase),
+            AuthServiceType.mock: Text(Strings.mock),
+          },
         );
       },
     );
   }
 }
-
