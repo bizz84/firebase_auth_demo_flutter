@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 class LandingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final AuthService auth = Provider.of<AuthService>(context, listen: false);
+    final AuthService auth = Provider.of<AuthService>(context);
     return StreamBuilder<User>(
       stream: auth.onAuthStateChanged,
       builder: (_, AsyncSnapshot<User> snapshot) {

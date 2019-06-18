@@ -16,7 +16,7 @@ class SignInPageBuilder extends StatelessWidget {
   //     SignInPage(value)
   @override
   Widget build(BuildContext context) {
-    final AuthService auth = Provider.of<AuthService>(context, listen: false);
+    final AuthService auth = Provider.of<AuthService>(context);
     return ChangeNotifierProvider<ValueNotifier<bool>>(
       builder: (_) => ValueNotifier<bool>(false),
       child: Consumer<ValueNotifier<bool>>(

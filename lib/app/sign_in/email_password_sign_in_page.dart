@@ -11,7 +11,7 @@ import 'package:provider/provider.dart';
 class EmailPasswordSignInPageBuilder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final AuthService auth = Provider.of<AuthService>(context, listen: false);
+    final AuthService auth = Provider.of<AuthService>(context);
     return ChangeNotifierProvider<EmailPasswordSignInModel>(
       builder: (_) => EmailPasswordSignInModel(auth: auth),
       child: Consumer<EmailPasswordSignInModel>(

@@ -51,7 +51,7 @@ class AuthServiceTypeSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AuthServiceAdapter authServiceAdapter =
-        Provider.of<AuthService>(context, listen: false);
+        Provider.of<AuthService>(context);
     return ValueListenableBuilder<AuthServiceType>(
       valueListenable: authServiceAdapter.authServiceTypeNotifier,
       builder: (_, AuthServiceType type, __) {
