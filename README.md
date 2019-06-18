@@ -38,6 +38,10 @@ _NOTE: This project will be kept up to date with the latest packages and Flutter
 
 ![](media/email-password-sign-in.gif)
 
+## Simplified widget tree
+
+![](media/simplified-widget-tree.png)
+
 ## FirebaseAuth features
 
 ### Supported sign-in methods
