@@ -15,9 +15,12 @@ class AuthServiceAdapter implements AuthService {
   final MockAuthService _mockAuthService = MockAuthService();
 
   // Value notifier used to switch between [FirebaseAuthService] and [MockAuthService]
-  ValueNotifier<AuthServiceType> authServiceTypeNotifier = ValueNotifier<AuthServiceType>(AuthServiceType.firebase);
+  ValueNotifier<AuthServiceType> authServiceTypeNotifier =
+      ValueNotifier<AuthServiceType>(AuthServiceType.firebase);
   AuthServiceType get authServiceType => authServiceTypeNotifier.value;
-  AuthService get authService => authServiceType == AuthServiceType.firebase ? _firebaseAuthService : _mockAuthService;
+  AuthService get authService => authServiceType == AuthServiceType.firebase
+      ? _firebaseAuthService
+      : _mockAuthService;
 
   StreamSubscription<User> _firebaseAuthSubscription;
   StreamSubscription<User> _mockAuthSubscription;
@@ -25,7 +28,8 @@ class AuthServiceAdapter implements AuthService {
   void _setup() {
     // Observable<User>.merge was considered here, but we need more fine grained control to ensure
     // that only events from the currently active service are processed
-    _firebaseAuthSubscription = _firebaseAuthService.onAuthStateChanged.listen((User user) {
+    _firebaseAuthSubscription =
+        _firebaseAuthService.onAuthStateChanged.listen((User user) {
       if (authServiceType == AuthServiceType.firebase) {
         _onAuthStateChangedController.add(user);
       }
@@ -34,7 +38,8 @@ class AuthServiceAdapter implements AuthService {
         _onAuthStateChangedController.addError(error);
       }
     });
-    _mockAuthSubscription = _mockAuthService.onAuthStateChanged.listen((User user) {
+    _mockAuthSubscription =
+        _mockAuthService.onAuthStateChanged.listen((User user) {
       if (authServiceType == AuthServiceType.mock) {
         _onAuthStateChangedController.add(user);
       }
@@ -53,7 +58,8 @@ class AuthServiceAdapter implements AuthService {
     _mockAuthService.dispose();
   }
 
-  final StreamController<User> _onAuthStateChangedController = StreamController<User>();
+  final StreamController<User> _onAuthStateChangedController =
+      StreamController<User>();
   @override
   Stream<User> get onAuthStateChanged => _onAuthStateChangedController.stream;
 
@@ -72,7 +78,8 @@ class AuthServiceAdapter implements AuthService {
       authService.signInWithEmailAndPassword(email, password);
 
   @override
-  Future<void> sendPasswordResetEmail(String email) => authService.sendPasswordResetEmail(email);
+  Future<void> sendPasswordResetEmail(String email) =>
+      authService.sendPasswordResetEmail(email);
 
   @override
   Future<User> signInWithFacebook() => authService.signInWithFacebook();
