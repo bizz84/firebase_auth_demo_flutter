@@ -2,56 +2,14 @@ import 'package:firebase_auth_demo_flutter/common_widgets/segmented_control.dart
 import 'package:firebase_auth_demo_flutter/constants/strings.dart';
 import 'package:firebase_auth_demo_flutter/services/auth_service.dart';
 import 'package:firebase_auth_demo_flutter/services/auth_service_adapter.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-class DeveloperMenu extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width * 0.85,
-      child: Drawer(
-        child: Column(children: <Widget>[
-          DrawerHeader(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: const <Widget>[
-                Text(
-                  Strings.developerMenu,
-                  style: TextStyle(
-                    fontSize: 22.0,
-                    color: Colors.white,
-                  ),
-                ),
-              ],
-            ),
-            decoration: BoxDecoration(
-              color: Colors.indigo,
-            ),
-          ),
-          _buildOptions(context),
-        ]),
-      ),
-    );
-  }
-
-  Widget _buildOptions(BuildContext context) {
-    return Expanded(
-      child: ListView(
-        children: <Widget>[
-          AuthServiceTypeSelector(),
-        ],
-      ),
-    );
-  }
-}
 
 class AuthServiceTypeSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AuthServiceAdapter authServiceAdapter =
-        Provider.of<AuthService>(context);
+    Provider.of<AuthService>(context);
     return ValueListenableBuilder<AuthServiceType>(
       valueListenable: authServiceAdapter.authServiceTypeNotifier,
       builder: (_, AuthServiceType type, __) {
@@ -62,7 +20,7 @@ class AuthServiceTypeSelector extends StatelessWidget {
           ),
           value: type,
           onValueChanged: (AuthServiceType type) =>
-              authServiceAdapter.authServiceTypeNotifier.value = type,
+          authServiceAdapter.authServiceTypeNotifier.value = type,
           children: const <AuthServiceType, Widget>{
             AuthServiceType.firebase: Text(Strings.firebase),
             AuthServiceType.mock: Text(Strings.mock),

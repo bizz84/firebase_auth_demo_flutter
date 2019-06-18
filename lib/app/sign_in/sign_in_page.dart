@@ -1,4 +1,4 @@
-import 'package:firebase_auth_demo_flutter/app/developer_menu.dart';
+import 'package:firebase_auth_demo_flutter/app/sign_in/developer_menu.dart';
 import 'package:firebase_auth_demo_flutter/app/sign_in/email_password_sign_in_page.dart';
 import 'package:firebase_auth_demo_flutter/app/sign_in/sign_in_manager.dart';
 import 'package:firebase_auth_demo_flutter/app/sign_in/social_sign_in_button.dart';
