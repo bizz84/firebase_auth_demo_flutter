@@ -16,7 +16,7 @@ class _UserData {
 class MockAuthService implements AuthService {
   MockAuthService({
     this.startupTime = const Duration(milliseconds: 500),
-    this.responseTime = const Duration(seconds: 2),
+    this.responseTime = const Duration(seconds: 4),
   }) {
     Future<void>.delayed(responseTime).then((_) {
       _add(null);
