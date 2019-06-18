@@ -5,12 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:meta/meta.dart';
 import 'package:random_string/random_string.dart' as random;
 
-class _UserData {
-  _UserData({@required this.password, @required this.user});
-  final String password;
-  final User user;
-}
-
 /// Mock authentication service to be used for testing the UI
 /// Keeps an in-memory store of registered accounts so that registration and sign in flows can be tested.
 class MockAuthService implements AuthService {
@@ -29,7 +23,8 @@ class MockAuthService implements AuthService {
 
   User _currentUser;
 
-  final StreamController<User> _onAuthStateChangedController = StreamController<User>();
+  final StreamController<User> _onAuthStateChangedController =
+      StreamController<User>();
   @override
   Stream<User> get onAuthStateChanged => _onAuthStateChangedController.stream;
 
@@ -40,7 +35,8 @@ class MockAuthService implements AuthService {
   }
 
   @override
-  Future<User> createUserWithEmailAndPassword(String email, String password) async {
+  Future<User> createUserWithEmailAndPassword(
+      String email, String password) async {
     await Future<void>.delayed(responseTime);
     if (_usersStore.keys.contains(email)) {
       throw PlatformException(
@@ -75,10 +71,7 @@ class MockAuthService implements AuthService {
   }
 
   @override
-  Future<void> sendPasswordResetEmail(String email) async {
-
-  }
-
+  Future<void> sendPasswordResetEmail(String email) async {}
 
   @override
   Future<void> signOut() async {
@@ -118,4 +111,10 @@ class MockAuthService implements AuthService {
   void dispose() {
     _onAuthStateChangedController.close();
   }
+}
+
+class _UserData {
+  _UserData({@required this.password, @required this.user});
+  final String password;
+  final User user;
 }
