@@ -1,6 +1,6 @@
 # 0.0.2
 
-- Simplify `AuthServiceFacade` creation, add `ValueNotifier<AuthServiceType>` ([#14](https://github.com/bizz84/firebase_auth_demo_flutter/pull/14), [#15](https://github.com/bizz84/firebase_auth_demo_flutter/pull/15))
+- Simplify `AuthServiceAdapter` creation, add `ValueNotifier<AuthServiceType>` ([#14](https://github.com/bizz84/firebase_auth_demo_flutter/pull/14), [#15](https://github.com/bizz84/firebase_auth_demo_flutter/pull/15))
 
 # 0.0.1
 

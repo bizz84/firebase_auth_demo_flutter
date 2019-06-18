@@ -50,10 +50,10 @@ class DeveloperMenu extends StatelessWidget {
 class AuthServiceTypeSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final AuthServiceAdapter authServiceFacade =
+    final AuthServiceAdapter authServiceAdapter =
         Provider.of<AuthService>(context, listen: false);
     return ValueListenableBuilder<AuthServiceType>(
-      valueListenable: authServiceFacade.authServiceTypeNotifier,
+      valueListenable: authServiceAdapter.authServiceTypeNotifier,
       builder: (_, AuthServiceType type, __) {
         return SegmentedControl<AuthServiceType>(
           header: Text(
@@ -62,7 +62,7 @@ class AuthServiceTypeSelector extends StatelessWidget {
           ),
           value: type,
           onValueChanged: (AuthServiceType type) =>
-              authServiceFacade.authServiceTypeNotifier.value = type,
+              authServiceAdapter.authServiceTypeNotifier.value = type,
           children: const <AuthServiceType, Widget>{
             AuthServiceType.firebase: Text(Strings.firebase),
             AuthServiceType.mock: Text(Strings.mock),
