@@ -7,8 +7,8 @@ import 'package:flutter/foundation.dart';
 
 enum AuthServiceType { firebase, mock }
 
-class AuthServiceFacade implements AuthService {
-  AuthServiceFacade() {
+class AuthServiceAdapter implements AuthService {
+  AuthServiceAdapter() {
     _setup();
   }
   final FirebaseAuthService _firebaseAuthService = FirebaseAuthService();

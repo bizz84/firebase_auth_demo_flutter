@@ -1,6 +1,6 @@
 import 'package:firebase_auth_demo_flutter/app/landing_page.dart';
 import 'package:firebase_auth_demo_flutter/services/auth_service.dart';
-import 'package:firebase_auth_demo_flutter/services/auth_service_facade.dart';
+import 'package:firebase_auth_demo_flutter/services/auth_service_adapter.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -10,7 +10,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Provider<AuthService>(
-      builder: (_) => AuthServiceFacade(),
+      builder: (_) => AuthServiceAdapter(),
       dispose: (_, AuthService authService) => authService.dispose(),
       child: MaterialApp(
         theme: ThemeData(

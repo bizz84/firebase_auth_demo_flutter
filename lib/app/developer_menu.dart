@@ -1,7 +1,7 @@
 import 'package:firebase_auth_demo_flutter/common_widgets/segmented_control.dart';
 import 'package:firebase_auth_demo_flutter/constants/strings.dart';
 import 'package:firebase_auth_demo_flutter/services/auth_service.dart';
-import 'package:firebase_auth_demo_flutter/services/auth_service_facade.dart';
+import 'package:firebase_auth_demo_flutter/services/auth_service_adapter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -50,7 +50,7 @@ class DeveloperMenu extends StatelessWidget {
 class AuthServiceTypeSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final AuthServiceFacade authServiceFacade =
+    final AuthServiceAdapter authServiceFacade =
         Provider.of<AuthService>(context, listen: false);
     return ValueListenableBuilder<AuthServiceType>(
       valueListenable: authServiceFacade.authServiceTypeNotifier,
