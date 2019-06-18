@@ -1,6 +1,11 @@
+# 0.0.3
+
+- Rename `AuthServiceFacade` to `AuthServiceAdapter`
+- Do not use `listen: false` in `Provider.of<AuthService>` calls.
+
 # 0.0.2
 
-- Simplify `AuthServiceAdapter` creation, add `ValueNotifier<AuthServiceType>` ([#14](https://github.com/bizz84/firebase_auth_demo_flutter/pull/14), [#15](https://github.com/bizz84/firebase_auth_demo_flutter/pull/15))
+- Simplify `AuthServiceFacade` creation, add `ValueNotifier<AuthServiceType>` ([#14](https://github.com/bizz84/firebase_auth_demo_flutter/pull/14), [#15](https://github.com/bizz84/firebase_auth_demo_flutter/pull/15))
 
 # 0.0.1
 
