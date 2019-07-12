@@ -1,3 +1,8 @@
+
+# 0.0.4
+
+- Simpler (and less opinionated) email regex validator ([#24](https://github.com/bizz84/firebase_auth_demo_flutter/pull/24), see [#20](https://github.com/bizz84/firebase_auth_demo_flutter/issues/20))
+
 # 0.0.3
 
 - Rename `AuthServiceFacade` to `AuthServiceAdapter`
