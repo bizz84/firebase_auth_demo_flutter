@@ -33,8 +33,7 @@ class ValidatorInputFormatter implements TextInputFormatter {
   final StringValidator editingValidator;
 
   @override
-  TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue, TextEditingValue newValue) {
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
     final bool oldValueValid = editingValidator.isValid(oldValue.text);
     final bool newValueValid = editingValidator.isValid(newValue.text);
     if (oldValueValid && !newValueValid) {
@@ -45,16 +44,11 @@ class ValidatorInputFormatter implements TextInputFormatter {
 }
 
 class EmailEditingRegexValidator extends RegexValidator {
-  EmailEditingRegexValidator()
-      : super(
-            regexSource:
-                '^[a-zA-Z0-9_.+-]*(@([a-zA-Z0-9-]*(\\.[a-zA-Z0-9-]*){0,2})?)?\$');
+  EmailEditingRegexValidator() : super(regexSource: '^(|\\S)+\$');
 }
 
 class EmailSubmitRegexValidator extends RegexValidator {
-  EmailSubmitRegexValidator()
-      : super(
-            regexSource: '^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+){1,2}\$');
+  EmailSubmitRegexValidator() : super(regexSource: '^\\S+@\\S+\\.\\S+\$');
 }
 
 class NonEmptyStringValidator extends StringValidator {
@@ -73,7 +67,6 @@ class MinLengthStringValidator extends StringValidator {
     return value.length >= minLength;
   }
 }
-
 
 class EmailAndPasswordValidators {
   final TextInputFormatter emailInputFormatter =
