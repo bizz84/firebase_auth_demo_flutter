@@ -1,4 +1,3 @@
-
 import 'package:firebase_auth_demo_flutter/app/sign_in/validator.dart';
 import 'package:firebase_auth_demo_flutter/constants/strings.dart';
 import 'package:firebase_auth_demo_flutter/services/auth_service.dart';
@@ -62,6 +61,7 @@ class EmailPasswordSignInModel with EmailAndPasswordValidators, ChangeNotifier {
       submitted: false,
     );
   }
+
   void updateWith({
     String email,
     String password,
@@ -69,7 +69,6 @@ class EmailPasswordSignInModel with EmailAndPasswordValidators, ChangeNotifier {
     bool isLoading,
     bool submitted,
   }) {
-
     this.email = email ?? this.email;
     this.password = password ?? this.password;
     this.formType = formType ?? this.formType;
@@ -87,7 +86,7 @@ class EmailPasswordSignInModel with EmailAndPasswordValidators, ChangeNotifier {
 
   // Getters
   String get primaryButtonText {
-    return <EmailPasswordSignInFormType,String>{
+    return <EmailPasswordSignInFormType, String>{
       EmailPasswordSignInFormType.register: Strings.createAnAccount,
       EmailPasswordSignInFormType.signIn: Strings.signIn,
       EmailPasswordSignInFormType.forgotPassword: Strings.sendResetLink,
@@ -95,7 +94,7 @@ class EmailPasswordSignInModel with EmailAndPasswordValidators, ChangeNotifier {
   }
 
   String get secondaryButtonText {
-    return <EmailPasswordSignInFormType,String>{
+    return <EmailPasswordSignInFormType, String>{
       EmailPasswordSignInFormType.register: Strings.haveAnAccount,
       EmailPasswordSignInFormType.signIn: Strings.needAnAccount,
       EmailPasswordSignInFormType.forgotPassword: Strings.backToSignIn,
@@ -103,7 +102,7 @@ class EmailPasswordSignInModel with EmailAndPasswordValidators, ChangeNotifier {
   }
 
   EmailPasswordSignInFormType get secondaryActionFormType {
-    return <EmailPasswordSignInFormType,EmailPasswordSignInFormType>{
+    return <EmailPasswordSignInFormType, EmailPasswordSignInFormType>{
       EmailPasswordSignInFormType.register: EmailPasswordSignInFormType.signIn,
       EmailPasswordSignInFormType.signIn: EmailPasswordSignInFormType.register,
       EmailPasswordSignInFormType.forgotPassword: EmailPasswordSignInFormType.signIn,
@@ -111,7 +110,7 @@ class EmailPasswordSignInModel with EmailAndPasswordValidators, ChangeNotifier {
   }
 
   String get errorAlertTitle {
-    return <EmailPasswordSignInFormType,String>{
+    return <EmailPasswordSignInFormType, String>{
       EmailPasswordSignInFormType.register: Strings.registrationFailed,
       EmailPasswordSignInFormType.signIn: Strings.signInFailed,
       EmailPasswordSignInFormType.forgotPassword: Strings.passwordResetFailed,
@@ -119,7 +118,7 @@ class EmailPasswordSignInModel with EmailAndPasswordValidators, ChangeNotifier {
   }
 
   String get title {
-    return <EmailPasswordSignInFormType,String>{
+    return <EmailPasswordSignInFormType, String>{
       EmailPasswordSignInFormType.register: Strings.register,
       EmailPasswordSignInFormType.signIn: Strings.signIn,
       EmailPasswordSignInFormType.forgotPassword: Strings.forgotPassword,
@@ -138,7 +137,8 @@ class EmailPasswordSignInModel with EmailAndPasswordValidators, ChangeNotifier {
   }
 
   bool get canSubmit {
-    final bool canSubmitFields = formType == EmailPasswordSignInFormType.forgotPassword ? canSubmitEmail : canSubmitEmail && canSubmitPassword;
+    final bool canSubmitFields =
+        formType == EmailPasswordSignInFormType.forgotPassword ? canSubmitEmail : canSubmitEmail && canSubmitPassword;
     return canSubmitFields && !isLoading;
   }
 

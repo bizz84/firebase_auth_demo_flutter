@@ -74,6 +74,30 @@ class MockAuthService implements AuthService {
   Future<void> sendPasswordResetEmail(String email) async {}
 
   @override
+  Future<User> signInWithEmailAndLink({String email, String link}) async {
+    await Future<void>.delayed(responseTime);
+    final User user = User(uid: random.randomAlphaNumeric(32));
+    _add(user);
+    return user;
+  }
+
+  @override
+  Future<bool> isSignInWithEmailLink(String link) async {
+    return true;
+  }
+
+  @override
+  Future<void> sendSignInWithEmailLink({
+    @required String email,
+    @required String url,
+    @required bool handleCodeInApp,
+    @required String iOSBundleID,
+    @required String androidPackageName,
+    @required bool androidInstallIfNotAvailable,
+    @required String androidMinimumVersion,
+  }) async {}
+
+  @override
   Future<void> signOut() async {
     _add(null);
   }
