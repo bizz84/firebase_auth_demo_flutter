@@ -22,10 +22,12 @@ class MyApp extends StatelessWidget {
           builder: (_) => EmailSecureStore(flutterSecureStorage: FlutterSecureStorage()),
         ),
         ProxyProvider2<AuthService, EmailSecureStore, FirebaseEmailLinkHandler>(
-          builder: (_, AuthService authService, EmailSecureStore storage, __) => FirebaseEmailLinkHandler.createAndConfigure(
+          builder: (_, AuthService authService, EmailSecureStore storage, __) =>
+              FirebaseEmailLinkHandler.createAndConfigure(
             auth: authService,
             userCredentialsStorage: storage,
           ),
+          dispose: (_, linkHandler) => linkHandler.dispose(),
         ),
       ],
       child: MaterialApp(

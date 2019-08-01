@@ -46,7 +46,10 @@ class Strings {
   static String activationLinkSent(String email) => 'We have sent an activation link to $email';
   static const String errorSendingEmail = 'Error sending email';
   static const String sendActivationLink = 'Send activation link';
+  static const String activationLinkError = 'Email activation error';
   static const String submitEmailAgain = 'Please submit your email address again to receive a new activation link.';
+  static const String userAlreadySignedIn = 'Received an activation link but you are already signed in.';
+  static const String isNotSignInWithEmailLinkMessage = 'Invalid activation link';
 
   // Home page
   static const String homePage = 'Home Page';

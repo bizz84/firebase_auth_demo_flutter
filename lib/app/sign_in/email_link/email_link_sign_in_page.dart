@@ -7,6 +7,7 @@ import 'package:firebase_auth_demo_flutter/common_widgets/platform_exception_ale
 import 'package:firebase_auth_demo_flutter/constants/constants.dart';
 import 'package:firebase_auth_demo_flutter/constants/strings.dart';
 import 'package:firebase_auth_demo_flutter/services/auth_service.dart';
+import 'package:firebase_auth_demo_flutter/services/email_secure_store.dart';
 import 'package:firebase_auth_demo_flutter/services/firebase_email_link_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,17 +15,28 @@ import 'package:package_info/package_info.dart';
 import 'package:provider/provider.dart';
 
 class EmailLinkSignInPage extends StatefulWidget {
-  const EmailLinkSignInPage({Key key, @required this.linkHandler, @required this.authService}) : super(key: key);
-  final FirebaseEmailLinkHandler linkHandler;
+  const EmailLinkSignInPage({
+    Key key,
+    @required this.emailStore,
+    @required this.authService,
+    @required this.errorStream,
+  }) : super(key: key);
+  final EmailSecureStore emailStore;
   final AuthService authService;
+  final Stream<EmailLinkError> errorStream;
 
   static Future<void> show(BuildContext context) async {
-    final FirebaseEmailLinkHandler linkHandler = Provider.of<FirebaseEmailLinkHandler>(context);
+    final EmailSecureStore emailStore = Provider.of<EmailSecureStore>(context);
     final AuthService authService = Provider.of<AuthService>(context);
+    final FirebaseEmailLinkHandler linkHandler = Provider.of<FirebaseEmailLinkHandler>(context);
     await Navigator.of(context).push(
       MaterialPageRoute<void>(
         fullscreenDialog: true,
-        builder: (_) => EmailLinkSignInPage(linkHandler: linkHandler, authService: authService),
+        builder: (_) => EmailLinkSignInPage(
+          emailStore: emailStore,
+          authService: authService,
+          errorStream: linkHandler.errorStream,
+        ),
       ),
     );
   }
@@ -43,11 +55,12 @@ class _EmailLinkSignInPageState extends State<EmailLinkSignInPage> {
   final TextEditingController _emailController = TextEditingController();
 
   StreamSubscription<User> _onAuthStateChangedSubscription;
+  StreamSubscription<EmailLinkError> _onEmailLinkErrorSubscription;
   @override
   void initState() {
     super.initState();
     // Get email from store initially
-    widget.linkHandler.email.then((String email) {
+    widget.emailStore.getEmail().then((String email) {
       _email = email ?? '';
       _emailController.value = TextEditingValue(text: _email);
     });
@@ -57,11 +70,20 @@ class _EmailLinkSignInPageState extends State<EmailLinkSignInPage> {
         Navigator.of(context).popUntil((Route<dynamic> route) => route.isFirst);
       }
     });
+    // TODO: Move this above the widget tree
+    _onEmailLinkErrorSubscription = widget.errorStream.listen((error) {
+      PlatformAlertDialog(
+        title: Strings.activationLinkError,
+        content: error.toString(),
+        defaultActionText: Strings.ok,
+      ).show(context);
+    });
   }
 
   @override
   void dispose() {
     _onAuthStateChangedSubscription?.cancel();
+    _onEmailLinkErrorSubscription?.cancel();
     super.dispose();
   }
 
@@ -69,11 +91,17 @@ class _EmailLinkSignInPageState extends State<EmailLinkSignInPage> {
     setState(() => _loading = true);
     try {
       final PackageInfo packageInfo = await PackageInfo.fromPlatform();
-      await widget.linkHandler.sendLinkToEmail(
+      // Save to email store
+      await widget.emailStore.setEmail(_email);
+      // Send link
+      await widget.authService.sendSignInWithEmailLink(
         email: _email,
         url: Constants.firebaseProjectURL,
+        handleCodeInApp: true,
         iOSBundleID: packageInfo.packageName,
         androidPackageName: packageInfo.packageName,
+        androidInstallIfNotAvailable: true,
+        androidMinimumVersion: '21',
       );
       // Tell user we sent an email
       PlatformAlertDialog(
@@ -107,8 +135,13 @@ class _EmailLinkSignInPageState extends State<EmailLinkSignInPage> {
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
-        child: _buildForm(),
+        child: Card(
+            child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: _buildForm(),
+        )),
       ),
+      backgroundColor: Colors.grey[200],
     );
   }
 
@@ -144,7 +177,7 @@ class _EmailLinkSignInPageState extends State<EmailLinkSignInPage> {
             onSaved: (String email) => _email = email,
             onEditingComplete: _validateAndSubmit,
           ),
-          Expanded(child: Container()),
+          SizedBox(height: 16.0),
           FormSubmitButton(
             onPressed: _loading ? null : _validateAndSubmit,
             loading: _loading,
