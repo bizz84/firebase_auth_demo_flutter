@@ -19,23 +19,19 @@ class EmailLinkSignInPage extends StatefulWidget {
     Key key,
     @required this.emailStore,
     @required this.authService,
-    @required this.errorStream,
   }) : super(key: key);
   final EmailSecureStore emailStore;
   final AuthService authService;
-  final Stream<EmailLinkError> errorStream;
 
   static Future<void> show(BuildContext context) async {
     final EmailSecureStore emailStore = Provider.of<EmailSecureStore>(context);
     final AuthService authService = Provider.of<AuthService>(context);
-    final FirebaseEmailLinkHandler linkHandler = Provider.of<FirebaseEmailLinkHandler>(context);
     await Navigator.of(context).push(
       MaterialPageRoute<void>(
         fullscreenDialog: true,
         builder: (_) => EmailLinkSignInPage(
           emailStore: emailStore,
           authService: authService,
-          errorStream: linkHandler.errorStream,
         ),
       ),
     );
@@ -55,7 +51,6 @@ class _EmailLinkSignInPageState extends State<EmailLinkSignInPage> {
   final TextEditingController _emailController = TextEditingController();
 
   StreamSubscription<User> _onAuthStateChangedSubscription;
-  StreamSubscription<EmailLinkError> _onEmailLinkErrorSubscription;
   @override
   void initState() {
     super.initState();
@@ -70,20 +65,11 @@ class _EmailLinkSignInPageState extends State<EmailLinkSignInPage> {
         Navigator.of(context).popUntil((Route<dynamic> route) => route.isFirst);
       }
     });
-    // TODO: Move this above the widget tree
-    _onEmailLinkErrorSubscription = widget.errorStream.listen((error) {
-      PlatformAlertDialog(
-        title: Strings.activationLinkError,
-        content: error.toString(),
-        defaultActionText: Strings.ok,
-      ).show(context);
-    });
   }
 
   @override
   void dispose() {
     _onAuthStateChangedSubscription?.cancel();
-    _onEmailLinkErrorSubscription?.cancel();
     super.dispose();
   }
 

@@ -1,3 +1,4 @@
+import 'package:firebase_auth_demo_flutter/app/email_link_error_presenter.dart';
 import 'package:firebase_auth_demo_flutter/app/landing_page.dart';
 import 'package:firebase_auth_demo_flutter/services/auth_service.dart';
 import 'package:firebase_auth_demo_flutter/services/auth_service_adapter.dart';
@@ -34,7 +35,12 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.indigo,
         ),
-        home: LandingPage(),
+        home: Builder(
+          builder: (context) => EmailLinkErrorPresenter.create(
+            context,
+            child: LandingPage(),
+          ),
+        ),
       ),
     );
   }
