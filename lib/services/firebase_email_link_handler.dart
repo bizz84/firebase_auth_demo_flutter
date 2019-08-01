@@ -91,8 +91,6 @@ class FirebaseEmailLinkHandler with WidgetsBindingObserver {
   /// Clients can listen to this stream and show error alerts when dynamic link processing fails
   Observable<EmailLinkError> get errorStream => errorController.stream;
 
-  Future<String> get email async => await emailStore.getEmail();
-
   Future<dynamic> handleLink(PendingDynamicLinkData linkData) {
     _lastUnprocessedLink = linkData?.link;
     _lastUnprocessedLinkError = null;
@@ -174,22 +172,5 @@ class FirebaseEmailLinkHandler with WidgetsBindingObserver {
         error: EmailLinkErrorType.isNotSignInWithEmailLink,
       ));
     }
-  }
-
-  /// Sends an activation link to the email provided
-  Future<void> sendLinkToEmail({String email, String url, String iOSBundleID, String androidPackageName}) async {
-    await emailStore.setEmail(email);
-
-    // Send link
-    await auth.sendSignInWithEmailLink(
-      email: email,
-      url: url,
-      handleCodeInApp: true,
-      iOSBundleID: iOSBundleID,
-      androidPackageName: androidPackageName,
-      androidInstallIfNotAvailable: true,
-      androidMinimumVersion: '21',
-    );
-    print('Sent email link to $email, url: $url');
   }
 }
