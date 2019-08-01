@@ -18,7 +18,7 @@ environment:
 
 dependencies:
   random_string: 0.0.2
-  firebase_auth: 0.11.1+6
+  firebase_auth: 0.14.0
   google_sign_in: 4.0.2
   flutter_facebook_login: 2.0.1
   provider: 3.0.0

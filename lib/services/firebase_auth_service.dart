@@ -24,23 +24,23 @@ class FirebaseAuthService implements AuthService {
 
   @override
   Future<User> signInAnonymously() async {
-    final FirebaseUser user = await _firebaseAuth.signInAnonymously();
-    return _userFromFirebase(user);
+    final AuthResult authResult = await _firebaseAuth.signInAnonymously();
+    return _userFromFirebase(authResult.user);
   }
 
   @override
   Future<User> signInWithEmailAndPassword(String email, String password) async {
-    final FirebaseUser user = await _firebaseAuth.signInWithCredential(EmailAuthProvider.getCredential(
+    final AuthResult authResult = await _firebaseAuth.signInWithCredential(EmailAuthProvider.getCredential(
       email: email,
       password: password,
     ));
-    return _userFromFirebase(user);
+    return _userFromFirebase(authResult.user);
   }
 
   @override
   Future<User> createUserWithEmailAndPassword(String email, String password) async {
-    final FirebaseUser user = await _firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
-    return _userFromFirebase(user);
+    final AuthResult authResult = await _firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
+    return _userFromFirebase(authResult.user);
   }
 
   @override
@@ -56,11 +56,11 @@ class FirebaseAuthService implements AuthService {
     if (googleUser != null) {
       final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
       if (googleAuth.accessToken != null && googleAuth.idToken != null) {
-        final FirebaseUser user = await _firebaseAuth.signInWithCredential(GoogleAuthProvider.getCredential(
+        final AuthResult authResult = await _firebaseAuth.signInWithCredential(GoogleAuthProvider.getCredential(
           idToken: googleAuth.idToken,
           accessToken: googleAuth.accessToken,
         ));
-        return _userFromFirebase(user);
+        return _userFromFirebase(authResult.user);
       } else {
         throw PlatformException(code: 'ERROR_MISSING_GOOGLE_AUTH_TOKEN', message: 'Missing Google Auth Token');
       }
@@ -74,10 +74,10 @@ class FirebaseAuthService implements AuthService {
     final FacebookLogin facebookLogin = FacebookLogin();
     final FacebookLoginResult result = await facebookLogin.logInWithReadPermissions(<String>['public_profile']);
     if (result.accessToken != null) {
-      final FirebaseUser user = await _firebaseAuth.signInWithCredential(
+      final AuthResult authResult = await _firebaseAuth.signInWithCredential(
         FacebookAuthProvider.getCredential(accessToken: result.accessToken.token),
       );
-      return _userFromFirebase(user);
+      return _userFromFirebase(authResult.user);
     } else {
       throw PlatformException(code: 'ERROR_ABORTED_BY_USER', message: 'Sign in aborted by user');
     }
