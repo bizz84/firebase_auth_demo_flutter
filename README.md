@@ -123,7 +123,7 @@ To use this project with Firebase authentication, some configuration steps are r
 - Add iOS and Android apps in the Firebase project settings.
 - On Android, use `com.codingwithflutter.firebase_auth_demo_flutter` as the package name (a SHA-1 certificate fingerprint is also needed for Google sign-in)
 - then, download and copy `google-services.json` into `android/app`
-- On iOS, use `com.codingwithflutter.firebaseAuthDemoFlutter` as the bundle ID
+- On iOS, use `com.codingwithflutter.firebaseAuthDemo` as the bundle ID
 - then, download and copy `GoogleService-Info.plist` into `iOS/Runner`, and add it to the Runner target in Xcode
 
 Additional setup instructions for Google and Facebook sign-in:
