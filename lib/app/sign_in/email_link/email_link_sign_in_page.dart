@@ -8,7 +8,6 @@ import 'package:firebase_auth_demo_flutter/constants/constants.dart';
 import 'package:firebase_auth_demo_flutter/constants/strings.dart';
 import 'package:firebase_auth_demo_flutter/services/auth_service.dart';
 import 'package:firebase_auth_demo_flutter/services/email_secure_store.dart';
-import 'package:firebase_auth_demo_flutter/services/firebase_email_link_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:package_info/package_info.dart';
