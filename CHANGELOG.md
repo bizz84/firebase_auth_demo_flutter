@@ -1,3 +1,6 @@
+# 0.0.5
+
+- Update to firebase_auth 0.14.0 and fix breaking changes ([#27](https://github.com/bizz84/firebase_auth_demo_flutter/pull/27))
 
 # 0.0.4
 
