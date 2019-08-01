@@ -10,4 +10,4 @@ class MockWidgetsBinding extends Mock implements WidgetsBinding {}
 
 class MockEmailSecureStore extends Mock implements EmailSecureStore {}
 
-class MockFirebaseDynamicLinksURIResolver extends Mock implements FirebaseDynamicLinksURIResolver {}
+class MockFirebaseDynamicLinksListener extends Mock implements FirebaseDynamicLinksListener {}

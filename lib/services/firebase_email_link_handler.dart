@@ -9,8 +9,27 @@ import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 
 /// Needed for testing because the constructor of PendingDynamicLinkData is private :/
-class FirebaseDynamicLinksURIResolver {
-  Future<Uri> retrieveDynamicLink() async {
+class FirebaseDynamicLinksListener {
+  FirebaseDynamicLinksListener() {
+    FirebaseDynamicLinks.instance.onLink(
+      onSuccess: (PendingDynamicLinkData linkData) {
+        _linkController.add(linkData?.link);
+        return;
+      },
+      onError: (OnLinkErrorException error) {
+        _linkController.addError(error);
+        return;
+      },
+    );
+  }
+  final StreamController<Uri> _linkController = StreamController<Uri>();
+  Stream<Uri> get linkStream => _linkController.stream;
+
+  void dispose() {
+    _linkController?.close();
+  }
+
+  Future<Uri> getInitialLink() async {
     final PendingDynamicLinkData data = await FirebaseDynamicLinks.instance.getInitialLink();
     return data?.link;
   }
@@ -53,17 +72,22 @@ class FirebaseEmailLinkHandler with WidgetsBindingObserver {
     @required this.auth,
     @required this.widgetsBinding,
     @required this.emailStore,
-    @required this.firebaseDynamicLinksURIResolver,
+    @required this.firebaseDynamicLinksListener,
     @required this.errorController,
   }) {
     // Register WidgetsBinding observer so that we can detect when the app is resumed.
     // See [didChangeAppLifecycleState].
     widgetsBinding.addObserver(this);
+    // Check dynamic link once on app startup. This is required to process any dynamic links that may have opened
+    // the app when it was closed.
+    firebaseDynamicLinksListener.getInitialLink().then((link) => processDynamicLink(link));
+    // Listen to subsequent links
+    _linkSubscription = firebaseDynamicLinksListener.linkStream.listen((link) => _lastUnprocessedLink = link);
   }
   final AuthService auth;
   final WidgetsBinding widgetsBinding;
   final EmailSecureStore emailStore;
-  final FirebaseDynamicLinksURIResolver firebaseDynamicLinksURIResolver;
+  final FirebaseDynamicLinksListener firebaseDynamicLinksListener;
   // Injecting this as couldn't find a way to test if values/errors are NOT added to the stream
   final BehaviorSubject<EmailLinkError> errorController;
 
@@ -71,18 +95,17 @@ class FirebaseEmailLinkHandler with WidgetsBindingObserver {
     @required AuthService auth,
     @required EmailSecureStore userCredentialsStorage,
   }) {
-    final firebaseEmailLinkHandler = FirebaseEmailLinkHandler(
+    return FirebaseEmailLinkHandler(
       auth: auth,
       widgetsBinding: WidgetsBinding.instance,
       emailStore: userCredentialsStorage,
-      firebaseDynamicLinksURIResolver: FirebaseDynamicLinksURIResolver(),
+      firebaseDynamicLinksListener: FirebaseDynamicLinksListener(),
       errorController: BehaviorSubject<EmailLinkError>(),
     );
-    // Check dynamic link once on app startup. This is required to process any dynamic links that may have opened
-    // the app when it was closed.
-    firebaseEmailLinkHandler.checkDynamicLink();
-    return firebaseEmailLinkHandler;
   }
+
+  StreamSubscription<Uri> _linkSubscription;
+  Uri _lastUnprocessedLink;
 
   /// Clients can listen to this stream and show error alerts when dynamic link processing fails
   Observable<EmailLinkError> get errorStream => errorController.stream;
@@ -90,6 +113,7 @@ class FirebaseEmailLinkHandler with WidgetsBindingObserver {
   Future<String> get email async => await emailStore.getEmail();
 
   void dispose() {
+    _linkSubscription?.cancel();
     errorController.close();
     widgetsBinding.removeObserver(this);
   }
@@ -98,14 +122,19 @@ class FirebaseEmailLinkHandler with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     // When the application comes into focus
     if (state == AppLifecycleState.resumed) {
-      checkDynamicLink();
+      checkUnprocessedLink();
     }
   }
 
   /// Checks for a dynamic link, and tries to use it to sign in with email (passwordless)
-  Future<void> checkDynamicLink() async {
-    print('Processing any pending deep links...');
-    final Uri deepLink = await firebaseDynamicLinksURIResolver.retrieveDynamicLink();
+  Future<void> checkUnprocessedLink() async {
+    if (_lastUnprocessedLink != null) {
+      processDynamicLink(_lastUnprocessedLink);
+      _lastUnprocessedLink = null;
+    }
+  }
+
+  Future<void> processDynamicLink(Uri deepLink) async {
     if (deepLink != null) {
       await _signInWithEmail(deepLink.toString());
     } else {
