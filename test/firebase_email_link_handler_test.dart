@@ -15,9 +15,8 @@ void main() {
     final mockAuth = MockAuthService();
     final mockWidgetsBinding = MockWidgetsBinding();
     final mockEmailSecureStore = MockEmailSecureStore();
-    final mockFirebaseDynamicLinksURIResolver = MockFirebaseDynamicLinksListener();
-    final mockErrorController = MockErrorController();
 
+    final sampleLink = Uri.https('', 'example.com');
     const sampleEmail = 'test@test.com';
     const sampleUser = User(uid: '123', email: sampleEmail);
 
@@ -26,31 +25,38 @@ void main() {
         auth: mockAuth,
         widgetsBinding: mockWidgetsBinding,
         emailStore: mockEmailSecureStore,
-        firebaseDynamicLinksListener: mockFirebaseDynamicLinksURIResolver,
-        errorController: mockErrorController,
+        //errorController: mockErrorController,
       );
     }
 
     /* Email sending tests */
-    test(
-        'WHEN sendLinkToEmail called\n'
-        'THEN setEmail called\n'
-        'AND auth sendLinkToEmail called', () async {
-      final handler = buildHandler();
-      const url = 'example.com';
-      const bundleID = 'demo.codingwithflutter.com';
-      await handler.sendLinkToEmail(email: sampleEmail, url: url, iOSBundleID: bundleID, androidPackageName: bundleID);
-      verify(mockEmailSecureStore.setEmail(sampleEmail)).called(1);
-      verify(mockAuth.sendSignInWithEmailLink(
-        email: sampleEmail,
-        url: url,
-        handleCodeInApp: true,
-        iOSBundleID: bundleID,
-        androidPackageName: bundleID,
-        androidInstallIfNotAvailable: true,
-        androidMinimumVersion: '21',
-      )).called(1);
-    });
+    // test(
+    //     'WHEN sendLinkToEmail called\n'
+    //     'THEN setEmail called\n'
+    //     'AND auth sendLinkToEmail called', () async {
+    //   final handler = buildHandler();
+    //   const url = 'example.com';
+    //   const bundleID = 'demo.codingwithflutter.com';
+    //   await handler.sendLinkToEmail(email: sampleEmail, url: url, iOSBundleID: bundleID, androidPackageName: bundleID);
+    //   verify(mockEmailSecureStore.setEmail(sampleEmail)).called(1);
+    //   verify(mockAuth.sendSignInWithEmailLink(
+    //     email: sampleEmail,
+    //     url: url,
+    //     handleCodeInApp: true,
+    //     iOSBundleID: bundleID,
+    //     androidPackageName: bundleID,
+    //     androidInstallIfNotAvailable: true,
+    //     androidMinimumVersion: '21',
+    //   )).called(1);
+    // });
+
+    void stubCurrentUser(User user) {
+      when(mockAuth.currentUser()).thenAnswer((invocation) => Future.value(user));
+    }
+
+    void stubStoredEmail(String email) {
+      when(mockEmailSecureStore.getEmail()).thenAnswer((invocation) => Future.value(email));
+    }
 
     /* Email processing tests */
     test(
@@ -61,159 +67,23 @@ void main() {
     });
 
     test(
-        'WHEN didChangeAppLifecycleState called'
-        'AND event is `resumed`'
-        'THEN retrieves dynamic link', () async {
-      when(mockFirebaseDynamicLinksURIResolver.getInitialLink()).thenAnswer((invocation) => null);
-      when(mockAuth.currentUser()).thenAnswer((invocation) => Future.value(null));
+        'WHEN didChangeAppLifecycleState called with `resumed` event'
+        'AND currentUser is null'
+        'AND stored email is null'
+        'AND link received'
+        'AND error NOT received'
+        'THEN emits emailNotSet error'
+        'AND sign in not called', () async {
+      stubCurrentUser(null);
+      stubStoredEmail(null);
       final handler = buildHandler();
+      handler.handleLink(sampleLink);
       handler.didChangeAppLifecycleState(AppLifecycleState.resumed);
-      // small delay because didChangeAppLifecycleState is synchronous
-      await Future<void>.delayed(Duration(milliseconds: 200));
-      verify(mockFirebaseDynamicLinksURIResolver.getInitialLink()).called(1);
-    });
-
-    test(
-        'WHEN checkUnprocessedLink called'
-        'THEN retrieves dynamic link', () async {
-      when(mockFirebaseDynamicLinksURIResolver.getInitialLink()).thenAnswer((invocation) => null);
-      when(mockAuth.currentUser()).thenAnswer((invocation) => Future.value(null));
-      final handler = buildHandler();
-      await handler.checkUnprocessedLink();
-      verify(mockFirebaseDynamicLinksURIResolver.getInitialLink()).called(1);
-    });
-
-    test(
-        'WHEN checkUnprocessedLink called'
-        'AND getInitialLink returns link'
-        'AND currentUser is NOT null'
-        'THEN email is not checked', () async {
-      final uri = Uri.parse('example.com');
-      final response = Future.value(uri);
-      when(mockFirebaseDynamicLinksURIResolver.getInitialLink()).thenAnswer((invocation) => response);
-      when(mockAuth.currentUser()).thenAnswer((invocation) => Future.value(sampleUser));
-      final handler = buildHandler();
-      await handler.checkUnprocessedLink();
-      verifyNever(mockEmailSecureStore.getEmail());
-    });
-
-    test(
-        'WHEN checkUnprocessedLink called'
-        'AND getInitialLink returns link'
-        'AND currentUser is null'
-        'AND email is null'
-        'THEN an error is emitted', () async {
-      final uri = Uri.parse('example.com');
-      final response = Future.value(uri);
-      when(mockFirebaseDynamicLinksURIResolver.getInitialLink()).thenAnswer((invocation) => response);
-      when(mockAuth.currentUser()).thenAnswer((invocation) => Future.value(null));
-      when(mockEmailSecureStore.getEmail()).thenAnswer((invocation) => Future.value(null));
-      final handler = buildHandler();
-      await handler.checkUnprocessedLink();
-      verify(mockErrorController.add(EmailLinkError(error: EmailLinkErrorType.emailNotSet))).called(1);
-    });
-
-    test(
-        'WHEN checkUnprocessedLink called'
-        'AND getInitialLink returns link'
-        'AND currentUser is null'
-        'AND email is not null'
-        'THEN link is checked as an email activation link', () async {
-      final uri = Uri.parse('example.com');
-      final response = Future.value(uri);
-      when(mockFirebaseDynamicLinksURIResolver.getInitialLink()).thenAnswer((invocation) => response);
-      when(mockAuth.currentUser()).thenAnswer((invocation) => Future.value(null));
-      when(mockEmailSecureStore.getEmail()).thenAnswer((invocation) => Future.value(sampleEmail));
-      when(mockAuth.isSignInWithEmailLink(uri.toString())).thenAnswer((invocation) => Future.value(false));
-      final handler = buildHandler();
-      await handler.checkUnprocessedLink();
-      verify(mockAuth.isSignInWithEmailLink(uri.toString())).called(1);
-    });
-
-    test(
-        'WHEN checkUnprocessedLink called'
-        'AND getInitialLink returns link'
-        'AND currentUser is null'
-        'AND email is not null'
-        'AND link is checked as an email activation link'
-        'AND link is valid'
-        'THEN sign in with email is attempted', () async {
-      final uri = Uri.parse('example.com');
-      final response = Future.value(uri);
-      when(mockFirebaseDynamicLinksURIResolver.getInitialLink()).thenAnswer((invocation) => response);
-      when(mockAuth.currentUser()).thenAnswer((invocation) => Future.value(null));
-      when(mockEmailSecureStore.getEmail()).thenAnswer((invocation) => Future.value(sampleEmail));
-      when(mockAuth.isSignInWithEmailLink(uri.toString())).thenAnswer((invocation) => Future.value(true));
-      when(mockAuth.signInWithEmailAndLink(email: sampleEmail, link: uri.toString()))
-          .thenAnswer((invocation) => Future.value(sampleUser));
-      final handler = buildHandler();
-      await handler.checkUnprocessedLink();
-      verify(mockAuth.signInWithEmailAndLink(email: sampleEmail, link: uri.toString())).called(1);
-    });
-
-    test(
-        'WHEN checkUnprocessedLink called'
-        'AND getInitialLink returns link'
-        'AND currentUser is null'
-        'AND email is not null'
-        'AND link is checked as an email activation link'
-        'AND link is NOT valid'
-        'THEN sign in with email is NOT attempted', () async {
-      final uri = Uri.parse('example.com');
-      final response = Future.value(uri);
-      when(mockFirebaseDynamicLinksURIResolver.getInitialLink()).thenAnswer((invocation) => response);
-      when(mockAuth.currentUser()).thenAnswer((invocation) => Future.value(null));
-      when(mockEmailSecureStore.getEmail()).thenAnswer((invocation) => Future.value(sampleEmail));
-      when(mockAuth.isSignInWithEmailLink(uri.toString())).thenAnswer((invocation) => Future.value(false));
-      final handler = buildHandler();
-      await handler.checkUnprocessedLink();
-      verifyNever(mockAuth.signInWithEmailAndLink(email: sampleEmail, link: uri.toString()));
-    });
-
-    test(
-        'WHEN checkUnprocessedLink called'
-        'AND getInitialLink returns link'
-        'AND currentUser is null'
-        'AND email is not null'
-        'AND link is checked as an email activation link'
-        'AND link is valid'
-        'AND sign in with email succeeds'
-        'THEN no error is emitted', () async {
-      final uri = Uri.parse('example.com');
-      final response = Future.value(uri);
-      when(mockFirebaseDynamicLinksURIResolver.getInitialLink()).thenAnswer((invocation) => response);
-      when(mockAuth.currentUser()).thenAnswer((invocation) => Future.value(null));
-      when(mockEmailSecureStore.getEmail()).thenAnswer((invocation) => Future.value(sampleEmail));
-      when(mockAuth.isSignInWithEmailLink(uri.toString())).thenAnswer((invocation) => Future.value(true));
-      when(mockAuth.signInWithEmailAndLink(email: sampleEmail, link: uri.toString()))
-          .thenAnswer((invocation) => Future.value(sampleUser));
-      final handler = buildHandler();
-      await handler.checkUnprocessedLink();
-      verifyNever(mockErrorController.addError(any));
-    });
-
-    test(
-        'WHEN checkUnprocessedLink called'
-        'AND getInitialLink returns link'
-        'AND currentUser is null'
-        'AND email is not null'
-        'AND link is checked as an email activation link'
-        'AND link is valid'
-        'AND sign in with email fails'
-        'THEN an error is emitted', () async {
-      final uri = Uri.parse('example.com');
-      final response = Future.value(uri);
-      const error = 'Sign in failed';
-      when(mockFirebaseDynamicLinksURIResolver.getInitialLink()).thenAnswer((invocation) => response);
-      when(mockAuth.currentUser()).thenAnswer((invocation) => Future.value(null));
-      when(mockEmailSecureStore.getEmail()).thenAnswer((invocation) => Future.value(sampleEmail));
-      when(mockAuth.isSignInWithEmailLink(uri.toString())).thenAnswer((invocation) => Future.value(true));
-      when(mockAuth.signInWithEmailAndLink(email: sampleEmail, link: uri.toString())).thenThrow(Exception(error));
-      final handler = buildHandler();
-      await handler.checkUnprocessedLink();
-      verify(mockErrorController
-              .add(EmailLinkError(error: EmailLinkErrorType.signInFailed, description: Exception(error).toString())))
-          .called(1);
+      // artificial delay so that valeus are added to stream
+      await Future<void>.delayed(Duration());
+      expect(handler.errorStream, emits(EmailLinkError(error: EmailLinkErrorType.emailNotSet)));
+      verifyNever(mockAuth.isSignInWithEmailLink(any));
+      handler.dispose();
     });
   });
 }

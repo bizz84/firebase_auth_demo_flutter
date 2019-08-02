@@ -5,6 +5,7 @@ import 'package:firebase_auth_demo_flutter/services/auth_service.dart';
 import 'package:firebase_auth_demo_flutter/services/email_secure_store.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -49,7 +50,6 @@ class FirebaseEmailLinkHandler with WidgetsBindingObserver {
     @required this.auth,
     @required this.widgetsBinding,
     @required this.emailStore,
-    @required this.errorController,
   }) {
     // Register WidgetsBinding observer so that we can detect when the app is resumed.
     // See [didChangeAppLifecycleState].
@@ -59,7 +59,7 @@ class FirebaseEmailLinkHandler with WidgetsBindingObserver {
   final WidgetsBinding widgetsBinding;
   final EmailSecureStore emailStore;
   // Injecting this as couldn't find a way to test if values/errors are NOT added to the stream
-  final BehaviorSubject<EmailLinkError> errorController;
+  final BehaviorSubject<EmailLinkError> errorController = BehaviorSubject<EmailLinkError>();
 
   static FirebaseEmailLinkHandler createAndConfigure({
     @required AuthService auth,
@@ -69,15 +69,18 @@ class FirebaseEmailLinkHandler with WidgetsBindingObserver {
       auth: auth,
       widgetsBinding: WidgetsBinding.instance,
       emailStore: userCredentialsStorage,
-      errorController: BehaviorSubject<EmailLinkError>(),
     );
     // Check dynamic link once on app startup. This is required to process any dynamic links that may have opened
     // the app when it was closed.
     FirebaseDynamicLinks.instance.getInitialLink().then((link) => linkHandler._processDynamicLink(link?.link));
     // Listen to subsequent links
     FirebaseDynamicLinks.instance.onLink(
-      onSuccess: linkHandler.handleLink,
-      onError: linkHandler.handleLinkError,
+      onSuccess: (linkData) => linkHandler.handleLink(linkData?.link),
+      onError: (error) => linkHandler.handleLinkError(PlatformException(
+        code: error.code,
+        message: error.message,
+        details: error.details,
+      )),
     );
     return linkHandler;
   }
@@ -86,18 +89,18 @@ class FirebaseEmailLinkHandler with WidgetsBindingObserver {
   Uri _lastUnprocessedLink;
 
   /// last link error received from FirebaseDynamicLinks
-  OnLinkErrorException _lastUnprocessedLinkError;
+  PlatformException _lastUnprocessedLinkError;
 
   /// Clients can listen to this stream and show error alerts when dynamic link processing fails
   Observable<EmailLinkError> get errorStream => errorController.stream;
 
-  Future<dynamic> handleLink(PendingDynamicLinkData linkData) {
-    _lastUnprocessedLink = linkData?.link;
+  Future<dynamic> handleLink(Uri link) {
+    _lastUnprocessedLink = link;
     _lastUnprocessedLinkError = null;
     return Future<dynamic>.value();
   }
 
-  Future<dynamic> handleLinkError(OnLinkErrorException error) {
+  Future<dynamic> handleLinkError(PlatformException error) {
     _lastUnprocessedLink = null;
     _lastUnprocessedLinkError = error;
     return Future<dynamic>.value();
