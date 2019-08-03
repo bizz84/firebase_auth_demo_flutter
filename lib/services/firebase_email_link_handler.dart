@@ -90,8 +90,9 @@ class FirebaseEmailLinkHandler with WidgetsBindingObserver {
   Observable<EmailLinkError> get errorStream => _errorController.stream;
 
   /// Clients can listen to this stream and show a loading indicator while sign in is in progress
-  final BehaviorSubject<bool> _isSigningInController = BehaviorSubject<bool>.seeded(false);
-  Observable<bool> get isSigningInStream => _isSigningInController.stream;
+  final ValueNotifier<bool> isLoading = ValueNotifier<bool>(false);
+
+  Future<String> getEmail() => emailStore.getEmail();
 
   /// last link data received from FirebaseDynamicLinks
   Uri _lastUnprocessedLink;
@@ -113,7 +114,7 @@ class FirebaseEmailLinkHandler with WidgetsBindingObserver {
 
   void dispose() {
     _errorController.close();
-    _isSigningInController.close();
+    isLoading.dispose();
     widgetsBinding.removeObserver(this);
   }
 
@@ -148,7 +149,7 @@ class FirebaseEmailLinkHandler with WidgetsBindingObserver {
 
   Future<void> _signInWithEmail(String link) async {
     try {
-      _isSigningInController.add(true);
+      isLoading.value = true;
       // check that user is not signed in
       final User user = await auth.currentUser();
       if (user != null) {
@@ -179,7 +180,37 @@ class FirebaseEmailLinkHandler with WidgetsBindingObserver {
         description: e.message,
       ));
     } finally {
-      _isSigningInController.add(false);
+      isLoading.value = false;
+    }
+  }
+
+  // sign in
+  Future<void> sendSignInWithEmailLink({
+    @required String email,
+    @required String url,
+    @required bool handleCodeInApp,
+    @required String packageName,
+    @required bool androidInstallIfNotAvailable,
+    @required String androidMinimumVersion,
+  }) async {
+    try {
+      isLoading.value = true;
+      // Save to email store
+      await emailStore.setEmail(email);
+      // Send link
+      await auth.sendSignInWithEmailLink(
+        email: email,
+        url: url,
+        handleCodeInApp: handleCodeInApp,
+        iOSBundleID: packageName,
+        androidPackageName: packageName,
+        androidInstallIfNotAvailable: androidInstallIfNotAvailable,
+        androidMinimumVersion: androidMinimumVersion,
+      );
+    } on PlatformException catch (e) {
+      rethrow;
+    } finally {
+      isLoading.value = false;
     }
   }
 }

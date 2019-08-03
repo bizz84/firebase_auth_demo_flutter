@@ -7,7 +7,6 @@ import 'package:firebase_auth_demo_flutter/common_widgets/platform_exception_ale
 import 'package:firebase_auth_demo_flutter/constants/constants.dart';
 import 'package:firebase_auth_demo_flutter/constants/strings.dart';
 import 'package:firebase_auth_demo_flutter/services/auth_service.dart';
-import 'package:firebase_auth_demo_flutter/services/email_secure_store.dart';
 import 'package:firebase_auth_demo_flutter/services/firebase_email_link_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -17,25 +16,21 @@ import 'package:provider/provider.dart';
 class EmailLinkSignInPage extends StatefulWidget {
   const EmailLinkSignInPage({
     Key key,
-    @required this.emailStore,
     @required this.authService,
-    @required this.isSigningInStream,
+    @required this.linkHandler,
   }) : super(key: key);
-  final EmailSecureStore emailStore;
+  final FirebaseEmailLinkHandler linkHandler;
   final AuthService authService;
-  final Stream<bool> isSigningInStream;
 
   static Future<void> show(BuildContext context) async {
-    final EmailSecureStore emailStore = Provider.of<EmailSecureStore>(context);
     final AuthService authService = Provider.of<AuthService>(context);
     final FirebaseEmailLinkHandler linkHandler = Provider.of<FirebaseEmailLinkHandler>(context);
     await Navigator.of(context).push(
       MaterialPageRoute<void>(
         fullscreenDialog: true,
         builder: (_) => EmailLinkSignInPage(
-          emailStore: emailStore,
           authService: authService,
-          isSigningInStream: linkHandler.isSigningInStream,
+          linkHandler: linkHandler,
         ),
       ),
     );
@@ -47,7 +42,6 @@ class EmailLinkSignInPage extends StatefulWidget {
 
 class _EmailLinkSignInPageState extends State<EmailLinkSignInPage> {
   String _email;
-  bool _isSendingLink = false;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final RegexValidator _emailSubmitValidator = EmailSubmitRegexValidator();
@@ -59,10 +53,11 @@ class _EmailLinkSignInPageState extends State<EmailLinkSignInPage> {
   void initState() {
     super.initState();
     // Get email from store initially
-    widget.emailStore.getEmail().then((String email) {
+    widget.linkHandler.getEmail().then((String email) {
       _email = email ?? '';
       _emailController.value = TextEditingValue(text: _email);
     });
+    // TODO: If this can be moved elsewhere, then authService doesn't need to be a dependency
     // Dismiss page if a user is signed in
     _onAuthStateChangedSubscription = widget.authService.onAuthStateChanged.listen((User user) {
       if (user != null) {
@@ -78,18 +73,14 @@ class _EmailLinkSignInPageState extends State<EmailLinkSignInPage> {
   }
 
   Future<void> _sendEmailLink() async {
-    setState(() => _isSendingLink = true);
     try {
       final PackageInfo packageInfo = await PackageInfo.fromPlatform();
-      // Save to email store
-      await widget.emailStore.setEmail(_email);
       // Send link
-      await widget.authService.sendSignInWithEmailLink(
+      await widget.linkHandler.sendSignInWithEmailLink(
         email: _email,
         url: Constants.firebaseProjectURL,
         handleCodeInApp: true,
-        iOSBundleID: packageInfo.packageName,
-        androidPackageName: packageInfo.packageName,
+        packageName: packageInfo.packageName,
         androidInstallIfNotAvailable: true,
         androidMinimumVersion: '21',
       );
@@ -104,8 +95,6 @@ class _EmailLinkSignInPageState extends State<EmailLinkSignInPage> {
         title: Strings.errorSendingEmail,
         exception: e,
       ).show(context);
-    } finally {
-      setState(() => _isSendingLink = false);
     }
   }
 
@@ -128,20 +117,17 @@ class _EmailLinkSignInPageState extends State<EmailLinkSignInPage> {
         child: Card(
             child: Padding(
           padding: EdgeInsets.all(16.0),
-          child: StreamBuilder<bool>(
-              stream: widget.isSigningInStream,
-              builder: (context, snapshot) {
-                final isSigningIn = snapshot.data;
-                return _buildForm(isSigningIn);
-              }),
+          child: ValueListenableBuilder<bool>(
+            valueListenable: widget.linkHandler.isLoading,
+            builder: (_, isLoading, __) => _buildForm(isLoading),
+          ),
         )),
       ),
       backgroundColor: Colors.grey[200],
     );
   }
 
-  Widget _buildForm(bool isSigningIn) {
-    final bool loading = _isSendingLink || isSigningIn;
+  Widget _buildForm(bool isLoading) {
     final TextStyle hintStyle = TextStyle(fontSize: 18.0, color: Colors.grey[400]);
     return Form(
       key: _formKey,
@@ -158,7 +144,7 @@ class _EmailLinkSignInPageState extends State<EmailLinkSignInPage> {
               hintText: Strings.emailHint,
               hintStyle: hintStyle,
             ),
-            enabled: !loading,
+            enabled: !isLoading,
             keyboardType: TextInputType.emailAddress,
             validator: (String value) {
               return _emailSubmitValidator.isValid(value) ? null : Strings.invalidEmailErrorText;
@@ -175,8 +161,8 @@ class _EmailLinkSignInPageState extends State<EmailLinkSignInPage> {
           ),
           SizedBox(height: 16.0),
           FormSubmitButton(
-            onPressed: loading ? null : _validateAndSubmit,
-            loading: loading,
+            onPressed: isLoading ? null : _validateAndSubmit,
+            loading: isLoading,
             text: Strings.sendActivationLink,
           ),
           SizedBox(height: 12.0),
