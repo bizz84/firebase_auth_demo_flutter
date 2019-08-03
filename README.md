@@ -48,7 +48,7 @@ _NOTE: This project will be kept up to date with the latest packages and Flutter
 
 - [x] Anonymous
 - [x] Email & Password
-- [ ] Email link (passwordless)
+- [x] Email link (passwordless) (see [documentation](docs/sign-in-email-link.md))
 - [x] Facebook
 - [ ] GitHub
 - [x] Google
@@ -90,6 +90,10 @@ _NOTE: This project will be kept up to date with the latest packages and Flutter
 - [x] Password of at least 8 characters
 - [ ] Show/hide password
 - [x] Password reset flow
+
+### Email link page
+
+- [x] Email input field, backed by secure storage
 
 ### Authentication
 
