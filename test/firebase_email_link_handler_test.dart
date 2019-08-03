@@ -247,4 +247,7 @@ void main() {
       handler.dispose();
     });
   });
+
+  // TODO: sendSignInWithEmailLink tests
+  // TODO: ValueNotifier loading tests
 }
