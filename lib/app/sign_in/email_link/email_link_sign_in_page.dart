@@ -110,18 +110,20 @@ class _EmailLinkSignInPageState extends State<EmailLinkSignInPage> {
     return Scaffold(
       appBar: AppBar(
         elevation: 2.0,
-        title: Text(Strings.yourEmail),
+        title: Text(Strings.signIn),
       ),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Card(
-            child: Padding(
+      body: SingleChildScrollView(
+        child: Padding(
           padding: EdgeInsets.all(16.0),
-          child: ValueListenableBuilder<bool>(
-            valueListenable: widget.linkHandler.isLoading,
-            builder: (_, isLoading, __) => _buildForm(isLoading),
-          ),
-        )),
+          child: Card(
+              child: Padding(
+            padding: EdgeInsets.all(16.0),
+            child: ValueListenableBuilder<bool>(
+              valueListenable: widget.linkHandler.isLoading,
+              builder: (_, isLoading, __) => _buildForm(isLoading),
+            ),
+          )),
+        ),
       ),
       backgroundColor: Colors.grey[200],
     );
@@ -136,7 +138,7 @@ class _EmailLinkSignInPageState extends State<EmailLinkSignInPage> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(Strings.submitEmailAddressLink),
-          SizedBox(height: 24.0),
+          SizedBox(height: 16.0),
           TextFormField(
             controller: _emailController,
             decoration: InputDecoration(

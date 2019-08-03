@@ -40,7 +40,6 @@ class Strings {
   static const String invalidPasswordEmpty = 'Password can\'t be empty';
 
   // Email link page
-  static const String yourEmail = 'Your Email';
   static const String submitEmailAddressLink = 'Submit your email address to receive an activation link.';
   static const String checkYourEmail = 'Check your email';
   static String activationLinkSent(String email) => 'We have sent an activation link to $email';
