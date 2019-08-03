@@ -19,7 +19,6 @@ void main() {
 
     final sampleLink = Uri.https('', 'example.com');
     const sampleEmail = 'test@test.com';
-    //final sampleError = PlatformException(code: 'ERROR_LINK_INVALID', message: 'fail');
     const sampleUser = User(uid: '123', email: sampleEmail);
 
     FirebaseEmailLinkHandler buildHandler() {
@@ -27,30 +26,8 @@ void main() {
         auth: mockAuth,
         widgetsBinding: mockWidgetsBinding,
         emailStore: mockEmailSecureStore,
-        //errorController: mockErrorController,
       );
     }
-
-    /* Email sending tests */
-    // test(
-    //     'WHEN sendLinkToEmail called\n'
-    //     'THEN setEmail called\n'
-    //     'AND auth sendLinkToEmail called', () async {
-    //   final handler = buildHandler();
-    //   const url = 'example.com';
-    //   const bundleID = 'demo.codingwithflutter.com';
-    //   await handler.sendLinkToEmail(email: sampleEmail, url: url, iOSBundleID: bundleID, androidPackageName: bundleID);
-    //   verify(mockEmailSecureStore.setEmail(sampleEmail)).called(1);
-    //   verify(mockAuth.sendSignInWithEmailLink(
-    //     email: sampleEmail,
-    //     url: url,
-    //     handleCodeInApp: true,
-    //     iOSBundleID: bundleID,
-    //     androidPackageName: bundleID,
-    //     androidInstallIfNotAvailable: true,
-    //     androidMinimumVersion: '21',
-    //   )).called(1);
-    // });
 
     void stubCurrentUser(User user) {
       when(mockAuth.currentUser()).thenAnswer((_) => Future.value(user));
