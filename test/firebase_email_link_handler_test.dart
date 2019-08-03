@@ -5,11 +5,8 @@ import 'package:firebase_auth_demo_flutter/services/firebase_email_link_handler.
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:rxdart/rxdart.dart';
 
 import 'mocks.dart';
-
-class MockErrorController extends Mock implements BehaviorSubject<EmailLinkError> {}
 
 void main() {
   group('tests', () {

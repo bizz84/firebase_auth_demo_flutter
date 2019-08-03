@@ -57,7 +57,7 @@ class _EmailLinkSignInPageState extends State<EmailLinkSignInPage> {
       _email = email ?? '';
       _emailController.value = TextEditingValue(text: _email);
     });
-    // TODO: If this can be moved elsewhere, then authService doesn't need to be a dependency
+    // TODO: If this could be moved elsewhere, then authService wouldn't need to be a dependency
     // Dismiss page if a user is signed in
     _onAuthStateChangedSubscription = widget.authService.onAuthStateChanged.listen((User user) {
       if (user != null) {
