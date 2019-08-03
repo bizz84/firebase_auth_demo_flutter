@@ -31,7 +31,7 @@ class EmailLinkError {
       };
 
   @override
-  String toString() => _descriptions[error];
+  String toString() => '$error: ${_descriptions[error]}';
 
   @override
   int get hashCode => error.hashCode;
@@ -122,7 +122,7 @@ class FirebaseEmailLinkHandler with WidgetsBindingObserver {
   /// Checks for a dynamic link, and tries to use it to sign in with email (passwordless)
   Future<void> _checkUnprocessedLinks() async {
     if (_lastUnprocessedLink != null) {
-      _processDynamicLink(_lastUnprocessedLink);
+      await _processDynamicLink(_lastUnprocessedLink);
       _lastUnprocessedLink = null;
     }
     if (_lastUnprocessedLinkError != null) {
@@ -137,13 +137,10 @@ class FirebaseEmailLinkHandler with WidgetsBindingObserver {
   Future<void> _processDynamicLink(Uri deepLink) async {
     if (deepLink != null) {
       await _signInWithEmail(deepLink.toString());
-    } else {
-      print('No deep links found');
     }
   }
 
   Future<void> _signInWithEmail(String link) async {
-    print('Received link: $link');
     final User user = await auth.currentUser();
     if (user != null) {
       errorController.add(EmailLinkError(
@@ -161,13 +158,11 @@ class FirebaseEmailLinkHandler with WidgetsBindingObserver {
 
     if (await auth.isSignInWithEmailLink(link)) {
       try {
-        final user = await auth.signInWithEmailAndLink(email: email, link: link);
-        print('email: ${user.email}, uid: ${user.uid}');
-      } catch (e) {
-        print(e);
+        await auth.signInWithEmailAndLink(email: email, link: link);
+      } on PlatformException catch (e) {
         errorController.add(EmailLinkError(
           error: EmailLinkErrorType.signInFailed,
-          description: e.toString(),
+          description: e.message,
         ));
       }
     } else {
