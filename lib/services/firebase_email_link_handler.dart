@@ -60,8 +60,6 @@ class FirebaseEmailLinkHandler with WidgetsBindingObserver {
   final AuthService auth;
   final WidgetsBinding widgetsBinding;
   final EmailSecureStore emailStore;
-  // Injecting this as couldn't find a way to test if values/errors are NOT added to the stream
-  final BehaviorSubject<EmailLinkError> errorController = BehaviorSubject<EmailLinkError>();
 
   static FirebaseEmailLinkHandler createAndConfigure({
     @required AuthService auth,
@@ -87,14 +85,19 @@ class FirebaseEmailLinkHandler with WidgetsBindingObserver {
     return linkHandler;
   }
 
+  /// Clients can listen to this stream and show error alerts when dynamic link processing fails
+  final BehaviorSubject<EmailLinkError> _errorController = BehaviorSubject<EmailLinkError>();
+  Observable<EmailLinkError> get errorStream => _errorController.stream;
+
+  /// Clients can listen to this stream and show a loading indicator while sign in is in progress
+  final BehaviorSubject<bool> _isSigningInController = BehaviorSubject<bool>.seeded(false);
+  Observable<bool> get isSigningInStream => _isSigningInController.stream;
+
   /// last link data received from FirebaseDynamicLinks
   Uri _lastUnprocessedLink;
 
   /// last link error received from FirebaseDynamicLinks
   PlatformException _lastUnprocessedLinkError;
-
-  /// Clients can listen to this stream and show error alerts when dynamic link processing fails
-  Observable<EmailLinkError> get errorStream => errorController.stream;
 
   Future<dynamic> handleLink(Uri link) {
     _lastUnprocessedLink = link;
@@ -109,7 +112,8 @@ class FirebaseEmailLinkHandler with WidgetsBindingObserver {
   }
 
   void dispose() {
-    errorController.close();
+    _errorController.close();
+    _isSigningInController.close();
     widgetsBinding.removeObserver(this);
   }
 
@@ -128,7 +132,7 @@ class FirebaseEmailLinkHandler with WidgetsBindingObserver {
       _lastUnprocessedLink = null;
     }
     if (_lastUnprocessedLinkError != null) {
-      errorController.add(EmailLinkError(
+      _errorController.add(EmailLinkError(
         error: EmailLinkErrorType.linkError,
         description: _lastUnprocessedLinkError.message,
       ));
@@ -143,34 +147,39 @@ class FirebaseEmailLinkHandler with WidgetsBindingObserver {
   }
 
   Future<void> _signInWithEmail(String link) async {
-    final User user = await auth.currentUser();
-    if (user != null) {
-      errorController.add(EmailLinkError(
-        error: EmailLinkErrorType.userAlreadySignedIn,
-      ));
-      return;
-    }
-    final email = await emailStore.getEmail();
-    if (email == null) {
-      errorController.add(EmailLinkError(
-        error: EmailLinkErrorType.emailNotSet,
-      ));
-      return;
-    }
-
-    if (await auth.isSignInWithEmailLink(link)) {
-      try {
+    try {
+      _isSigningInController.add(true);
+      // check that user is not signed in
+      final User user = await auth.currentUser();
+      if (user != null) {
+        _errorController.add(EmailLinkError(
+          error: EmailLinkErrorType.userAlreadySignedIn,
+        ));
+        return;
+      }
+      // check that email is set
+      final email = await emailStore.getEmail();
+      if (email == null) {
+        _errorController.add(EmailLinkError(
+          error: EmailLinkErrorType.emailNotSet,
+        ));
+        return;
+      }
+      // sign in
+      if (await auth.isSignInWithEmailLink(link)) {
         await auth.signInWithEmailAndLink(email: email, link: link);
-      } on PlatformException catch (e) {
-        errorController.add(EmailLinkError(
-          error: EmailLinkErrorType.signInFailed,
-          description: e.message,
+      } else {
+        _errorController.add(EmailLinkError(
+          error: EmailLinkErrorType.isNotSignInWithEmailLink,
         ));
       }
-    } else {
-      errorController.add(EmailLinkError(
-        error: EmailLinkErrorType.isNotSignInWithEmailLink,
+    } on PlatformException catch (e) {
+      _errorController.add(EmailLinkError(
+        error: EmailLinkErrorType.signInFailed,
+        description: e.message,
       ));
+    } finally {
+      _isSigningInController.add(false);
     }
   }
 }

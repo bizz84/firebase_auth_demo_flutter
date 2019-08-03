@@ -8,6 +8,7 @@ import 'package:firebase_auth_demo_flutter/constants/constants.dart';
 import 'package:firebase_auth_demo_flutter/constants/strings.dart';
 import 'package:firebase_auth_demo_flutter/services/auth_service.dart';
 import 'package:firebase_auth_demo_flutter/services/email_secure_store.dart';
+import 'package:firebase_auth_demo_flutter/services/firebase_email_link_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:package_info/package_info.dart';
@@ -18,19 +19,23 @@ class EmailLinkSignInPage extends StatefulWidget {
     Key key,
     @required this.emailStore,
     @required this.authService,
+    @required this.isSigningInStream,
   }) : super(key: key);
   final EmailSecureStore emailStore;
   final AuthService authService;
+  final Stream<bool> isSigningInStream;
 
   static Future<void> show(BuildContext context) async {
     final EmailSecureStore emailStore = Provider.of<EmailSecureStore>(context);
     final AuthService authService = Provider.of<AuthService>(context);
+    final FirebaseEmailLinkHandler linkHandler = Provider.of<FirebaseEmailLinkHandler>(context);
     await Navigator.of(context).push(
       MaterialPageRoute<void>(
         fullscreenDialog: true,
         builder: (_) => EmailLinkSignInPage(
           emailStore: emailStore,
           authService: authService,
+          isSigningInStream: linkHandler.isSigningInStream,
         ),
       ),
     );
@@ -42,7 +47,7 @@ class EmailLinkSignInPage extends StatefulWidget {
 
 class _EmailLinkSignInPageState extends State<EmailLinkSignInPage> {
   String _email;
-  bool _loading = false;
+  bool _isSendingLink = false;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final RegexValidator _emailSubmitValidator = EmailSubmitRegexValidator();
@@ -73,7 +78,7 @@ class _EmailLinkSignInPageState extends State<EmailLinkSignInPage> {
   }
 
   Future<void> _sendEmailLink() async {
-    setState(() => _loading = true);
+    setState(() => _isSendingLink = true);
     try {
       final PackageInfo packageInfo = await PackageInfo.fromPlatform();
       // Save to email store
@@ -100,7 +105,7 @@ class _EmailLinkSignInPageState extends State<EmailLinkSignInPage> {
         exception: e,
       ).show(context);
     } finally {
-      setState(() => _loading = false);
+      setState(() => _isSendingLink = false);
     }
   }
 
@@ -123,14 +128,20 @@ class _EmailLinkSignInPageState extends State<EmailLinkSignInPage> {
         child: Card(
             child: Padding(
           padding: EdgeInsets.all(16.0),
-          child: _buildForm(),
+          child: StreamBuilder<bool>(
+              stream: widget.isSigningInStream,
+              builder: (context, snapshot) {
+                final isSigningIn = snapshot.data;
+                return _buildForm(isSigningIn);
+              }),
         )),
       ),
       backgroundColor: Colors.grey[200],
     );
   }
 
-  Widget _buildForm() {
+  Widget _buildForm(bool isSigningIn) {
+    final bool loading = _isSendingLink || isSigningIn;
     final TextStyle hintStyle = TextStyle(fontSize: 18.0, color: Colors.grey[400]);
     return Form(
       key: _formKey,
@@ -147,7 +158,7 @@ class _EmailLinkSignInPageState extends State<EmailLinkSignInPage> {
               hintText: Strings.emailHint,
               hintStyle: hintStyle,
             ),
-            enabled: !_loading,
+            enabled: !loading,
             keyboardType: TextInputType.emailAddress,
             validator: (String value) {
               return _emailSubmitValidator.isValid(value) ? null : Strings.invalidEmailErrorText;
@@ -164,8 +175,8 @@ class _EmailLinkSignInPageState extends State<EmailLinkSignInPage> {
           ),
           SizedBox(height: 16.0),
           FormSubmitButton(
-            onPressed: _loading ? null : _validateAndSubmit,
-            loading: _loading,
+            onPressed: loading ? null : _validateAndSubmit,
+            loading: loading,
             text: Strings.sendActivationLink,
           ),
           SizedBox(height: 12.0),
