@@ -6,6 +6,8 @@ import 'package:firebase_auth_demo_flutter/services/firebase_email_link_handler.
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+/// Listens to [errorStream] and shows an alert dialog each time an error is received.
+/// This widget should live for the entire lifecycle of the app, so that all errors are reported.
 class EmailLinkErrorPresenter extends StatefulWidget {
   const EmailLinkErrorPresenter({Key key, this.child, this.errorStream}) : super(key: key);
   final Widget child;
@@ -32,7 +34,7 @@ class _EmailLinkErrorPresenterState extends State<EmailLinkErrorPresenter> {
     _onEmailLinkErrorSubscription = widget.errorStream.listen((error) {
       PlatformAlertDialog(
         title: Strings.activationLinkError,
-        content: error.toString(),
+        content: error.message,
         defaultActionText: Strings.ok,
       ).show(context);
     });

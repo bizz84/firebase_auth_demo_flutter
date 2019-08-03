@@ -22,7 +22,7 @@ class EmailLinkError {
   final EmailLinkErrorType error;
   final String description;
 
-  Map<EmailLinkErrorType, String> get _descriptions => {
+  Map<EmailLinkErrorType, String> get _messages => {
         EmailLinkErrorType.linkError: description,
         EmailLinkErrorType.isNotSignInWithEmailLink: Strings.isNotSignInWithEmailLinkMessage,
         EmailLinkErrorType.emailNotSet: Strings.submitEmailAgain,
@@ -30,8 +30,10 @@ class EmailLinkError {
         EmailLinkErrorType.userAlreadySignedIn: Strings.userAlreadySignedIn,
       };
 
+  String get message => _messages[error];
+
   @override
-  String toString() => '$error: ${_descriptions[error]}';
+  String toString() => '$error: ${_messages[error]}';
 
   @override
   int get hashCode => error.hashCode;
