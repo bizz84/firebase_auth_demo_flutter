@@ -1,11 +1,17 @@
 
 # Sign-in with email link (passwordless)
 
-TO BE COMPLETED.
+This document explains how passwordless sign in works in this demo app.
 
-This is a guide to passwordless sign-in.
+## User flow
+
+When signing in via email link, the user goes through the following sequence:
+
+![](media/email-link-sequence.png)
 
 ## Setup steps
+
+TODO: Complete
 
 The Firebase app needs to be configured correcly. Refer to the official docs for this:
 
