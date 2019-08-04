@@ -7,7 +7,7 @@ This document explains how passwordless sign in works in this demo app.
 
 When signing in via email link, the user goes through the following sequence:
 
-![](media/email-link-sequence.png)
+![](../media/email-link-sequence.png)
 
 ## Setup steps
 
