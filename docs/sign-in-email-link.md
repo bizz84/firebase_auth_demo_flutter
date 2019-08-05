@@ -56,11 +56,11 @@ I'll say it again: **Ensure that the support email is set.**
 
 If not already done: 
 
-- add an Android app and set the package name and the the SHA-1 and SHA-256 fingerprints.
+- add an Android app and set the **package name**, the **SHA-1** and **SHA-256 fingerprints**.
 
 ![](email-link-android-settings.png)
 
-- add an iOS app and set the bundle ID, the App Store ID and Team ID.
+- add an iOS app and set the **Bundle ID**, **App Store ID** and **Team ID**.
 
 ![](email-link-ios-settings.png)
 
@@ -93,7 +93,7 @@ A couple of checkmarks will show if code signing is configured correctly.
 
 ### 6. Flutter setup
 
-Once the steps above are complete, the iOS & Android projects are ready to go.
+Once the steps above are complete, the iOS & Android projects are ready to go. 🚀
 
 Open the `pubspec.yaml` file and install `firebase_dynamic_links`. Example:
 
@@ -121,7 +121,7 @@ await widget.linkHandler.sendSignInWithEmailLink(
 );
 ```
 
-Note: the `Constants.firebaseProjectURL` value above. This is defined like so in this project:
+**Note**: the `Constants.firebaseProjectURL` value above is defined like so in this project:
 
 ```dart
 class Constants {
@@ -130,7 +130,7 @@ class Constants {
 }
 ```
 
-The value to use is stored in the authorized domains at the bottom of the the Firebase sign-in method page:
+This is defined in the authorized domains at the bottom of the the Firebase sign-in method page:
 
 ![](email-link-sign-in-associated-domains.png)
 
@@ -140,11 +140,11 @@ If something is wrong, the `sendSignInWithEmailLink` method will throw an except
 
 **Receiving activation links**
 
-This requires a bit of code to process incoming links with the `firebase_dynamic_links` package.
+This requires quite a bit of code to process incoming links with the `firebase_dynamic_links` package.
 
 See the relevant classes in this project for a full implementation:
 
-- `FirebaseEmailLinkHandler`
+- `FirebaseEmailLinkHandler` (tests in `firebase_email_link_handler_test.dart`)
 - `EmailLinkSignInPage`
 - `EmailLinkErrorPresenter`
 
@@ -159,11 +159,13 @@ In summary:
 - the user can enter and sumbit her email address to Firebase
 - Firebase sends an email with an activation link to that address
 - the user taps on the link, and is taken back to the app
-- the app signs in the user if the link was valid
+- the app signs in the user if the link is valid and not already used
+
+Bingo! 😎
 
 ## Is anything missing?
 
-Help fixing the documentation by [opening a PR](https://github.com/bizz84/firebase_auth_demo_flutter/pulls).
+Help fixing the documentation by [opening a PR](https://github.com/bizz84/firebase_auth_demo_flutter/pulls). 😇
 
 ## Additional references
 
