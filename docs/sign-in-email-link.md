@@ -21,7 +21,7 @@ To configure passwordless sign-in in Flutter, open the Firebase console for your
 
 The first step is to add a URL prefix that represents a custom Dynamic Links domain:
 
-![](../media/email-link-url-prefix-wizard.png)
+![](email-link-url-prefix-wizard.png)
 
 In this example, we use `firebaseauthdemoflutter.page.link` as a Google-provided domain.
 
@@ -29,22 +29,22 @@ Once this is done, a new dynamic link can be created.
 
 This opens up a wizard with a number of steps:
 
-![](../media/email-link-dynamic-link-wizard.png)
+![](email-link-dynamic-link-wizard.png)
 
 After completing all the steps, the dynamic links page will look like this:
 
-![](../media/email-link-dynamic-link-created.png)
+![](email-link-dynamic-link-created.png)
 
 
 ### 2. Authentication -> Sign-in method
 
 Enable both Email/Password and Email link as a sign-in method:
 
-![](../media/email-link-enable-sign-in-method.png)
+![](email-link-enable-sign-in-method.png)
 
 Scroll to the bottom of the page, and note the name of the authorized domains:
 
-![](../media/email-link-sign-in-associated-domains.png)
+![](email-link-sign-in-associated-domains.png)
 
 This will be needed when configuring the link in the code.
 
@@ -56,11 +56,11 @@ If not already done:
 
 - add an Android app and set the package name and the the SHA-1 and SHA-256 fingerprints.
 
-![](../media/email-link-android-settings.png)
+![](email-link-android-settings.png)
 
 - add an iOS app and set the bundle ID, the App Store ID and Team ID.
 
-![](../media/email-link-ios-settings.png)
+![](email-link-ios-settings.png)
 
 Use the (?) tooltips for instructions on the steps above.
 
@@ -85,7 +85,7 @@ Open the capabilities tab for the Runner target in the Xcode project settings, t
 - enable Associated Domains
 - add your dynamic link domain. Example: `applinks:firebaseauthdemoflutter.page.link`
 
-![](../media/email-link-xcode-associated-domains.png)
+![](email-link-xcode-associated-domains.png)
 
 A couple of checkmarks will show if code signing is configured correctly.
 
@@ -130,7 +130,7 @@ class Constants {
 
 The value to use is stored in the authorized domains at the bottom of the the Firebase sign-in method page:
 
-![](../media/email-link-sign-in-associated-domains.png)
+![](email-link-sign-in-associated-domains.png)
 
 That's it. If everything is configured correctly, you can run your app and send activation links to any email address.
 
@@ -150,7 +150,7 @@ See the relevant classes in this project for a full implementation:
 
 Once setup is done (see steps above), the user can sign-in via email link by following this sequence:
 
-![](../media/email-link-sequence.png)
+![](email-link-sequence.png)
 
 In summary:
 
