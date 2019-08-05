@@ -1,4 +1,4 @@
-import 'package:firebase_auth_demo_flutter/app/sign_in/email_password_sign_in_model.dart';
+import 'package:firebase_auth_demo_flutter/app/sign_in/email_password/email_password_sign_in_model.dart';
 import 'package:firebase_auth_demo_flutter/common_widgets/form_submit_button.dart';
 import 'package:firebase_auth_demo_flutter/common_widgets/platform_alert_dialog.dart';
 import 'package:firebase_auth_demo_flutter/common_widgets/platform_exception_alert_dialog.dart';
@@ -153,8 +153,7 @@ class _EmailPasswordSignInPageState extends State<EmailPasswordSignInPage> {
         if (model.formType == EmailPasswordSignInFormType.signIn)
           FlatButton(
             child: Text(Strings.forgotPasswordQuestion),
-            onPressed:
-                model.isLoading ? null : () => _updateFormType(EmailPasswordSignInFormType.forgotPassword),
+            onPressed: model.isLoading ? null : () => _updateFormType(EmailPasswordSignInFormType.forgotPassword),
           ),
       ],
     );

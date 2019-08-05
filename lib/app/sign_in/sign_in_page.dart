@@ -1,5 +1,6 @@
 import 'package:firebase_auth_demo_flutter/app/sign_in/developer_menu.dart';
-import 'package:firebase_auth_demo_flutter/app/sign_in/email_password_sign_in_page.dart';
+import 'package:firebase_auth_demo_flutter/app/sign_in/email_password/email_password_sign_in_page.dart';
+import 'package:firebase_auth_demo_flutter/app/sign_in/email_link/email_link_sign_in_page.dart';
 import 'package:firebase_auth_demo_flutter/app/sign_in/sign_in_manager.dart';
 import 'package:firebase_auth_demo_flutter/app/sign_in/social_sign_in_button.dart';
 import 'package:firebase_auth_demo_flutter/common_widgets/platform_exception_alert_dialog.dart';
@@ -21,22 +22,22 @@ class SignInPageBuilder extends StatelessWidget {
       builder: (_) => ValueNotifier<bool>(false),
       child: Consumer<ValueNotifier<bool>>(
         builder: (_, ValueNotifier<bool> isLoading, __) => Provider<SignInManager>(
-              builder: (_) => SignInManager(auth: auth, isLoading: isLoading),
-              child: Consumer<SignInManager>(
-                builder: (_, SignInManager manager, __) => SignInPage._(
-                            isLoading: isLoading.value,
-                            manager: manager,
-                            title: 'Firebase Auth Demo',
-                          ),
-              ),
+          builder: (_) => SignInManager(auth: auth, isLoading: isLoading),
+          child: Consumer<SignInManager>(
+            builder: (_, SignInManager manager, __) => SignInPage._(
+              isLoading: isLoading.value,
+              manager: manager,
+              title: 'Firebase Auth Demo',
             ),
+          ),
+        ),
       ),
     );
   }
 }
 
 class SignInPage extends StatelessWidget {
-  SignInPage._({Key key, this.isLoading, this.manager, this.title}) : super(key: key);
+  const SignInPage._({Key key, this.isLoading, this.manager, this.title}) : super(key: key);
   final SignInManager manager;
   final String title;
   final bool isLoading;
@@ -76,13 +77,17 @@ class SignInPage extends StatelessWidget {
     }
   }
 
-  Future<void> _signInWithEmail(BuildContext context) async {
+  Future<void> _signInWithEmailAndPassword(BuildContext context) async {
     Navigator.of(context).push(
       MaterialPageRoute<void>(
         fullscreenDialog: true,
         builder: (_) => EmailPasswordSignInPageBuilder(),
       ),
     );
+  }
+
+  Future<void> _signInWithEmailLink(BuildContext context) async {
+    await EmailLinkSignInPage.show(context);
   }
 
   @override
@@ -141,10 +146,17 @@ class SignInPage extends StatelessWidget {
           ),
           SizedBox(height: 8),
           SignInButton(
-            text: Strings.signInWithEmail,
-            onPressed: isLoading ? null : () => _signInWithEmail(context),
+            text: Strings.signInWithEmailPassword,
+            onPressed: isLoading ? null : () => _signInWithEmailAndPassword(context),
             textColor: Colors.white,
             color: Colors.teal[700],
+          ),
+          SizedBox(height: 8),
+          SignInButton(
+            text: Strings.signInWithEmailLink,
+            onPressed: isLoading ? null : () => _signInWithEmailLink(context),
+            textColor: Colors.white,
+            color: Colors.blueGrey[700],
           ),
           SizedBox(height: 8),
           Text(
@@ -156,7 +168,7 @@ class SignInPage extends StatelessWidget {
           SignInButton(
             text: Strings.goAnonymous,
             color: Colors.lime[300],
-            textColor: Colors.black,
+            textColor: Colors.black87,
             onPressed: isLoading ? null : () => _signInAnonymously(context),
           ),
         ],
