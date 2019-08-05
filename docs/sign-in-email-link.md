@@ -50,7 +50,9 @@ This will be needed when configuring the link in the code.
 
 ### 3. Firebase project settings
 
-Ensure that the support email is set.
+**Ensure that the support email is set.** It's amazing how many people trip up by forgetting this. 🤯
+
+I'll say it again: **Ensure that the support email is set.**
 
 If not already done: 
 
