@@ -1,3 +1,7 @@
+# 0.0.7
+
+- Show the user photo and display name in the HomePage ([#29](https://github.com/bizz84/firebase_auth_demo_flutter/pull/29))
+
 # 0.0.6
 
 - Add sign-in with email link (passwordless) ([#28](https://github.com/bizz84/firebase_auth_demo_flutter/pull/28))
