@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:firebase_auth_demo_flutter/common_widgets/avatar.dart';
 import 'package:firebase_auth_demo_flutter/common_widgets/platform_alert_dialog.dart';
 import 'package:firebase_auth_demo_flutter/constants/strings.dart';
 import 'package:firebase_auth_demo_flutter/services/auth_service.dart';
@@ -7,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatelessWidget {
-
   Future<void> _signOut(BuildContext context) async {
     try {
       final AuthService auth = Provider.of<AuthService>(context);
@@ -31,6 +31,7 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<User>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(Strings.homePage),
@@ -46,7 +47,32 @@ class HomePage extends StatelessWidget {
             onPressed: () => _confirmSignOut(context),
           ),
         ],
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(130.0),
+          child: _buildUserInfo(user),
+        ),
       ),
+    );
+  }
+
+  Widget _buildUserInfo(User user) {
+    final photoUrl = user.photoUrl ?? 'https://robohash.org/${user.uid}';
+    return Column(
+      children: [
+        Avatar(
+          url: photoUrl,
+          radius: 50,
+          borderColor: Colors.black54,
+          borderWidth: 2.0,
+        ),
+        SizedBox(height: 8),
+        if (user.displayName != null)
+          Text(
+            user.displayName,
+            style: TextStyle(color: Colors.white),
+          ),
+        SizedBox(height: 8),
+      ],
     );
   }
 }
