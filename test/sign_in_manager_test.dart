@@ -39,7 +39,8 @@ void main() {
   });
 
   void stubSignInAnonymouslyReturnsUser() {
-    when(mockAuthService.signInAnonymously()).thenAnswer((_) => Future<User>.value(User(uid: '123')));
+    when(mockAuthService.signInAnonymously())
+        .thenAnswer((_) => Future<User>.value(User(uid: '123')));
   }
 
   void stubSignInAnonymouslyThrows(Exception exception) {
