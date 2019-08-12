@@ -3,12 +3,12 @@ import 'package:flutter/rendering.dart';
 
 class Avatar extends StatelessWidget {
   const Avatar({
-    @required this.url,
+    @required this.photoUrl,
     @required this.radius,
     this.borderColor,
     this.borderWidth,
-  }) : assert(url != null);
-  final String url;
+  });
+  final String photoUrl;
   final double radius;
   final Color borderColor;
   final double borderWidth;
@@ -20,7 +20,7 @@ class Avatar extends StatelessWidget {
       child: CircleAvatar(
         radius: radius,
         backgroundColor: Colors.black12,
-        backgroundImage: NetworkImage(url),
+        backgroundImage: photoUrl != null ? NetworkImage(photoUrl) : null,
       ),
     );
   }

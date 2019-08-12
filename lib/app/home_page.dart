@@ -56,11 +56,10 @@ class HomePage extends StatelessWidget {
   }
 
   Widget _buildUserInfo(User user) {
-    final photoUrl = user.photoUrl ?? 'https://robohash.org/${user.uid}';
     return Column(
       children: [
         Avatar(
-          url: photoUrl,
+          photoUrl: user.photoUrl,
           radius: 50,
           borderColor: Colors.black54,
           borderWidth: 2.0,
