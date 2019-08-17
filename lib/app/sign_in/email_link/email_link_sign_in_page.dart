@@ -62,7 +62,7 @@ class _EmailLinkSignInPageState extends State<EmailLinkSignInPage> {
       _email = email ?? '';
       _emailController.value = TextEditingValue(text: _email);
     });
-    // Invoke callback user is signed in
+    // Invoke onSignedIn callback if a non-null user is detected
     _onAuthStateChangedSubscription =
         widget.authService.onAuthStateChanged.listen((User user) {
       if (user != null) {
