@@ -108,6 +108,7 @@ class _EmailPasswordSignInPageState extends State<EmailPasswordSignInPage> {
 
   Widget _buildEmailField() {
     return TextField(
+      key: Key('email'),
       controller: _emailController,
       focusNode: _emailFocusNode,
       decoration: InputDecoration(
@@ -130,6 +131,7 @@ class _EmailPasswordSignInPageState extends State<EmailPasswordSignInPage> {
 
   Widget _buildPasswordField() {
     return TextField(
+      key: Key('password'),
       controller: _passwordController,
       focusNode: _passwordFocusNode,
       decoration: InputDecoration(
@@ -159,12 +161,14 @@ class _EmailPasswordSignInPageState extends State<EmailPasswordSignInPage> {
         ],
         SizedBox(height: 8.0),
         FormSubmitButton(
+          key: Key('primary-button'),
           text: model.primaryButtonText,
           loading: model.isLoading,
           onPressed: model.isLoading ? null : _submit,
         ),
         SizedBox(height: 8.0),
         FlatButton(
+          key: Key('secondary-button'),
           child: Text(model.secondaryButtonText),
           onPressed: model.isLoading
               ? null
@@ -172,6 +176,7 @@ class _EmailPasswordSignInPageState extends State<EmailPasswordSignInPage> {
         ),
         if (model.formType == EmailPasswordSignInFormType.signIn)
           FlatButton(
+            key: Key('tertiary-button'),
             child: Text(Strings.forgotPasswordQuestion),
             onPressed: model.isLoading
                 ? null
