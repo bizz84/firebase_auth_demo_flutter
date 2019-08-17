@@ -1,3 +1,7 @@
+# 0.0.8
+
+- Add widget tests for email and password sign-in ([#31](https://github.com/bizz84/firebase_auth_demo_flutter/pull/31))
+
 # 0.0.7
 
 - Show the user photo and display name in the HomePage ([#29](https://github.com/bizz84/firebase_auth_demo_flutter/pull/29))
