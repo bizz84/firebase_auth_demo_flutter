@@ -21,7 +21,8 @@ class SignInPageBuilder extends StatelessWidget {
     return ChangeNotifierProvider<ValueNotifier<bool>>(
       builder: (_) => ValueNotifier<bool>(false),
       child: Consumer<ValueNotifier<bool>>(
-        builder: (_, ValueNotifier<bool> isLoading, __) => Provider<SignInManager>(
+        builder: (_, ValueNotifier<bool> isLoading, __) =>
+            Provider<SignInManager>(
           builder: (_) => SignInManager(auth: auth, isLoading: isLoading),
           child: Consumer<SignInManager>(
             builder: (_, SignInManager manager, __) => SignInPage._(
@@ -37,12 +38,14 @@ class SignInPageBuilder extends StatelessWidget {
 }
 
 class SignInPage extends StatelessWidget {
-  const SignInPage._({Key key, this.isLoading, this.manager, this.title}) : super(key: key);
+  const SignInPage._({Key key, this.isLoading, this.manager, this.title})
+      : super(key: key);
   final SignInManager manager;
   final String title;
   final bool isLoading;
 
-  Future<void> _showSignInError(BuildContext context, PlatformException exception) async {
+  Future<void> _showSignInError(
+      BuildContext context, PlatformException exception) async {
     await PlatformExceptionAlertDialog(
       title: Strings.signInFailed,
       exception: exception,
@@ -78,16 +81,17 @@ class SignInPage extends StatelessWidget {
   }
 
   Future<void> _signInWithEmailAndPassword(BuildContext context) async {
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        fullscreenDialog: true,
-        builder: (_) => EmailPasswordSignInPageBuilder(),
-      ),
+    await EmailPasswordSignInPage.show(
+      context,
+      onSignedIn: () => Navigator.pop(context),
     );
   }
 
   Future<void> _signInWithEmailLink(BuildContext context) async {
-    await EmailLinkSignInPage.show(context);
+    await EmailLinkSignInPage.show(
+      context,
+      onSignedIn: () => Navigator.pop(context),
+    );
   }
 
   @override
@@ -147,7 +151,8 @@ class SignInPage extends StatelessWidget {
           SizedBox(height: 8),
           SignInButton(
             text: Strings.signInWithEmailPassword,
-            onPressed: isLoading ? null : () => _signInWithEmailAndPassword(context),
+            onPressed:
+                isLoading ? null : () => _signInWithEmailAndPassword(context),
             textColor: Colors.white,
             color: Colors.teal[700],
           ),

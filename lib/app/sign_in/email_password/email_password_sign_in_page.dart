@@ -8,25 +8,38 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-class EmailPasswordSignInPageBuilder extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
+class EmailPasswordSignInPage extends StatefulWidget {
+  const EmailPasswordSignInPage._(
+      {Key key, @required this.model, this.onSignedIn})
+      : super(key: key);
+  final EmailPasswordSignInModel model;
+  final VoidCallback onSignedIn;
+
+  static Future<void> show(BuildContext context,
+      {VoidCallback onSignedIn}) async {
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        fullscreenDialog: true,
+        builder: (_) =>
+            EmailPasswordSignInPage.create(context, onSignedIn: onSignedIn),
+      ),
+    );
+  }
+
+  static Widget create(BuildContext context, {VoidCallback onSignedIn}) {
     final AuthService auth = Provider.of<AuthService>(context);
     return ChangeNotifierProvider<EmailPasswordSignInModel>(
       builder: (_) => EmailPasswordSignInModel(auth: auth),
       child: Consumer<EmailPasswordSignInModel>(
-        builder: (_, EmailPasswordSignInModel model, __) => EmailPasswordSignInPage._(model: model),
+        builder: (_, EmailPasswordSignInModel model, __) =>
+            EmailPasswordSignInPage._(model: model, onSignedIn: onSignedIn),
       ),
     );
   }
-}
-
-class EmailPasswordSignInPage extends StatefulWidget {
-  const EmailPasswordSignInPage._({Key key, @required this.model}) : super(key: key);
-  final EmailPasswordSignInModel model;
 
   @override
-  _EmailPasswordSignInPageState createState() => _EmailPasswordSignInPageState();
+  _EmailPasswordSignInPageState createState() =>
+      _EmailPasswordSignInPageState();
 }
 
 class _EmailPasswordSignInPageState extends State<EmailPasswordSignInPage> {
@@ -46,7 +59,8 @@ class _EmailPasswordSignInPageState extends State<EmailPasswordSignInPage> {
     super.dispose();
   }
 
-  void _showSignInError(EmailPasswordSignInModel model, PlatformException exception) {
+  void _showSignInError(
+      EmailPasswordSignInModel model, PlatformException exception) {
     PlatformExceptionAlertDialog(
       title: model.errorAlertTitle,
       exception: exception,
@@ -70,7 +84,9 @@ class _EmailPasswordSignInPageState extends State<EmailPasswordSignInPage> {
             defaultActionText: Strings.ok,
           ).show(context);
         } else {
-          Navigator.of(context).pop();
+          if (widget.onSignedIn != null) {
+            widget.onSignedIn();
+          }
         }
       }
     } on PlatformException catch (e) {
@@ -79,7 +95,8 @@ class _EmailPasswordSignInPageState extends State<EmailPasswordSignInPage> {
   }
 
   void _emailEditingComplete() {
-    final FocusNode newFocus = model.canSubmitEmail ? _passwordFocusNode : _emailFocusNode;
+    final FocusNode newFocus =
+        model.canSubmitEmail ? _passwordFocusNode : _emailFocusNode;
     FocusScope.of(context).requestFocus(newFocus);
   }
 
@@ -91,6 +108,7 @@ class _EmailPasswordSignInPageState extends State<EmailPasswordSignInPage> {
 
   Widget _buildEmailField() {
     return TextField(
+      key: Key('email'),
       controller: _emailController,
       focusNode: _emailFocusNode,
       decoration: InputDecoration(
@@ -113,6 +131,7 @@ class _EmailPasswordSignInPageState extends State<EmailPasswordSignInPage> {
 
   Widget _buildPasswordField() {
     return TextField(
+      key: Key('password'),
       controller: _passwordController,
       focusNode: _passwordFocusNode,
       decoration: InputDecoration(
@@ -135,25 +154,34 @@ class _EmailPasswordSignInPageState extends State<EmailPasswordSignInPage> {
       children: <Widget>[
         SizedBox(height: 8.0),
         _buildEmailField(),
-        if (model.formType != EmailPasswordSignInFormType.forgotPassword) ...<Widget>[
+        if (model.formType !=
+            EmailPasswordSignInFormType.forgotPassword) ...<Widget>[
           SizedBox(height: 8.0),
           _buildPasswordField(),
         ],
         SizedBox(height: 8.0),
         FormSubmitButton(
+          key: Key('primary-button'),
           text: model.primaryButtonText,
           loading: model.isLoading,
           onPressed: model.isLoading ? null : _submit,
         ),
         SizedBox(height: 8.0),
         FlatButton(
+          key: Key('secondary-button'),
           child: Text(model.secondaryButtonText),
-          onPressed: model.isLoading ? null : () => _updateFormType(model.secondaryActionFormType),
+          onPressed: model.isLoading
+              ? null
+              : () => _updateFormType(model.secondaryActionFormType),
         ),
         if (model.formType == EmailPasswordSignInFormType.signIn)
           FlatButton(
+            key: Key('tertiary-button'),
             child: Text(Strings.forgotPasswordQuestion),
-            onPressed: model.isLoading ? null : () => _updateFormType(EmailPasswordSignInFormType.forgotPassword),
+            onPressed: model.isLoading
+                ? null
+                : () =>
+                    _updateFormType(EmailPasswordSignInFormType.forgotPassword),
           ),
       ],
     );

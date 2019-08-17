@@ -18,19 +18,24 @@ class EmailLinkSignInPage extends StatefulWidget {
     Key key,
     @required this.authService,
     @required this.linkHandler,
+    this.onSignedIn,
   }) : super(key: key);
   final FirebaseEmailLinkHandler linkHandler;
   final AuthService authService;
+  final VoidCallback onSignedIn;
 
-  static Future<void> show(BuildContext context) async {
+  static Future<void> show(BuildContext context,
+      {VoidCallback onSignedIn}) async {
     final AuthService authService = Provider.of<AuthService>(context);
-    final FirebaseEmailLinkHandler linkHandler = Provider.of<FirebaseEmailLinkHandler>(context);
+    final FirebaseEmailLinkHandler linkHandler =
+        Provider.of<FirebaseEmailLinkHandler>(context);
     await Navigator.of(context).push(
       MaterialPageRoute<void>(
         fullscreenDialog: true,
         builder: (_) => EmailLinkSignInPage(
           authService: authService,
           linkHandler: linkHandler,
+          onSignedIn: onSignedIn,
         ),
       ),
     );
@@ -57,11 +62,13 @@ class _EmailLinkSignInPageState extends State<EmailLinkSignInPage> {
       _email = email ?? '';
       _emailController.value = TextEditingValue(text: _email);
     });
-    // TODO: If this could be moved elsewhere, then authService wouldn't need to be a dependency
-    // Dismiss page if a user is signed in
-    _onAuthStateChangedSubscription = widget.authService.onAuthStateChanged.listen((User user) {
+    // Invoke onSignedIn callback if a non-null user is detected
+    _onAuthStateChangedSubscription =
+        widget.authService.onAuthStateChanged.listen((User user) {
       if (user != null) {
-        Navigator.of(context).popUntil((Route<dynamic> route) => route.isFirst);
+        if (widget.onSignedIn != null && mounted) {
+          widget.onSignedIn();
+        }
       }
     });
   }
@@ -130,7 +137,8 @@ class _EmailLinkSignInPageState extends State<EmailLinkSignInPage> {
   }
 
   Widget _buildForm(bool isLoading) {
-    final TextStyle hintStyle = TextStyle(fontSize: 18.0, color: Colors.grey[400]);
+    final TextStyle hintStyle =
+        TextStyle(fontSize: 18.0, color: Colors.grey[400]);
     return Form(
       key: _formKey,
       child: Column(
@@ -149,10 +157,13 @@ class _EmailLinkSignInPageState extends State<EmailLinkSignInPage> {
             enabled: !isLoading,
             keyboardType: TextInputType.emailAddress,
             validator: (String value) {
-              return _emailSubmitValidator.isValid(value) ? null : Strings.invalidEmailErrorText;
+              return _emailSubmitValidator.isValid(value)
+                  ? null
+                  : Strings.invalidEmailErrorText;
             },
             inputFormatters: <TextInputFormatter>[
-              ValidatorInputFormatter(editingValidator: EmailEditingRegexValidator()),
+              ValidatorInputFormatter(
+                  editingValidator: EmailEditingRegexValidator()),
             ],
             autocorrect: true,
             keyboardAppearance: Brightness.light,
