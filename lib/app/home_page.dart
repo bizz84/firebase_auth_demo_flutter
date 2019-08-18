@@ -2,18 +2,23 @@ import 'dart:async';
 
 import 'package:firebase_auth_demo_flutter/common_widgets/avatar.dart';
 import 'package:firebase_auth_demo_flutter/common_widgets/platform_alert_dialog.dart';
+import 'package:firebase_auth_demo_flutter/common_widgets/platform_exception_alert_dialog.dart';
 import 'package:firebase_auth_demo_flutter/constants/strings.dart';
 import 'package:firebase_auth_demo_flutter/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/services.dart';
 
 class HomePage extends StatelessWidget {
   Future<void> _signOut(BuildContext context) async {
     try {
       final AuthService auth = Provider.of<AuthService>(context);
       await auth.signOut();
-    } catch (e) {
-      print(e.toString());
+    } on PlatformException catch (e) {
+      await PlatformExceptionAlertDialog(
+        title: Strings.logoutFailed,
+        exception: e,
+      ).show(context);
     }
   }
 
