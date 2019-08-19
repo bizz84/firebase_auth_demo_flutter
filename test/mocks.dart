@@ -10,7 +10,7 @@ class MockWidgetsBinding extends Mock implements WidgetsBinding {}
 
 class MockEmailSecureStore extends Mock implements EmailSecureStore {}
 
-class MockNavigationObserver extends Mock implements NavigatorObserver {}
+class MockNavigatorObserver extends Mock implements NavigatorObserver {}
 
 class MockFirebaseEmailLinkHandler extends Mock
     implements FirebaseEmailLinkHandler {}

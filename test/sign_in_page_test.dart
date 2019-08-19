@@ -13,13 +13,13 @@ import 'mocks.dart';
 void main() {
   MockAuthService mockAuthService;
   MockFirebaseEmailLinkHandler mockFirebaseEmailLinkHandler;
-  MockNavigationObserver mockNavigationObserver;
+  MockNavigatorObserver mockNavigatorObserver;
   StreamController<User> onAuthStateChangedController;
 
   setUp(() {
     mockAuthService = MockAuthService();
     mockFirebaseEmailLinkHandler = MockFirebaseEmailLinkHandler();
-    mockNavigationObserver = MockNavigationObserver();
+    mockNavigatorObserver = MockNavigatorObserver();
     onAuthStateChangedController = StreamController<User>();
   });
 
@@ -58,12 +58,12 @@ void main() {
         ],
         child: MaterialApp(
           home: SignInPageBuilder(),
-          navigatorObservers: [mockNavigationObserver],
+          navigatorObservers: [mockNavigatorObserver],
         ),
       ),
     );
     // didPush is called once when the widget is first built
-    verify(mockNavigationObserver.didPush(any, any)).called(1);
+    verify(mockNavigatorObserver.didPush(any, any)).called(1);
   }
 
   testWidgets('email & password navigation', (WidgetTester tester) async {
@@ -75,7 +75,7 @@ void main() {
     await tester.tap(emailPasswordButton);
     await tester.pumpAndSettle();
 
-    verify(mockNavigationObserver.didPush(any, any)).called(1);
+    verify(mockNavigatorObserver.didPush(any, any)).called(1);
   });
 
   testWidgets('email link navigation', (WidgetTester tester) async {
@@ -91,6 +91,6 @@ void main() {
     await tester.tap(emailLinkButton);
     await tester.pumpAndSettle();
 
-    verify(mockNavigationObserver.didPush(any, any)).called(1);
+    verify(mockNavigatorObserver.didPush(any, any)).called(1);
   });
 }
