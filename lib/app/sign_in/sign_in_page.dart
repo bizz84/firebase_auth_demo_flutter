@@ -44,6 +44,12 @@ class SignInPage extends StatelessWidget {
   final String title;
   final bool isLoading;
 
+  static const Key googleButtonKey = Key('google');
+  static const Key facebookButtonKey = Key('facebook');
+  static const Key emailPasswordButtonKey = Key('email-password');
+  static const Key emailLinkButtonKey = Key('email-link');
+  static const Key anonymousButtonKey = Key('anonymous');
+
   Future<void> _showSignInError(
       BuildContext context, PlatformException exception) async {
     await PlatformExceptionAlertDialog(
@@ -135,6 +141,7 @@ class SignInPage extends StatelessWidget {
           ),
           SizedBox(height: 48.0),
           SocialSignInButton(
+            key: googleButtonKey,
             assetName: 'assets/go-logo.png',
             text: Strings.signInWithGoogle,
             onPressed: isLoading ? null : () => _signInWithGoogle(context),
@@ -142,6 +149,7 @@ class SignInPage extends StatelessWidget {
           ),
           SizedBox(height: 8),
           SocialSignInButton(
+            key: facebookButtonKey,
             assetName: 'assets/fb-logo.png',
             text: Strings.signInWithFacebook,
             textColor: Colors.white,
@@ -150,6 +158,7 @@ class SignInPage extends StatelessWidget {
           ),
           SizedBox(height: 8),
           SignInButton(
+            key: emailPasswordButtonKey,
             text: Strings.signInWithEmailPassword,
             onPressed:
                 isLoading ? null : () => _signInWithEmailAndPassword(context),
@@ -158,6 +167,7 @@ class SignInPage extends StatelessWidget {
           ),
           SizedBox(height: 8),
           SignInButton(
+            key: emailLinkButtonKey,
             text: Strings.signInWithEmailLink,
             onPressed: isLoading ? null : () => _signInWithEmailLink(context),
             textColor: Colors.white,
@@ -171,6 +181,7 @@ class SignInPage extends StatelessWidget {
           ),
           SizedBox(height: 8),
           SignInButton(
+            key: anonymousButtonKey,
             text: Strings.goAnonymous,
             color: Colors.lime[300],
             textColor: Colors.black87,
