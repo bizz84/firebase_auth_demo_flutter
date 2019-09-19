@@ -21,6 +21,7 @@ class Avatar extends StatelessWidget {
         radius: radius,
         backgroundColor: Colors.black12,
         backgroundImage: photoUrl != null ? NetworkImage(photoUrl) : null,
+        child: photoUrl == null ? Icon(Icons.camera_alt, size: radius) : null,
       ),
     );
   }

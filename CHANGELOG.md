@@ -1,6 +1,8 @@
+
 # 0.0.8
 
 - Add widget tests for email and password sign-in ([#31](https://github.com/bizz84/firebase_auth_demo_flutter/pull/31))
+- Show camera image icon when avatar is not loaded
 
 # 0.0.7
 
