@@ -43,8 +43,7 @@ class EmailPasswordSignInPage extends StatefulWidget {
 }
 
 class _EmailPasswordSignInPageState extends State<EmailPasswordSignInPage> {
-  final FocusNode _emailFocusNode = FocusNode();
-  final FocusNode _passwordFocusNode = FocusNode();
+  final FocusScopeNode _node = FocusScopeNode();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -52,8 +51,7 @@ class _EmailPasswordSignInPageState extends State<EmailPasswordSignInPage> {
 
   @override
   void dispose() {
-    _emailFocusNode.dispose();
-    _passwordFocusNode.dispose();
+    _node.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
@@ -67,13 +65,7 @@ class _EmailPasswordSignInPageState extends State<EmailPasswordSignInPage> {
     ).show(context);
   }
 
-  void _unfocus() {
-    _emailFocusNode.unfocus();
-    _passwordFocusNode.unfocus();
-  }
-
   Future<void> _submit() async {
-    _unfocus();
     try {
       final bool success = await model.submit();
       if (success) {
@@ -95,9 +87,17 @@ class _EmailPasswordSignInPageState extends State<EmailPasswordSignInPage> {
   }
 
   void _emailEditingComplete() {
-    final FocusNode newFocus =
-        model.canSubmitEmail ? _passwordFocusNode : _emailFocusNode;
-    FocusScope.of(context).requestFocus(newFocus);
+    if (model.canSubmitEmail) {
+      _node.nextFocus();
+    }
+  }
+
+  void _passwordEditingComplete() {
+    if (!model.canSubmitEmail) {
+      _node.previousFocus();
+      return;
+    }
+    _submit();
   }
 
   void _updateFormType(EmailPasswordSignInFormType formType) {
@@ -110,7 +110,6 @@ class _EmailPasswordSignInPageState extends State<EmailPasswordSignInPage> {
     return TextField(
       key: Key('email'),
       controller: _emailController,
-      focusNode: _emailFocusNode,
       decoration: InputDecoration(
         labelText: Strings.emailLabel,
         hintText: Strings.emailHint,
@@ -133,7 +132,6 @@ class _EmailPasswordSignInPageState extends State<EmailPasswordSignInPage> {
     return TextField(
       key: Key('password'),
       controller: _passwordController,
-      focusNode: _passwordFocusNode,
       decoration: InputDecoration(
         labelText: model.passwordLabelText,
         errorText: model.passwordErrorText,
@@ -144,46 +142,49 @@ class _EmailPasswordSignInPageState extends State<EmailPasswordSignInPage> {
       textInputAction: TextInputAction.done,
       keyboardAppearance: Brightness.light,
       onChanged: model.updatePassword,
-      onEditingComplete: _submit,
+      onEditingComplete: _passwordEditingComplete,
     );
   }
 
   Widget _buildContent() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: <Widget>[
-        SizedBox(height: 8.0),
-        _buildEmailField(),
-        if (model.formType !=
-            EmailPasswordSignInFormType.forgotPassword) ...<Widget>[
+    return FocusScope(
+      node: _node,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
           SizedBox(height: 8.0),
-          _buildPasswordField(),
-        ],
-        SizedBox(height: 8.0),
-        FormSubmitButton(
-          key: Key('primary-button'),
-          text: model.primaryButtonText,
-          loading: model.isLoading,
-          onPressed: model.isLoading ? null : _submit,
-        ),
-        SizedBox(height: 8.0),
-        FlatButton(
-          key: Key('secondary-button'),
-          child: Text(model.secondaryButtonText),
-          onPressed: model.isLoading
-              ? null
-              : () => _updateFormType(model.secondaryActionFormType),
-        ),
-        if (model.formType == EmailPasswordSignInFormType.signIn)
+          _buildEmailField(),
+          if (model.formType !=
+              EmailPasswordSignInFormType.forgotPassword) ...<Widget>[
+            SizedBox(height: 8.0),
+            _buildPasswordField(),
+          ],
+          SizedBox(height: 8.0),
+          FormSubmitButton(
+            key: Key('primary-button'),
+            text: model.primaryButtonText,
+            loading: model.isLoading,
+            onPressed: model.isLoading ? null : _submit,
+          ),
+          SizedBox(height: 8.0),
           FlatButton(
-            key: Key('tertiary-button'),
-            child: Text(Strings.forgotPasswordQuestion),
+            key: Key('secondary-button'),
+            child: Text(model.secondaryButtonText),
             onPressed: model.isLoading
                 ? null
-                : () =>
-                    _updateFormType(EmailPasswordSignInFormType.forgotPassword),
+                : () => _updateFormType(model.secondaryActionFormType),
           ),
-      ],
+          if (model.formType == EmailPasswordSignInFormType.signIn)
+            FlatButton(
+              key: Key('tertiary-button'),
+              child: Text(Strings.forgotPasswordQuestion),
+              onPressed: model.isLoading
+                  ? null
+                  : () => _updateFormType(
+                      EmailPasswordSignInFormType.forgotPassword),
+            ),
+        ],
+      ),
     );
   }
 
