@@ -9,16 +9,16 @@ enum AuthServiceType { firebase, mock }
 
 class AuthServiceAdapter implements AuthService {
   AuthServiceAdapter({@required AuthServiceType initialAuthServiceType})
-      : _authServiceTypeNotifier =
+      : authServiceTypeNotifier =
             ValueNotifier<AuthServiceType>(initialAuthServiceType) {
     _setup();
   }
   final FirebaseAuthService _firebaseAuthService = FirebaseAuthService();
   final MockAuthService _mockAuthService = MockAuthService();
-  final ValueNotifier<AuthServiceType> _authServiceTypeNotifier;
 
   // Value notifier used to switch between [FirebaseAuthService] and [MockAuthService]
-  AuthServiceType get authServiceType => _authServiceTypeNotifier.value;
+  final ValueNotifier<AuthServiceType> authServiceTypeNotifier;
+  AuthServiceType get authServiceType => authServiceTypeNotifier.value;
   AuthService get authService => authServiceType == AuthServiceType.firebase
       ? _firebaseAuthService
       : _mockAuthService;
@@ -57,7 +57,7 @@ class AuthServiceAdapter implements AuthService {
     _mockAuthSubscription?.cancel();
     _onAuthStateChangedController?.close();
     _mockAuthService.dispose();
-    _authServiceTypeNotifier.dispose();
+    authServiceTypeNotifier.dispose();
   }
 
   final StreamController<User> _onAuthStateChangedController =
