@@ -43,19 +43,19 @@ void main() {
     final anonymousSignInButton = find.byValueKey(Keys.anonymous);
     // Check to fail early if the auth state is authenticated
     await driver.waitFor(anonymousSignInButton);
-    await delay(1000); // for video capture
+    //await delay(1000); // for video capture
     await driver.tap(anonymousSignInButton);
 
     // find and tap logout button
     final logoutButton = find.byValueKey(Keys.logout);
     await driver.waitFor(logoutButton);
-    await delay(1000); // for video capture
+    //await delay(1000); // for video capture
     await driver.tap(logoutButton);
 
     // find and tap confirm logout button
     final confirmLogoutButton = find.byValueKey(Keys.alertDefault);
     await driver.waitFor(confirmLogoutButton);
-    await delay(1000); // for video capture
+    //await delay(1000); // for video capture
     await driver.tap(confirmLogoutButton);
 
     // try to find anonymous sign in button again
