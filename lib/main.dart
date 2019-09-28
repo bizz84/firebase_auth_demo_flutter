@@ -1,6 +1,5 @@
 import 'package:firebase_auth_demo_flutter/app/email_link_error_presenter.dart';
 import 'package:firebase_auth_demo_flutter/app/landing_page.dart';
-import 'package:firebase_auth_demo_flutter/constants/keys.dart';
 import 'package:firebase_auth_demo_flutter/services/auth_service.dart';
 import 'package:firebase_auth_demo_flutter/services/auth_service_adapter.dart';
 import 'package:firebase_auth_demo_flutter/services/firebase_email_link_handler.dart';
@@ -12,7 +11,7 @@ import 'package:provider/provider.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
-  MyApp({this.initialAuthServiceType = AuthServiceType.firebase});
+  const MyApp({this.initialAuthServiceType = AuthServiceType.firebase});
   final AuthServiceType initialAuthServiceType;
 
   @override
@@ -21,8 +20,7 @@ class MyApp extends StatelessWidget {
       providers: <SingleChildCloneableWidget>[
         Provider<AuthService>(
           builder: (_) => AuthServiceAdapter(
-              authServiceTypeNotifier:
-                  ValueNotifier<AuthServiceType>(initialAuthServiceType)),
+              initialAuthServiceType: initialAuthServiceType),
           dispose: (_, AuthService authService) => authService.dispose(),
         ),
         Provider<EmailSecureStore>(
