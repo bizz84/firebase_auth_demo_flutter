@@ -1,12 +1,14 @@
-// https://stackoverflow.com/questions/52462646/how-to-solve-not-found-dartui-error-while-running-integration-tests-on-flutt
+// Some introductory articles about integration tests:
 // http://cogitas.net/write-integration-test-flutter/
 // https://medium.com/flutter-community/testing-flutter-ui-with-flutter-driver-c1583681e337
-// Flutter driver - open drawer not supported: https://github.com/flutter/flutter/issues/9002
-/*
- Rules:
- - Not importing flutter code
- - Not importing flutter_test.dart
-*/
+// https://stackoverflow.com/questions/52462646/how-to-solve-not-found-dartui-error-while-running-integration-tests-on-flutt
+//
+// Issues with opening the drawer with flutter driver
+// https://github.com/flutter/flutter/issues/9002
+//
+// Rules:
+// - Don't import any flutter code (e.g. material.dart)
+// - Don't import flutter_test.dart
 
 import 'package:firebase_auth_demo_flutter/constants/keys.dart';
 // Imports the Flutter Driver API.
@@ -39,6 +41,7 @@ void main() {
   test('sign in anonymously, sign out', () async {
     // find and tap anonymous sign in button
     final anonymousSignInButton = find.byValueKey(Keys.anonymous);
+    // Check to fail early if the auth state is authenticated
     await driver.waitFor(anonymousSignInButton);
     await delay(1000); // for video capture
     await driver.tap(anonymousSignInButton);
