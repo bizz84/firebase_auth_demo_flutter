@@ -1,17 +1,15 @@
 import 'package:firebase_auth_demo_flutter/app/sign_in/auth_service_type_selector.dart';
+import 'package:firebase_auth_demo_flutter/constants/keys.dart';
 import 'package:firebase_auth_demo_flutter/constants/strings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class DeveloperMenu extends StatelessWidget {
-  static const String drawerValueKey = 'drawer';
-
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: MediaQuery.of(context).size.width * 0.85,
       child: Drawer(
-        key: Key(drawerValueKey),
         child: Column(children: <Widget>[
           DrawerHeader(
             child: Column(
