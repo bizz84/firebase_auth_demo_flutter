@@ -4,11 +4,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class DeveloperMenu extends StatelessWidget {
+  static const String drawerValueKey = 'drawer';
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: MediaQuery.of(context).size.width * 0.85,
       child: Drawer(
+        key: Key(drawerValueKey),
         child: Column(children: <Widget>[
           DrawerHeader(
             child: Column(
