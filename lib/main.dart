@@ -11,16 +11,21 @@ import 'package:provider/provider.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
+  const MyApp({this.initialAuthServiceType = AuthServiceType.firebase});
+  final AuthServiceType initialAuthServiceType;
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: <SingleChildCloneableWidget>[
         Provider<AuthService>(
-          builder: (_) => AuthServiceAdapter(),
+          builder: (_) => AuthServiceAdapter(
+              initialAuthServiceType: initialAuthServiceType),
           dispose: (_, AuthService authService) => authService.dispose(),
         ),
         Provider<EmailSecureStore>(
-          builder: (_) => EmailSecureStore(flutterSecureStorage: FlutterSecureStorage()),
+          builder: (_) =>
+              EmailSecureStore(flutterSecureStorage: FlutterSecureStorage()),
         ),
         ProxyProvider2<AuthService, EmailSecureStore, FirebaseEmailLinkHandler>(
           builder: (_, AuthService authService, EmailSecureStore storage, __) =>

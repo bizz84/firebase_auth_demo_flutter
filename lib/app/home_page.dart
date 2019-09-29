@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:firebase_auth_demo_flutter/common_widgets/avatar.dart';
 import 'package:firebase_auth_demo_flutter/common_widgets/platform_alert_dialog.dart';
 import 'package:firebase_auth_demo_flutter/common_widgets/platform_exception_alert_dialog.dart';
+import 'package:firebase_auth_demo_flutter/constants/keys.dart';
 import 'package:firebase_auth_demo_flutter/constants/strings.dart';
 import 'package:firebase_auth_demo_flutter/services/auth_service.dart';
 import 'package:flutter/material.dart';
@@ -42,6 +43,7 @@ class HomePage extends StatelessWidget {
         title: Text(Strings.homePage),
         actions: <Widget>[
           FlatButton(
+            key: Key(Keys.logout),
             child: Text(
               Strings.logout,
               style: TextStyle(

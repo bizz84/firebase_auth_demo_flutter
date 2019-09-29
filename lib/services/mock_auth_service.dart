@@ -9,8 +9,8 @@ import 'package:random_string/random_string.dart' as random;
 /// Keeps an in-memory store of registered accounts so that registration and sign in flows can be tested.
 class MockAuthService implements AuthService {
   MockAuthService({
-    this.startupTime = const Duration(milliseconds: 500),
-    this.responseTime = const Duration(seconds: 4),
+    this.startupTime = const Duration(milliseconds: 250),
+    this.responseTime = const Duration(seconds: 2),
   }) {
     Future<void>.delayed(responseTime).then((_) {
       _add(null);

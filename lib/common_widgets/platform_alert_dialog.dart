@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:firebase_auth_demo_flutter/common_widgets/platform_widget.dart';
+import 'package:firebase_auth_demo_flutter/constants/keys.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -55,14 +56,20 @@ class PlatformAlertDialog extends PlatformWidget {
     if (cancelActionText != null) {
       actions.add(
         PlatformAlertDialogAction(
-          child: Text(cancelActionText),
+          child: Text(
+            cancelActionText,
+            key: Key(Keys.alertCancel),
+          ),
           onPressed: () => Navigator.of(context).pop(false),
         ),
       );
     }
     actions.add(
       PlatformAlertDialogAction(
-        child: Text(defaultActionText),
+        child: Text(
+          defaultActionText,
+          key: Key(Keys.alertDefault),
+        ),
         onPressed: () => Navigator.of(context).pop(true),
       ),
     );
