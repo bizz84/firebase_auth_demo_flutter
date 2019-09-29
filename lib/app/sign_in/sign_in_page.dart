@@ -4,6 +4,7 @@ import 'package:firebase_auth_demo_flutter/app/sign_in/email_link/email_link_sig
 import 'package:firebase_auth_demo_flutter/app/sign_in/sign_in_manager.dart';
 import 'package:firebase_auth_demo_flutter/app/sign_in/social_sign_in_button.dart';
 import 'package:firebase_auth_demo_flutter/common_widgets/platform_exception_alert_dialog.dart';
+import 'package:firebase_auth_demo_flutter/constants/keys.dart';
 import 'package:firebase_auth_demo_flutter/constants/strings.dart';
 import 'package:firebase_auth_demo_flutter/services/auth_service.dart';
 import 'package:flutter/foundation.dart';
@@ -48,7 +49,7 @@ class SignInPage extends StatelessWidget {
   static const Key facebookButtonKey = Key('facebook');
   static const Key emailPasswordButtonKey = Key('email-password');
   static const Key emailLinkButtonKey = Key('email-link');
-  static const Key anonymousButtonKey = Key('anonymous');
+  static const Key anonymousButtonKey = Key(Keys.anonymous);
 
   Future<void> _showSignInError(
       BuildContext context, PlatformException exception) async {
