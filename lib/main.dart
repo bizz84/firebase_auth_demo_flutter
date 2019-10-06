@@ -1,8 +1,8 @@
+import 'package:firebase_auth_demo_flutter/app/auth_widget.dart';
 import 'package:firebase_auth_demo_flutter/app/email_link_error_presenter.dart';
 import 'package:firebase_auth_demo_flutter/app/landing_page.dart';
 import 'package:firebase_auth_demo_flutter/services/auth_service.dart';
 import 'package:firebase_auth_demo_flutter/services/auth_service_adapter.dart';
-import 'package:firebase_auth_demo_flutter/services/database.dart';
 import 'package:firebase_auth_demo_flutter/services/firebase_email_link_handler.dart';
 import 'package:firebase_auth_demo_flutter/services/email_secure_store.dart';
 import 'package:flutter/material.dart';
@@ -24,9 +24,6 @@ class MyApp extends StatelessWidget {
               initialAuthServiceType: initialAuthServiceType),
           dispose: (_, AuthService authService) => authService.dispose(),
         ),
-        Provider<Database>(
-          builder: (_) => FirestoreDatabase(),
-        ),
         Provider<EmailSecureStore>(
           builder: (_) =>
               EmailSecureStore(flutterSecureStorage: FlutterSecureStorage()),
@@ -40,17 +37,18 @@ class MyApp extends StatelessWidget {
           dispose: (_, linkHandler) => linkHandler.dispose(),
         ),
       ],
-      child: MaterialApp(
-        theme: ThemeData(
-          primarySwatch: Colors.indigo,
-        ),
-        home: Builder(
-          builder: (context) => EmailLinkErrorPresenter.create(
-            context,
-            child: LandingPage(),
+      child: AuthWidget(
+          builder: (BuildContext context, AsyncSnapshot<User> snapshot) {
+        return MaterialApp(
+          theme: ThemeData(primarySwatch: Colors.indigo),
+          home: Builder(
+            builder: (context) => EmailLinkErrorPresenter.create(
+              context,
+              child: LandingPage(snapshot: snapshot),
+            ),
           ),
-        ),
-      ),
+        );
+      }),
     );
   }
 }

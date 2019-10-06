@@ -1,19 +1,12 @@
-abstract class Database {
-  set uid(String value);
+import 'package:flutter/foundation.dart';
 
+abstract class Database {
   // TODO: Firestore API calls here
 }
 
 class FirestoreDatabase implements Database {
-  String _uid;
-
-  @override
-  set uid(String newValue) {
-    if (_uid == newValue) {
-      return;
-    }
-    _uid = newValue;
-  }
+  FirestoreDatabase({@required this.uid});
+  final String uid;
 
   // TODO: Firestore API calls here
 }
