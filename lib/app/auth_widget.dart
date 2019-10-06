@@ -18,7 +18,7 @@ class AuthWidget extends StatelessWidget {
           return MultiProvider(
             providers: <SingleChildCloneableWidget>[
               Provider<User>.value(value: user),
-              // TODO: Add any other user-bound providers here
+              // NOTE: Any other user-bound providers here can be added here
             ],
             child: builder(context, snapshot),
           );
