@@ -12,21 +12,25 @@ import 'package:provider/provider.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
+  // [initialAuthServiceType] is made configurable for testing
   const MyApp({this.initialAuthServiceType = AuthServiceType.firebase});
   final AuthServiceType initialAuthServiceType;
 
   @override
   Widget build(BuildContext context) {
+    // MultiProvider for top-level services that can be created right away
     return MultiProvider(
       providers: <SingleChildCloneableWidget>[
         Provider<AuthService>(
           builder: (_) => AuthServiceAdapter(
-              initialAuthServiceType: initialAuthServiceType),
+            initialAuthServiceType: initialAuthServiceType,
+          ),
           dispose: (_, AuthService authService) => authService.dispose(),
         ),
         Provider<EmailSecureStore>(
-          builder: (_) =>
-              EmailSecureStore(flutterSecureStorage: FlutterSecureStorage()),
+          builder: (_) => EmailSecureStore(
+            flutterSecureStorage: FlutterSecureStorage(),
+          ),
         ),
         ProxyProvider2<AuthService, EmailSecureStore, FirebaseEmailLinkHandler>(
           builder: (_, AuthService authService, EmailSecureStore storage, __) =>
@@ -38,14 +42,12 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: AuthWidget(
-          builder: (BuildContext context, AsyncSnapshot<User> snapshot) {
+          builder: (BuildContext context, AsyncSnapshot<User> userSnapshot) {
         return MaterialApp(
           theme: ThemeData(primarySwatch: Colors.indigo),
-          home: Builder(
-            builder: (context) => EmailLinkErrorPresenter.create(
-              context,
-              child: LandingPage(snapshot: snapshot),
-            ),
+          home: EmailLinkErrorPresenter.create(
+            context,
+            child: LandingPage(userSnapshot: userSnapshot),
           ),
         );
       }),

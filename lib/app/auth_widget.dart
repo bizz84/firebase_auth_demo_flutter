@@ -1,13 +1,11 @@
 import 'package:firebase_auth_demo_flutter/services/auth_service.dart';
-import 'package:firebase_auth_demo_flutter/services/database.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 /// Used to create user-dependent objects that need to be accessible by all widgets.
 class AuthWidget extends StatelessWidget {
   const AuthWidget({Key key, @required this.builder}) : super(key: key);
-  final Widget Function(BuildContext context, AsyncSnapshot<User> snapshot)
-      builder;
+  final Widget Function(BuildContext, AsyncSnapshot<User>) builder;
 
   @override
   Widget build(BuildContext context) {
@@ -18,11 +16,9 @@ class AuthWidget extends StatelessWidget {
         final User user = snapshot.data;
         if (user != null) {
           return MultiProvider(
-            providers: [
+            providers: <SingleChildCloneableWidget>[
               Provider<User>.value(value: user),
-              Provider<Database>(
-                builder: (_) => FirestoreDatabase(uid: user.uid),
-              ),
+              // TODO: Add any other user-bound providers here
             ],
             child: builder(context, snapshot),
           );
