@@ -31,11 +31,13 @@ void main() {
     }
 
     void stubStoredEmail(String email) {
-      when(mockEmailSecureStore.getEmail()).thenAnswer((_) => Future.value(email));
+      when(mockEmailSecureStore.getEmail())
+          .thenAnswer((_) => Future.value(email));
     }
 
     void stubIsSignInWithEmailLinkReturns(bool result) {
-      when(mockAuth.isSignInWithEmailLink(any)).thenAnswer((_) => Future.value(result));
+      when(mockAuth.isSignInWithEmailLink(any))
+          .thenAnswer((_) => Future.value(result));
     }
 
     void stubSignInWithEmailLinkThrows(PlatformException exception) {
@@ -59,15 +61,16 @@ void main() {
         'AND stored email is null'
         'AND link NOT received'
         'AND error NOT received'
-        'THEN emits emailNotSet error'
+        'THEN never emits emailNotSet error'
         'AND isSignInWithEmailLink not called', () async {
       stubCurrentUser(null);
       stubStoredEmail(null);
       final handler = buildHandler();
+      expect(handler.errorStream,
+          neverEmits(EmailLinkError(error: EmailLinkErrorType.emailNotSet)));
       handler.didChangeAppLifecycleState(AppLifecycleState.resumed);
       // artificial delay so that valeus are added to stream
       await Future<void>.delayed(Duration());
-      expect(handler.errorStream, neverEmits(EmailLinkError(error: EmailLinkErrorType.emailNotSet)));
       verifyNever(mockAuth.isSignInWithEmailLink(any));
       handler.dispose();
     });
@@ -83,11 +86,12 @@ void main() {
       stubCurrentUser(null);
       stubStoredEmail(null);
       final handler = buildHandler();
+      expect(handler.errorStream,
+          emits(EmailLinkError(error: EmailLinkErrorType.emailNotSet)));
       handler.handleLink(sampleLink);
       handler.didChangeAppLifecycleState(AppLifecycleState.resumed);
       // artificial delay so that valeus are added to stream
       await Future<void>.delayed(Duration());
-      expect(handler.errorStream, emits(EmailLinkError(error: EmailLinkErrorType.emailNotSet)));
       verifyNever(mockAuth.isSignInWithEmailLink(any));
       handler.dispose();
     });
@@ -103,16 +107,16 @@ void main() {
       stubCurrentUser(null);
       stubStoredEmail(null);
       final handler = buildHandler();
-      handler.handleLinkError(PlatformException(code: '', message: 'fail'));
-      handler.didChangeAppLifecycleState(AppLifecycleState.resumed);
-      // artificial delay so that valeus are added to stream
-      await Future<void>.delayed(Duration());
       expect(
           handler.errorStream,
           emits(EmailLinkError(
             error: EmailLinkErrorType.linkError,
             description: 'fail',
           )));
+      handler.handleLinkError(PlatformException(code: '', message: 'fail'));
+      handler.didChangeAppLifecycleState(AppLifecycleState.resumed);
+      // artificial delay so that valeus are added to stream
+      await Future<void>.delayed(Duration());
       verifyNever(mockAuth.isSignInWithEmailLink(any));
       handler.dispose();
     });
@@ -128,17 +132,17 @@ void main() {
       stubCurrentUser(null);
       stubStoredEmail(null);
       final handler = buildHandler();
-      handler.handleLink(sampleLink);
-      handler.handleLinkError(PlatformException(code: '', message: 'fail'));
-      handler.didChangeAppLifecycleState(AppLifecycleState.resumed);
-      // artificial delay so that valeus are added to stream
-      await Future<void>.delayed(Duration());
       expect(
           handler.errorStream,
           emits(EmailLinkError(
             error: EmailLinkErrorType.linkError,
             description: 'fail',
           )));
+      handler.handleLink(sampleLink);
+      handler.handleLinkError(PlatformException(code: '', message: 'fail'));
+      handler.didChangeAppLifecycleState(AppLifecycleState.resumed);
+      // artificial delay so that valeus are added to stream
+      await Future<void>.delayed(Duration());
       verifyNever(mockAuth.isSignInWithEmailLink(any));
       handler.dispose();
     });
@@ -152,11 +156,12 @@ void main() {
       stubCurrentUser(sampleUser);
       stubStoredEmail(null);
       final handler = buildHandler();
+      expect(handler.errorStream,
+          emits(EmailLinkError(error: EmailLinkErrorType.userAlreadySignedIn)));
       handler.handleLink(sampleLink);
       handler.didChangeAppLifecycleState(AppLifecycleState.resumed);
       // artificial delay so that valeus are added to stream
       await Future<void>.delayed(Duration());
-      expect(handler.errorStream, emits(EmailLinkError(error: EmailLinkErrorType.userAlreadySignedIn)));
       verifyNever(mockAuth.isSignInWithEmailLink(any));
       handler.dispose();
     });
@@ -171,11 +176,12 @@ void main() {
       stubCurrentUser(sampleUser);
       stubStoredEmail(sampleEmail);
       final handler = buildHandler();
+      expect(handler.errorStream,
+          emits(EmailLinkError(error: EmailLinkErrorType.userAlreadySignedIn)));
       handler.handleLink(sampleLink);
       handler.didChangeAppLifecycleState(AppLifecycleState.resumed);
       // artificial delay so that valeus are added to stream
       await Future<void>.delayed(Duration());
-      expect(handler.errorStream, emits(EmailLinkError(error: EmailLinkErrorType.userAlreadySignedIn)));
       verifyNever(mockAuth.isSignInWithEmailLink(any));
       handler.dispose();
     });
@@ -190,11 +196,14 @@ void main() {
       stubStoredEmail(sampleEmail);
       stubIsSignInWithEmailLinkReturns(false);
       final handler = buildHandler();
+      expect(
+          handler.errorStream,
+          emits(EmailLinkError(
+              error: EmailLinkErrorType.isNotSignInWithEmailLink)));
       handler.handleLink(sampleLink);
       handler.didChangeAppLifecycleState(AppLifecycleState.resumed);
       // artificial delay so that valeus are added to stream
       await Future<void>.delayed(Duration());
-      expect(handler.errorStream, emits(EmailLinkError(error: EmailLinkErrorType.isNotSignInWithEmailLink)));
       verify(mockAuth.isSignInWithEmailLink(any)).called(1);
       handler.dispose();
     });
@@ -210,13 +219,17 @@ void main() {
       stubStoredEmail(sampleEmail);
       stubIsSignInWithEmailLinkReturns(true);
       final handler = buildHandler();
+      expect(
+          handler.errorStream,
+          neverEmits(EmailLinkError(
+              error: EmailLinkErrorType.isNotSignInWithEmailLink)));
       handler.handleLink(sampleLink);
       handler.didChangeAppLifecycleState(AppLifecycleState.resumed);
       // artificial delay so that valeus are added to stream
       await Future<void>.delayed(Duration());
-      expect(handler.errorStream, neverEmits(EmailLinkError(error: EmailLinkErrorType.isNotSignInWithEmailLink)));
       verify(mockAuth.isSignInWithEmailLink(any)).called(1);
-      verify(mockAuth.signInWithEmailAndLink(email: sampleEmail, link: anyNamed('link')));
+      verify(mockAuth.signInWithEmailAndLink(
+          email: sampleEmail, link: anyNamed('link')));
       handler.dispose();
     });
 
@@ -232,15 +245,20 @@ void main() {
       stubCurrentUser(null);
       stubStoredEmail(sampleEmail);
       stubIsSignInWithEmailLinkReturns(true);
-      stubSignInWithEmailLinkThrows(PlatformException(code: 'ERROR_SIGN_IN_FAILED', message: 'fail'));
+      stubSignInWithEmailLinkThrows(
+          PlatformException(code: 'ERROR_SIGN_IN_FAILED', message: 'fail'));
       final handler = buildHandler();
+      expect(
+          handler.errorStream,
+          emits(EmailLinkError(
+              error: EmailLinkErrorType.signInFailed, description: 'fail')));
       handler.handleLink(sampleLink);
       handler.didChangeAppLifecycleState(AppLifecycleState.resumed);
       // artificial delay so that valeus are added to stream
       await Future<void>.delayed(Duration());
-      expect(handler.errorStream, emits(EmailLinkError(error: EmailLinkErrorType.signInFailed, description: 'fail')));
       verify(mockAuth.isSignInWithEmailLink(any)).called(1);
-      verify(mockAuth.signInWithEmailAndLink(email: sampleEmail, link: anyNamed('link')));
+      verify(mockAuth.signInWithEmailAndLink(
+          email: sampleEmail, link: anyNamed('link')));
       handler.dispose();
     });
   });

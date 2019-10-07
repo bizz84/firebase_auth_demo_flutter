@@ -1,3 +1,4 @@
+import 'package:firebase_auth_demo_flutter/app/auth_widget.dart';
 import 'package:firebase_auth_demo_flutter/app/email_link_error_presenter.dart';
 import 'package:firebase_auth_demo_flutter/app/landing_page.dart';
 import 'package:firebase_auth_demo_flutter/services/auth_service.dart';
@@ -11,21 +12,25 @@ import 'package:provider/provider.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
+  // [initialAuthServiceType] is made configurable for testing
   const MyApp({this.initialAuthServiceType = AuthServiceType.firebase});
   final AuthServiceType initialAuthServiceType;
 
   @override
   Widget build(BuildContext context) {
+    // MultiProvider for top-level services that can be created right away
     return MultiProvider(
       providers: <SingleChildCloneableWidget>[
         Provider<AuthService>(
           builder: (_) => AuthServiceAdapter(
-              initialAuthServiceType: initialAuthServiceType),
+            initialAuthServiceType: initialAuthServiceType,
+          ),
           dispose: (_, AuthService authService) => authService.dispose(),
         ),
         Provider<EmailSecureStore>(
-          builder: (_) =>
-              EmailSecureStore(flutterSecureStorage: FlutterSecureStorage()),
+          builder: (_) => EmailSecureStore(
+            flutterSecureStorage: FlutterSecureStorage(),
+          ),
         ),
         ProxyProvider2<AuthService, EmailSecureStore, FirebaseEmailLinkHandler>(
           builder: (_, AuthService authService, EmailSecureStore storage, __) =>
@@ -36,17 +41,16 @@ class MyApp extends StatelessWidget {
           dispose: (_, linkHandler) => linkHandler.dispose(),
         ),
       ],
-      child: MaterialApp(
-        theme: ThemeData(
-          primarySwatch: Colors.indigo,
-        ),
-        home: Builder(
-          builder: (context) => EmailLinkErrorPresenter.create(
+      child: AuthWidget(
+          builder: (BuildContext context, AsyncSnapshot<User> userSnapshot) {
+        return MaterialApp(
+          theme: ThemeData(primarySwatch: Colors.indigo),
+          home: EmailLinkErrorPresenter.create(
             context,
-            child: LandingPage(),
+            child: LandingPage(userSnapshot: userSnapshot),
           ),
-        ),
-      ),
+        );
+      }),
     );
   }
 }
