@@ -1,3 +1,6 @@
+# 0.0.9
+
+- Add AuthWidget above MaterialApp ([#39](https://github.com/bizz84/firebase_auth_demo_flutter/pull/39), fixes [#32](https://github.com/bizz84/firebase_auth_demo_flutter/issues/32))
 
 # 0.0.8
 
