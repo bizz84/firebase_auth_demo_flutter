@@ -24,7 +24,8 @@ class EmailLinkError {
 
   Map<EmailLinkErrorType, String> get _messages => {
         EmailLinkErrorType.linkError: description,
-        EmailLinkErrorType.isNotSignInWithEmailLink: Strings.isNotSignInWithEmailLinkMessage,
+        EmailLinkErrorType.isNotSignInWithEmailLink:
+            Strings.isNotSignInWithEmailLinkMessage,
         EmailLinkErrorType.emailNotSet: Strings.submitEmailAgain,
         EmailLinkErrorType.signInFailed: description,
         EmailLinkErrorType.userAlreadySignedIn: Strings.userAlreadySignedIn,
@@ -72,7 +73,9 @@ class FirebaseEmailLinkHandler with WidgetsBindingObserver {
     );
     // Check dynamic link once on app startup. This is required to process any dynamic links that may have opened
     // the app when it was closed.
-    FirebaseDynamicLinks.instance.getInitialLink().then((link) => linkHandler._processDynamicLink(link?.link));
+    FirebaseDynamicLinks.instance
+        .getInitialLink()
+        .then((link) => linkHandler._processDynamicLink(link?.link));
     // Listen to subsequent links
     FirebaseDynamicLinks.instance.onLink(
       onSuccess: (linkData) => linkHandler.handleLink(linkData?.link),
@@ -87,7 +90,8 @@ class FirebaseEmailLinkHandler with WidgetsBindingObserver {
   }
 
   /// Clients can listen to this stream and show error alerts when dynamic link processing fails
-  final BehaviorSubject<EmailLinkError> _errorController = BehaviorSubject<EmailLinkError>();
+  final PublishSubject<EmailLinkError> _errorController =
+      PublishSubject<EmailLinkError>();
   Observable<EmailLinkError> get errorStream => _errorController.stream;
 
   /// Clients can listen to this stream and show a loading indicator while sign in is in progress
