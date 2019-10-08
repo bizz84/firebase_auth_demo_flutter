@@ -1,6 +1,6 @@
-import 'package:firebase_auth_demo_flutter/app/auth_widget.dart';
+import 'package:firebase_auth_demo_flutter/app/auth_widget_builder.dart';
 import 'package:firebase_auth_demo_flutter/app/email_link_error_presenter.dart';
-import 'package:firebase_auth_demo_flutter/app/landing_page.dart';
+import 'package:firebase_auth_demo_flutter/app/auth_widget.dart';
 import 'package:firebase_auth_demo_flutter/services/auth_service.dart';
 import 'package:firebase_auth_demo_flutter/services/auth_service_adapter.dart';
 import 'package:firebase_auth_demo_flutter/services/firebase_email_link_handler.dart';
@@ -41,13 +41,13 @@ class MyApp extends StatelessWidget {
           dispose: (_, linkHandler) => linkHandler.dispose(),
         ),
       ],
-      child: AuthWidget(
+      child: AuthWidgetBuilder(
           builder: (BuildContext context, AsyncSnapshot<User> userSnapshot) {
         return MaterialApp(
           theme: ThemeData(primarySwatch: Colors.indigo),
           home: EmailLinkErrorPresenter.create(
             context,
-            child: LandingPage(userSnapshot: userSnapshot),
+            child: AuthWidget(userSnapshot: userSnapshot),
           ),
         );
       }),
