@@ -38,13 +38,13 @@ class EmailPasswordSignInModel with EmailAndPasswordValidators, ChangeNotifier {
           break;
         case EmailPasswordSignInFormType.forgotPassword:
           await auth.sendPasswordResetEmail(email);
+          updateWith(isLoading: false);
           break;
       }
       return true;
     } catch (e) {
-      rethrow;
-    } finally {
       updateWith(isLoading: false);
+      rethrow;
     }
   }
 
@@ -105,7 +105,8 @@ class EmailPasswordSignInModel with EmailAndPasswordValidators, ChangeNotifier {
     return <EmailPasswordSignInFormType, EmailPasswordSignInFormType>{
       EmailPasswordSignInFormType.register: EmailPasswordSignInFormType.signIn,
       EmailPasswordSignInFormType.signIn: EmailPasswordSignInFormType.register,
-      EmailPasswordSignInFormType.forgotPassword: EmailPasswordSignInFormType.signIn,
+      EmailPasswordSignInFormType.forgotPassword:
+          EmailPasswordSignInFormType.signIn,
     }[formType];
   }
 
@@ -138,19 +139,25 @@ class EmailPasswordSignInModel with EmailAndPasswordValidators, ChangeNotifier {
 
   bool get canSubmit {
     final bool canSubmitFields =
-        formType == EmailPasswordSignInFormType.forgotPassword ? canSubmitEmail : canSubmitEmail && canSubmitPassword;
+        formType == EmailPasswordSignInFormType.forgotPassword
+            ? canSubmitEmail
+            : canSubmitEmail && canSubmitPassword;
     return canSubmitFields && !isLoading;
   }
 
   String get emailErrorText {
     final bool showErrorText = submitted && !canSubmitEmail;
-    final String errorText = email.isEmpty ? Strings.invalidEmailEmpty : Strings.invalidEmailErrorText;
+    final String errorText = email.isEmpty
+        ? Strings.invalidEmailEmpty
+        : Strings.invalidEmailErrorText;
     return showErrorText ? errorText : null;
   }
 
   String get passwordErrorText {
     final bool showErrorText = submitted && !canSubmitPassword;
-    final String errorText = password.isEmpty ? Strings.invalidPasswordEmpty : Strings.invalidPasswordTooShort;
+    final String errorText = password.isEmpty
+        ? Strings.invalidPasswordEmpty
+        : Strings.invalidPasswordTooShort;
     return showErrorText ? errorText : null;
   }
 
