@@ -70,7 +70,7 @@ class _EmailPasswordSignInPageState extends State<EmailPasswordSignInPage> {
       final bool success = await model.submit();
       if (success) {
         if (model.formType == EmailPasswordSignInFormType.forgotPassword) {
-          PlatformAlertDialog(
+          await PlatformAlertDialog(
             title: Strings.resetLinkSentTitle,
             content: Strings.resetLinkSentMessage,
             defaultActionText: Strings.ok,

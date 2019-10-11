@@ -50,12 +50,12 @@ void main() {
   test(
       'WHEN manager signs in anonymously'
       'AND auth returns valid user'
-      'THEN isLoading values are [ true, false ]', () async {
+      'THEN isLoading values are [ true ]', () async {
     stubSignInAnonymouslyReturnsUser();
 
     await manager.signInAnonymously();
 
-    expect(isLoading.values, <bool>[true, false]);
+    expect(isLoading.values, <bool>[true]);
   });
 
   test(

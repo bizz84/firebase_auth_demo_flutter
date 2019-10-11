@@ -14,9 +14,8 @@ class SignInManager {
       isLoading.value = true;
       return await signInMethod();
     } catch (e) {
-      rethrow;
-    } finally {
       isLoading.value = false;
+      rethrow;
     }
   }
 
