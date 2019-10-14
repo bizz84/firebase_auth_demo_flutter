@@ -54,6 +54,24 @@ android {
             signingConfig signingConfigs.debug
         }
     }
+
+    // https://stackoverflow.com/questions/30772201/google-services-json-for-different-productflavors
+	flavorDimensions "flavor-type"
+
+	productFlavors {
+		dev {
+			dimension "flavor-type"
+			versionNameSuffix "-dev"
+		}
+		staging {
+			dimension "flavor-type"
+			versionNameSuffix "-staging"
+		}
+		prod {
+			dimension "flavor-type"
+            versionNameSuffix "-prod"
+		}
+	}
 }
 
 flutter {
