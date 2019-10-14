@@ -92,4 +92,7 @@ unlinked_spec.ds
 
 # Firebase configuration files
 ios/Runner/GoogleService-Info.plist
+ios/Firebase/GoogleService-Info.dev.plist
+ios/Firebase/GoogleService-Info.staging.plist
+ios/Firebase/GoogleService-Info.prod.plist
 android/app/google-services.json
