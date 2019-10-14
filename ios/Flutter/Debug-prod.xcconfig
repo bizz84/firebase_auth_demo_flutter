@@ -1,0 +1,5 @@
+#include "Pods/Target Support Files/Pods-Runner/Pods-Runner.debug-live.xcconfig"
+#include "Generated.xcconfig"
+
+GOOGLE_SERVICE_PLIST = GoogleService-Info.prod.plist
+BUNDLE_SUFFIX = prod
