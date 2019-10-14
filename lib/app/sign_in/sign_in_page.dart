@@ -88,16 +88,18 @@ class SignInPage extends StatelessWidget {
   }
 
   Future<void> _signInWithEmailAndPassword(BuildContext context) async {
+    final navigator = Navigator.of(context);
     await EmailPasswordSignInPage.show(
       context,
-      onSignedIn: () => Navigator.pop(context),
+      onSignedIn: navigator.pop,
     );
   }
 
   Future<void> _signInWithEmailLink(BuildContext context) async {
+    final navigator = Navigator.of(context);
     await EmailLinkSignInPage.show(
       context,
-      onSignedIn: () => Navigator.pop(context),
+      onSignedIn: navigator.pop,
     );
   }
 
