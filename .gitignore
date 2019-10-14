@@ -96,3 +96,6 @@ ios/Firebase/GoogleService-Info.dev.plist
 ios/Firebase/GoogleService-Info.staging.plist
 ios/Firebase/GoogleService-Info.prod.plist
 android/app/google-services.json
+android/app/src/dev/google-services.json
+android/app/src/staging/google-services.json
+android/app/src/prod/google-services.json
