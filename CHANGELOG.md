@@ -2,6 +2,7 @@
 
 - Add `AuthWidgetBuilder` above `MaterialApp` ([#39](https://github.com/bizz84/firebase_auth_demo_flutter/pull/39), fixes [#32](https://github.com/bizz84/firebase_auth_demo_flutter/issues/32))
 - Only update loading state `ValueNotifier` when authentication calls fail ([#41](https://github.com/bizz84/firebase_auth_demo_flutter/pull/41))
+- Update dependencies
 
 # 0.0.8
 

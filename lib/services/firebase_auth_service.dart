@@ -33,7 +33,8 @@ class FirebaseAuthService implements AuthService {
 
   @override
   Future<User> signInWithEmailAndPassword(String email, String password) async {
-    final AuthResult authResult = await _firebaseAuth.signInWithCredential(EmailAuthProvider.getCredential(
+    final AuthResult authResult = await _firebaseAuth
+        .signInWithCredential(EmailAuthProvider.getCredential(
       email: email,
       password: password,
     ));
@@ -41,8 +42,10 @@ class FirebaseAuthService implements AuthService {
   }
 
   @override
-  Future<User> createUserWithEmailAndPassword(String email, String password) async {
-    final AuthResult authResult = await _firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
+  Future<User> createUserWithEmailAndPassword(
+      String email, String password) async {
+    final AuthResult authResult = await _firebaseAuth
+        .createUserWithEmailAndPassword(email: email, password: password);
     return _userFromFirebase(authResult.user);
   }
 
@@ -53,7 +56,8 @@ class FirebaseAuthService implements AuthService {
 
   @override
   Future<User> signInWithEmailAndLink({String email, String link}) async {
-    final AuthResult authResult = await _firebaseAuth.signInWithEmailAndLink(email: email, link: link);
+    final AuthResult authResult =
+        await _firebaseAuth.signInWithEmailAndLink(email: email, link: link);
     return _userFromFirebase(authResult.user);
   }
 
@@ -89,32 +93,40 @@ class FirebaseAuthService implements AuthService {
     final GoogleSignInAccount googleUser = await googleSignIn.signIn();
 
     if (googleUser != null) {
-      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
       if (googleAuth.accessToken != null && googleAuth.idToken != null) {
-        final AuthResult authResult = await _firebaseAuth.signInWithCredential(GoogleAuthProvider.getCredential(
+        final AuthResult authResult = await _firebaseAuth
+            .signInWithCredential(GoogleAuthProvider.getCredential(
           idToken: googleAuth.idToken,
           accessToken: googleAuth.accessToken,
         ));
         return _userFromFirebase(authResult.user);
       } else {
-        throw PlatformException(code: 'ERROR_MISSING_GOOGLE_AUTH_TOKEN', message: 'Missing Google Auth Token');
+        throw PlatformException(
+            code: 'ERROR_MISSING_GOOGLE_AUTH_TOKEN',
+            message: 'Missing Google Auth Token');
       }
     } else {
-      throw PlatformException(code: 'ERROR_ABORTED_BY_USER', message: 'Sign in aborted by user');
+      throw PlatformException(
+          code: 'ERROR_ABORTED_BY_USER', message: 'Sign in aborted by user');
     }
   }
 
   @override
   Future<User> signInWithFacebook() async {
     final FacebookLogin facebookLogin = FacebookLogin();
-    final FacebookLoginResult result = await facebookLogin.logInWithReadPermissions(<String>['public_profile']);
+    final FacebookLoginResult result = await facebookLogin
+        .logInWithReadPermissions(<String>['public_profile']);
     if (result.accessToken != null) {
       final AuthResult authResult = await _firebaseAuth.signInWithCredential(
-        FacebookAuthProvider.getCredential(accessToken: result.accessToken.token),
+        FacebookAuthProvider.getCredential(
+            accessToken: result.accessToken.token),
       );
       return _userFromFirebase(authResult.user);
     } else {
-      throw PlatformException(code: 'ERROR_ABORTED_BY_USER', message: 'Sign in aborted by user');
+      throw PlatformException(
+          code: 'ERROR_ABORTED_BY_USER', message: 'Sign in aborted by user');
     }
   }
 

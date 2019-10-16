@@ -17,15 +17,16 @@ environment:
   sdk: ">=2.2.2 <3.0.0"
 
 dependencies:
-  random_string: 0.0.2
-  firebase_auth: 0.14.0
-  google_sign_in: 4.0.2
-  flutter_facebook_login: 2.0.1
-  provider: 3.0.0
-  firebase_dynamic_links: 0.5.0
-  rxdart: 0.22.1
-  flutter_secure_storage: 3.2.1+1
-  package_info: 0.4.0+6
+  random_string: ^1.1.0
+  firebase_auth: ^0.14.0+5
+  google_sign_in: ^4.0.7
+  # Sticking to 2.0.1 as version 3.0 generates compile errors for me on iOS
+  flutter_facebook_login: ^2.0.1 
+  provider: ^3.1.0
+  firebase_dynamic_links: ^0.5.0+1
+  rxdart: ^0.22.3
+  flutter_secure_storage: ^3.3.1+1
+  package_info: ^0.4.0+6
   flutter:
     sdk: flutter
 
@@ -36,7 +37,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  mockito: 4.0.0
+  mockito: ^4.1.1
   flutter_driver:
     sdk: flutter 
   test: any
