@@ -1,5 +1,7 @@
 # Uncomment this line to define a global platform for your project
-platform :ios, '9.0'
+# Note about setting deployment target to 11.0 to prevent invalid architecture issue:
+# https://github.com/flutter/flutter/issues/17749
+platform :ios, '11.0'
 
 # CocoaPods analytics sends network stats synchronously affecting flutter build latency.
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
