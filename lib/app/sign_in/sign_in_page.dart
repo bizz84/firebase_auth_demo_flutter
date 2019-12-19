@@ -91,7 +91,7 @@ class SignInPage extends StatelessWidget {
 
   Future<void> _signInWithApple(BuildContext context) async {
     try {
-      await manager.signInWithFacebook();
+      await manager.signInWithApple();
     } on PlatformException catch (e) {
       if (e.code != 'ERROR_ABORTED_BY_USER') {
         _showSignInError(context, e);
@@ -145,8 +145,6 @@ class SignInPage extends StatelessWidget {
 
   Widget _buildSignIn(BuildContext context) {
     final iOSVersion = Provider.of<IOSVersion>(context);
-    print(iOSVersion);
-    // TODO: CustomScrollView
     return Container(
       padding: EdgeInsets.all(16.0),
       child: Column(
