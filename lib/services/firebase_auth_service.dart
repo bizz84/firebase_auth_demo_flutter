@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_auth_demo_flutter/services/auth_service.dart';
 import 'package:flutter/foundation.dart';
@@ -116,8 +118,10 @@ class FirebaseAuthService implements AuthService {
   @override
   Future<User> signInWithFacebook() async {
     final FacebookLogin facebookLogin = FacebookLogin();
-    final FacebookLoginResult result = await facebookLogin
-        .logInWithReadPermissions(<String>['public_profile']);
+    // https://github.com/roughike/flutter_facebook_login/issues/210
+    facebookLogin.loginBehavior = FacebookLoginBehavior.webViewOnly;
+    final FacebookLoginResult result =
+        await facebookLogin.logIn(<String>['public_profile']);
     if (result.accessToken != null) {
       final AuthResult authResult = await _firebaseAuth.signInWithCredential(
         FacebookAuthProvider.getCredential(
