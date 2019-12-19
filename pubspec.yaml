@@ -14,19 +14,19 @@ description: Reference Authentication Flow with Flutter & Firebase
 version: 0.0.9+2
 
 environment:
-  sdk: ">=2.2.2 <3.0.0"
+  sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
-  random_string: ^1.1.0
-  firebase_auth: ^0.14.0+5
-  google_sign_in: ^4.0.7
+  random_string: ^2.0.0
+  firebase_auth: ^0.15.3
+  google_sign_in: ^4.1.1
   # Sticking to 2.0.1 as version 3.0 generates compile errors for me on iOS
   flutter_facebook_login: ^2.0.1 
-  provider: ^3.1.0
-  firebase_dynamic_links: ^0.5.0+1
-  rxdart: ^0.22.3
+  provider: ^3.2.0
+  firebase_dynamic_links: ^0.5.0+9
+  rxdart: ^0.23.1
   flutter_secure_storage: ^3.3.1+1
-  package_info: ^0.4.0+6
+  package_info: ^0.4.0+13
   flutter:
     sdk: flutter
 

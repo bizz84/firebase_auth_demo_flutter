@@ -92,7 +92,7 @@ class FirebaseEmailLinkHandler with WidgetsBindingObserver {
   /// Clients can listen to this stream and show error alerts when dynamic link processing fails
   final PublishSubject<EmailLinkError> _errorController =
       PublishSubject<EmailLinkError>();
-  Observable<EmailLinkError> get errorStream => _errorController.stream;
+  Stream<EmailLinkError> get errorStream => _errorController.stream;
 
   /// Clients can listen to this stream and show a loading indicator while sign in is in progress
   final ValueNotifier<bool> isLoading = ValueNotifier<bool>(false);
