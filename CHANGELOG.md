@@ -1,3 +1,7 @@
+# 0.1.0
+
+- Update to all latest Dart packages as of 2019-12-19
+
 # 0.0.9
 
 - Add `AuthWidgetBuilder` above `MaterialApp` ([#39](https://github.com/bizz84/firebase_auth_demo_flutter/pull/39), fixes [#32](https://github.com/bizz84/firebase_auth_demo_flutter/issues/32))

@@ -50,10 +50,10 @@ void main() {
       MultiProvider(
         providers: [
           Provider<AuthService>(
-            builder: (_) => mockAuthService,
+            create: (_) => mockAuthService,
           ),
           Provider<FirebaseEmailLinkHandler>(
-            builder: (_) => mockFirebaseEmailLinkHandler,
+            create: (_) => mockFirebaseEmailLinkHandler,
           ),
         ],
         child: MaterialApp(

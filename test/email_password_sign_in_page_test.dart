@@ -20,7 +20,7 @@ void main() {
       {VoidCallback onSignedIn}) async {
     await tester.pumpWidget(
       Provider<AuthService>(
-        builder: (_) => mockAuth,
+        create: (_) => mockAuth,
         child: MaterialApp(
           home: Scaffold(
             body: Builder(

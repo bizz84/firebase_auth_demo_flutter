@@ -22,18 +22,18 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: <SingleChildCloneableWidget>[
         Provider<AuthService>(
-          builder: (_) => AuthServiceAdapter(
+          create: (_) => AuthServiceAdapter(
             initialAuthServiceType: initialAuthServiceType,
           ),
           dispose: (_, AuthService authService) => authService.dispose(),
         ),
         Provider<EmailSecureStore>(
-          builder: (_) => EmailSecureStore(
+          create: (_) => EmailSecureStore(
             flutterSecureStorage: FlutterSecureStorage(),
           ),
         ),
         ProxyProvider2<AuthService, EmailSecureStore, FirebaseEmailLinkHandler>(
-          builder: (_, AuthService authService, EmailSecureStore storage, __) =>
+          update: (_, AuthService authService, EmailSecureStore storage, __) =>
               FirebaseEmailLinkHandler.createAndConfigure(
             auth: authService,
             userCredentialsStorage: storage,

@@ -37,7 +37,7 @@ void main() {
           Widget Function(BuildContext, AsyncSnapshot<User>) builder}) async {
     await tester.pumpWidget(
       Provider<AuthService>(
-        builder: (_) => mockAuthService,
+        create: (_) => mockAuthService,
         child: AuthWidgetBuilder(builder: builder),
       ),
     );
