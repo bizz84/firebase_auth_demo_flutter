@@ -134,10 +134,14 @@ class FirebaseAuthService implements AuthService {
   }
 
   @override
-  Future<User> signInWithApple() async {
-    final AuthorizationResult result = await AppleSignIn.performRequests([
-      AppleIdRequest(requestedScopes: [Scope.email, Scope.fullName])
-    ]);
+  Future<User> signInWithApple(
+      {bool requestEmail = false, bool requestFullName = false}) async {
+    final scopes = [
+      if (requestEmail) Scope.email,
+      if (requestFullName) Scope.fullName,
+    ];
+    final AuthorizationResult result = await AppleSignIn.performRequests(
+        [AppleIdRequest(requestedScopes: scopes)]);
     switch (result.status) {
       case AuthorizationStatus.authorized:
         final appleIdCredential = result.credential;
@@ -149,16 +153,19 @@ class FirebaseAuthService implements AuthService {
         );
 
         final authResult = await _firebaseAuth.signInWithCredential(credential);
-        // TODO: Is this needed?
         final firebaseUser = authResult.user;
-        final updateUser = UserUpdateInfo();
-        updateUser.displayName =
-            '${appleIdCredential.fullName.givenName} ${appleIdCredential.fullName.familyName}';
-        await firebaseUser.updateProfile(updateUser);
+        if (requestFullName) {
+          final updateUser = UserUpdateInfo();
+          updateUser.displayName =
+              '${appleIdCredential.fullName.givenName} ${appleIdCredential.fullName.familyName}';
+          await firebaseUser.updateProfile(updateUser);
+        }
         return _userFromFirebase(firebaseUser);
       case AuthorizationStatus.error:
+        print(result.error.toString());
         throw PlatformException(
-            code: 'ERROR_AUTHORIZATION_DENIED', message: 'Authorization error');
+            code: 'ERROR_AUTHORIZATION_DENIED',
+            message: result.error.toString());
 
       case AuthorizationStatus.cancelled:
         throw PlatformException(
