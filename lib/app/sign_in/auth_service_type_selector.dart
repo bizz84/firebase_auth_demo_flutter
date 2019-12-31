@@ -8,7 +8,8 @@ import 'package:provider/provider.dart';
 class AuthServiceTypeSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final AuthServiceAdapter authServiceAdapter = Provider.of<AuthService>(context);
+    final AuthServiceAdapter authServiceAdapter =
+        Provider.of<AuthService>(context, listen: false);
     return ValueListenableBuilder<AuthServiceType>(
       valueListenable: authServiceAdapter.authServiceTypeNotifier,
       builder: (_, AuthServiceType type, __) {
@@ -18,7 +19,8 @@ class AuthServiceTypeSelector extends StatelessWidget {
             style: TextStyle(fontSize: 16.0),
           ),
           value: type,
-          onValueChanged: (AuthServiceType type) => authServiceAdapter.authServiceTypeNotifier.value = type,
+          onValueChanged: (AuthServiceType type) =>
+              authServiceAdapter.authServiceTypeNotifier.value = type,
           children: const <AuthServiceType, Widget>{
             AuthServiceType.firebase: Text(Strings.firebase),
             AuthServiceType.mock: Text(Strings.mock),

@@ -27,7 +27,7 @@ class EmailPasswordSignInPage extends StatefulWidget {
   }
 
   static Widget create(BuildContext context, {VoidCallback onSignedIn}) {
-    final AuthService auth = Provider.of<AuthService>(context);
+    final AuthService auth = Provider.of<AuthService>(context, listen: false);
     return ChangeNotifierProvider<EmailPasswordSignInModel>(
       create: (_) => EmailPasswordSignInModel(auth: auth),
       child: Consumer<EmailPasswordSignInModel>(

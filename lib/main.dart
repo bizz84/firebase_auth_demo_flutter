@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     // MultiProvider for top-level services that can be created right away
     return MultiProvider(
-      providers: <SingleChildCloneableWidget>[
+      providers: [
         Provider<AuthService>(
           create: (_) => AuthServiceAdapter(
             initialAuthServiceType: initialAuthServiceType,

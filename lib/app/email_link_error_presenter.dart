@@ -16,7 +16,7 @@ class EmailLinkErrorPresenter extends StatefulWidget {
 
   static Widget create(BuildContext context, {Widget child}) {
     final FirebaseEmailLinkHandler linkHandler =
-        Provider.of<FirebaseEmailLinkHandler>(context);
+        Provider.of<FirebaseEmailLinkHandler>(context, listen: false);
     return EmailLinkErrorPresenter(
       child: child,
       errorStream: linkHandler.errorStream,

@@ -18,7 +18,7 @@ class AuthWidgetBuilder extends StatelessWidget {
         final User user = snapshot.data;
         if (user != null) {
           return MultiProvider(
-            providers: <SingleChildCloneableWidget>[
+            providers: [
               Provider<User>.value(value: user),
               // NOTE: Any other user-bound providers here can be added here
             ],

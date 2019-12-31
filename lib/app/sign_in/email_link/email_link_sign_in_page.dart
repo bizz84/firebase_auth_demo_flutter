@@ -26,9 +26,10 @@ class EmailLinkSignInPage extends StatefulWidget {
 
   static Future<void> show(BuildContext context,
       {VoidCallback onSignedIn}) async {
-    final AuthService authService = Provider.of<AuthService>(context);
+    final AuthService authService =
+        Provider.of<AuthService>(context, listen: false);
     final FirebaseEmailLinkHandler linkHandler =
-        Provider.of<FirebaseEmailLinkHandler>(context);
+        Provider.of<FirebaseEmailLinkHandler>(context, listen: false);
     await Navigator.of(context).push(
       MaterialPageRoute<void>(
         fullscreenDialog: true,

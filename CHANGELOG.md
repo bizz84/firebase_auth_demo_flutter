@@ -1,3 +1,7 @@
+# 0.1.1
+
+- Update to Provider version 4.0.1
+
 # 0.1.0
 
 - Update to all latest Dart packages as of 2019-12-19
