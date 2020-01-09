@@ -5,11 +5,18 @@ import 'package:firebase_auth_demo_flutter/services/auth_service.dart';
 import 'package:firebase_auth_demo_flutter/services/auth_service_adapter.dart';
 import 'package:firebase_auth_demo_flutter/services/firebase_email_link_handler.dart';
 import 'package:firebase_auth_demo_flutter/services/email_secure_store.dart';
+import 'package:firebase_auth_demo_flutter/services/ios_system_version_checker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
 
-void main() => runApp(MyApp());
+Future<void> main() async {
+  // Fix for: Unhandled Exception: ServicesBinding.defaultBinaryMessenger was accessed before the binding was initialized.
+  WidgetsFlutterBinding.ensureInitialized();
+  final version = await IOSVersionChecker.fromDeviceInfo();
+  print('version: $version');
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   // [initialAuthServiceType] is made configurable for testing
