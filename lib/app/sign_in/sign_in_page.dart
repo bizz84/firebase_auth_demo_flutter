@@ -7,6 +7,7 @@ import 'package:firebase_auth_demo_flutter/app/sign_in/social_sign_in_button.dar
 import 'package:firebase_auth_demo_flutter/common_widgets/platform_exception_alert_dialog.dart';
 import 'package:firebase_auth_demo_flutter/constants/keys.dart';
 import 'package:firebase_auth_demo_flutter/constants/strings.dart';
+import 'package:firebase_auth_demo_flutter/services/apple_sign_in_available.dart';
 import 'package:firebase_auth_demo_flutter/services/auth_service.dart';
 import 'package:firebase_auth_demo_flutter/services/ios_system_version_checker.dart';
 import 'package:flutter/foundation.dart';
@@ -144,7 +145,7 @@ class SignInPage extends StatelessWidget {
   }
 
   Widget _buildSignIn(BuildContext context) {
-    final iOSVersion = Provider.of<IOSVersion>(context);
+    final appleSignInAvailable = Provider.of<AppleSignInAvailable>(context);
     return Container(
       padding: EdgeInsets.all(16.0),
       child: Column(
@@ -156,7 +157,7 @@ class SignInPage extends StatelessWidget {
             child: _buildHeader(),
           ),
           SizedBox(height: 48.0),
-          if (iOSVersion != null && iOSVersion.major >= 13) ...[
+          if (appleSignInAvailable.isAvailable) ...[
             AppleSignInButton(
               style: ButtonStyle.black,
               type: ButtonType.signIn,
