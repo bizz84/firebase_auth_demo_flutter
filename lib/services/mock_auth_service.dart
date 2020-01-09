@@ -132,6 +132,14 @@ class MockAuthService implements AuthService {
   }
 
   @override
+  Future<User> signInWithApple() async {
+    await Future<void>.delayed(responseTime);
+    final User user = User(uid: random.randomAlphaNumeric(32));
+    _add(user);
+    return user;
+  }
+
+  @override
   void dispose() {
     _onAuthStateChangedController.close();
   }

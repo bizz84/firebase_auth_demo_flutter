@@ -118,5 +118,8 @@ class AuthServiceAdapter implements AuthService {
   Future<User> signInWithGoogle() => authService.signInWithGoogle();
 
   @override
+  Future<User> signInWithApple() => authService.signInWithApple();
+
+  @override
   Future<void> signOut() => authService.signOut();
 }

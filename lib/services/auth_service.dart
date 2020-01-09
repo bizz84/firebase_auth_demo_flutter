@@ -36,6 +36,7 @@ abstract class AuthService {
   });
   Future<User> signInWithGoogle();
   Future<User> signInWithFacebook();
+  Future<User> signInWithApple();
   Future<void> signOut();
   Stream<User> get onAuthStateChanged;
   void dispose();

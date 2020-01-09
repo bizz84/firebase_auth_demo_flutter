@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_auth_demo_flutter/services/auth_service.dart';
 import 'package:flutter/foundation.dart';
@@ -132,6 +130,11 @@ class FirebaseAuthService implements AuthService {
       throw PlatformException(
           code: 'ERROR_ABORTED_BY_USER', message: 'Sign in aborted by user');
     }
+  }
+
+  @override
+  Future<User> signInWithApple() async {
+    return null;
   }
 
   @override

@@ -13,21 +13,24 @@ import 'package:provider/provider.dart';
 Future<void> main() async {
   // Fix for: Unhandled Exception: ServicesBinding.defaultBinaryMessenger was accessed before the binding was initialized.
   WidgetsFlutterBinding.ensureInitialized();
-  final version = await IOSVersionChecker.fromDeviceInfo();
-  print('version: $version');
-  runApp(MyApp());
+  final iOSVersion = await IOSVersionChecker.fromDeviceInfo();
+  runApp(MyApp(iOSVersion: iOSVersion));
 }
 
 class MyApp extends StatelessWidget {
   // [initialAuthServiceType] is made configurable for testing
-  const MyApp({this.initialAuthServiceType = AuthServiceType.firebase});
+  const MyApp(
+      {this.initialAuthServiceType = AuthServiceType.firebase,
+      this.iOSVersion});
   final AuthServiceType initialAuthServiceType;
+  final IOSVersion iOSVersion;
 
   @override
   Widget build(BuildContext context) {
     // MultiProvider for top-level services that can be created right away
     return MultiProvider(
       providers: [
+        Provider<IOSVersion>.value(value: iOSVersion),
         Provider<AuthService>(
           create: (_) => AuthServiceAdapter(
             initialAuthServiceType: initialAuthServiceType,

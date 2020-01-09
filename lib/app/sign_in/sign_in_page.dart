@@ -1,3 +1,4 @@
+import 'package:apple_sign_in/apple_sign_in.dart';
 import 'package:firebase_auth_demo_flutter/app/sign_in/developer_menu.dart';
 import 'package:firebase_auth_demo_flutter/app/sign_in/email_password/email_password_sign_in_page.dart';
 import 'package:firebase_auth_demo_flutter/app/sign_in/email_link/email_link_sign_in_page.dart';
@@ -7,6 +8,7 @@ import 'package:firebase_auth_demo_flutter/common_widgets/platform_exception_ale
 import 'package:firebase_auth_demo_flutter/constants/keys.dart';
 import 'package:firebase_auth_demo_flutter/constants/strings.dart';
 import 'package:firebase_auth_demo_flutter/services/auth_service.dart';
+import 'package:firebase_auth_demo_flutter/services/ios_system_version_checker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -87,6 +89,16 @@ class SignInPage extends StatelessWidget {
     }
   }
 
+  Future<void> _signInWithApple(BuildContext context) async {
+    try {
+      await manager.signInWithFacebook();
+    } on PlatformException catch (e) {
+      if (e.code != 'ERROR_ABORTED_BY_USER') {
+        _showSignInError(context, e);
+      }
+    }
+  }
+
   Future<void> _signInWithEmailAndPassword(BuildContext context) async {
     final navigator = Navigator.of(context);
     await EmailPasswordSignInPage.show(
@@ -132,6 +144,9 @@ class SignInPage extends StatelessWidget {
   }
 
   Widget _buildSignIn(BuildContext context) {
+    final iOSVersion = Provider.of<IOSVersion>(context);
+    print(iOSVersion);
+    // TODO: CustomScrollView
     return Container(
       padding: EdgeInsets.all(16.0),
       child: Column(
@@ -143,6 +158,14 @@ class SignInPage extends StatelessWidget {
             child: _buildHeader(),
           ),
           SizedBox(height: 48.0),
+          if (iOSVersion != null && iOSVersion.major >= 13) ...[
+            AppleSignInButton(
+              style: ButtonStyle.black,
+              type: ButtonType.signIn,
+              onPressed: isLoading ? null : () => _signInWithApple(context),
+            ),
+            SizedBox(height: 8),
+          ],
           SocialSignInButton(
             key: googleButtonKey,
             assetName: 'assets/go-logo.png',
