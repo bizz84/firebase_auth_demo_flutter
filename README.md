@@ -56,6 +56,7 @@ _NOTE: This project will be kept up to date with the latest packages and Flutter
 - [x] Facebook
 - [ ] GitHub
 - [x] Google
+- [x] Apple
 - [ ] Phone
 - [ ] Twitter
 
@@ -79,6 +80,7 @@ _NOTE: This project will be kept up to date with the latest packages and Flutter
 ### Sign-in Page
 
 - [x] Navigation to email and password sign-in
+- [x] Apple sign-in
 - [x] Google sign-in
 - [x] Facebook sign-in
 - [x] Anonymous sign-in

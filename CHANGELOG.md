@@ -1,3 +1,7 @@
+# 0.1.2
+
+- Add sign-in with Apple
+
 # 0.1.1
 
 - Update to Provider version 4.0.1
