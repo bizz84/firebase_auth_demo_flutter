@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:apple_sign_in/apple_sign_in.dart';
 import 'package:meta/meta.dart';
 
 @immutable
@@ -36,7 +37,7 @@ abstract class AuthService {
   });
   Future<User> signInWithGoogle();
   Future<User> signInWithFacebook();
-  Future<User> signInWithApple();
+  Future<User> signInWithApple({List<Scope> scopes});
   Future<void> signOut();
   Stream<User> get onAuthStateChanged;
   void dispose();

@@ -158,6 +158,7 @@ class SignInPage extends StatelessWidget {
           SizedBox(height: 48.0),
           if (appleSignInAvailable.isAvailable) ...[
             AppleSignInButton(
+              // TODO: add key when supported
               style: ButtonStyle.black,
               type: ButtonType.signIn,
               onPressed: isLoading ? null : () => _signInWithApple(context),

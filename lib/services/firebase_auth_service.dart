@@ -134,12 +134,7 @@ class FirebaseAuthService implements AuthService {
   }
 
   @override
-  Future<User> signInWithApple(
-      {bool requestEmail = false, bool requestFullName = false}) async {
-    final scopes = [
-      if (requestEmail) Scope.email,
-      if (requestFullName) Scope.fullName,
-    ];
+  Future<User> signInWithApple({List<Scope> scopes = const []}) async {
     final AuthorizationResult result = await AppleSignIn.performRequests(
         [AppleIdRequest(requestedScopes: scopes)]);
     switch (result.status) {
@@ -154,7 +149,7 @@ class FirebaseAuthService implements AuthService {
 
         final authResult = await _firebaseAuth.signInWithCredential(credential);
         final firebaseUser = authResult.user;
-        if (requestFullName) {
+        if (scopes.contains(Scope.fullName)) {
           final updateUser = UserUpdateInfo();
           updateUser.displayName =
               '${appleIdCredential.fullName.givenName} ${appleIdCredential.fullName.familyName}';
@@ -162,14 +157,15 @@ class FirebaseAuthService implements AuthService {
         }
         return _userFromFirebase(firebaseUser);
       case AuthorizationStatus.error:
-        print(result.error.toString());
         throw PlatformException(
-            code: 'ERROR_AUTHORIZATION_DENIED',
-            message: result.error.toString());
-
+          code: 'ERROR_AUTHORIZATION_DENIED',
+          message: result.error.toString(),
+        );
       case AuthorizationStatus.cancelled:
         throw PlatformException(
-            code: 'ERROR_ABORTED_BY_USER', message: 'Sign in aborted by user');
+          code: 'ERROR_ABORTED_BY_USER',
+          message: 'Sign in aborted by user',
+        );
     }
     return null;
   }
