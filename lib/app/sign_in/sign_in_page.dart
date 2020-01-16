@@ -145,74 +145,78 @@ class SignInPage extends StatelessWidget {
 
   Widget _buildSignIn(BuildContext context) {
     final appleSignInAvailable = Provider.of<AppleSignInAvailable>(context);
-    return Container(
-      padding: EdgeInsets.all(16.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          SizedBox(
-            height: 50.0,
-            child: _buildHeader(),
-          ),
-          SizedBox(height: 48.0),
-          if (appleSignInAvailable.isAvailable) ...[
-            AppleSignInButton(
-              // TODO: add key when supported
-              style: ButtonStyle.black,
-              type: ButtonType.signIn,
-              onPressed: isLoading ? null : () => _signInWithApple(context),
+    // Make content scrollable so that it fits on small screens
+    return SingleChildScrollView(
+      child: Container(
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            SizedBox(height: 32.0),
+            SizedBox(
+              height: 50.0,
+              child: _buildHeader(),
+            ),
+            SizedBox(height: 32.0),
+            if (appleSignInAvailable.isAvailable) ...[
+              AppleSignInButton(
+                // TODO: add key when supported
+                style: ButtonStyle.black,
+                type: ButtonType.signIn,
+                onPressed: isLoading ? null : () => _signInWithApple(context),
+              ),
+              SizedBox(height: 8),
+            ],
+            SocialSignInButton(
+              key: googleButtonKey,
+              assetName: 'assets/go-logo.png',
+              text: Strings.signInWithGoogle,
+              onPressed: isLoading ? null : () => _signInWithGoogle(context),
+              color: Colors.white,
             ),
             SizedBox(height: 8),
+            SocialSignInButton(
+              key: facebookButtonKey,
+              assetName: 'assets/fb-logo.png',
+              text: Strings.signInWithFacebook,
+              textColor: Colors.white,
+              onPressed: isLoading ? null : () => _signInWithFacebook(context),
+              color: Color(0xFF334D92),
+            ),
+            SizedBox(height: 8),
+            SignInButton(
+              key: emailPasswordButtonKey,
+              text: Strings.signInWithEmailPassword,
+              onPressed:
+                  isLoading ? null : () => _signInWithEmailAndPassword(context),
+              textColor: Colors.white,
+              color: Colors.teal[700],
+            ),
+            SizedBox(height: 8),
+            SignInButton(
+              key: emailLinkButtonKey,
+              text: Strings.signInWithEmailLink,
+              onPressed: isLoading ? null : () => _signInWithEmailLink(context),
+              textColor: Colors.white,
+              color: Colors.blueGrey[700],
+            ),
+            SizedBox(height: 8),
+            Text(
+              Strings.or,
+              style: TextStyle(fontSize: 14.0, color: Colors.black87),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 8),
+            SignInButton(
+              key: anonymousButtonKey,
+              text: Strings.goAnonymous,
+              color: Colors.lime[300],
+              textColor: Colors.black87,
+              onPressed: isLoading ? null : () => _signInAnonymously(context),
+            ),
           ],
-          SocialSignInButton(
-            key: googleButtonKey,
-            assetName: 'assets/go-logo.png',
-            text: Strings.signInWithGoogle,
-            onPressed: isLoading ? null : () => _signInWithGoogle(context),
-            color: Colors.white,
-          ),
-          SizedBox(height: 8),
-          SocialSignInButton(
-            key: facebookButtonKey,
-            assetName: 'assets/fb-logo.png',
-            text: Strings.signInWithFacebook,
-            textColor: Colors.white,
-            onPressed: isLoading ? null : () => _signInWithFacebook(context),
-            color: Color(0xFF334D92),
-          ),
-          SizedBox(height: 8),
-          SignInButton(
-            key: emailPasswordButtonKey,
-            text: Strings.signInWithEmailPassword,
-            onPressed:
-                isLoading ? null : () => _signInWithEmailAndPassword(context),
-            textColor: Colors.white,
-            color: Colors.teal[700],
-          ),
-          SizedBox(height: 8),
-          SignInButton(
-            key: emailLinkButtonKey,
-            text: Strings.signInWithEmailLink,
-            onPressed: isLoading ? null : () => _signInWithEmailLink(context),
-            textColor: Colors.white,
-            color: Colors.blueGrey[700],
-          ),
-          SizedBox(height: 8),
-          Text(
-            Strings.or,
-            style: TextStyle(fontSize: 14.0, color: Colors.black87),
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(height: 8),
-          SignInButton(
-            key: anonymousButtonKey,
-            text: Strings.goAnonymous,
-            color: Colors.lime[300],
-            textColor: Colors.black87,
-            onPressed: isLoading ? null : () => _signInAnonymously(context),
-          ),
-        ],
+        ),
       ),
     );
   }
