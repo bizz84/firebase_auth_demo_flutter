@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:apple_sign_in/apple_sign_in.dart';
 import 'package:firebase_auth_demo_flutter/services/auth_service.dart';
 import 'package:flutter/services.dart';
 import 'package:meta/meta.dart';
@@ -125,6 +126,14 @@ class MockAuthService implements AuthService {
 
   @override
   Future<User> signInWithGoogle() async {
+    await Future<void>.delayed(responseTime);
+    final User user = User(uid: random.randomAlphaNumeric(32));
+    _add(user);
+    return user;
+  }
+
+  @override
+  Future<User> signInWithApple({List<Scope> scopes}) async {
     await Future<void>.delayed(responseTime);
     final User user = User(uid: random.randomAlphaNumeric(32));
     _add(user);

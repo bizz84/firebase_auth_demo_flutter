@@ -1,3 +1,4 @@
+import 'package:apple_sign_in/apple_sign_in.dart';
 import 'package:firebase_auth_demo_flutter/app/sign_in/developer_menu.dart';
 import 'package:firebase_auth_demo_flutter/app/sign_in/email_password/email_password_sign_in_page.dart';
 import 'package:firebase_auth_demo_flutter/app/sign_in/email_link/email_link_sign_in_page.dart';
@@ -6,6 +7,7 @@ import 'package:firebase_auth_demo_flutter/app/sign_in/social_sign_in_button.dar
 import 'package:firebase_auth_demo_flutter/common_widgets/platform_exception_alert_dialog.dart';
 import 'package:firebase_auth_demo_flutter/constants/keys.dart';
 import 'package:firebase_auth_demo_flutter/constants/strings.dart';
+import 'package:firebase_auth_demo_flutter/services/apple_sign_in_available.dart';
 import 'package:firebase_auth_demo_flutter/services/auth_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -87,6 +89,16 @@ class SignInPage extends StatelessWidget {
     }
   }
 
+  Future<void> _signInWithApple(BuildContext context) async {
+    try {
+      await manager.signInWithApple();
+    } on PlatformException catch (e) {
+      if (e.code != 'ERROR_ABORTED_BY_USER') {
+        _showSignInError(context, e);
+      }
+    }
+  }
+
   Future<void> _signInWithEmailAndPassword(BuildContext context) async {
     final navigator = Navigator.of(context);
     await EmailPasswordSignInPage.show(
@@ -132,65 +144,79 @@ class SignInPage extends StatelessWidget {
   }
 
   Widget _buildSignIn(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(16.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          SizedBox(
-            height: 50.0,
-            child: _buildHeader(),
-          ),
-          SizedBox(height: 48.0),
-          SocialSignInButton(
-            key: googleButtonKey,
-            assetName: 'assets/go-logo.png',
-            text: Strings.signInWithGoogle,
-            onPressed: isLoading ? null : () => _signInWithGoogle(context),
-            color: Colors.white,
-          ),
-          SizedBox(height: 8),
-          SocialSignInButton(
-            key: facebookButtonKey,
-            assetName: 'assets/fb-logo.png',
-            text: Strings.signInWithFacebook,
-            textColor: Colors.white,
-            onPressed: isLoading ? null : () => _signInWithFacebook(context),
-            color: Color(0xFF334D92),
-          ),
-          SizedBox(height: 8),
-          SignInButton(
-            key: emailPasswordButtonKey,
-            text: Strings.signInWithEmailPassword,
-            onPressed:
-                isLoading ? null : () => _signInWithEmailAndPassword(context),
-            textColor: Colors.white,
-            color: Colors.teal[700],
-          ),
-          SizedBox(height: 8),
-          SignInButton(
-            key: emailLinkButtonKey,
-            text: Strings.signInWithEmailLink,
-            onPressed: isLoading ? null : () => _signInWithEmailLink(context),
-            textColor: Colors.white,
-            color: Colors.blueGrey[700],
-          ),
-          SizedBox(height: 8),
-          Text(
-            Strings.or,
-            style: TextStyle(fontSize: 14.0, color: Colors.black87),
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(height: 8),
-          SignInButton(
-            key: anonymousButtonKey,
-            text: Strings.goAnonymous,
-            color: Colors.lime[300],
-            textColor: Colors.black87,
-            onPressed: isLoading ? null : () => _signInAnonymously(context),
-          ),
-        ],
+    final appleSignInAvailable = Provider.of<AppleSignInAvailable>(context);
+    // Make content scrollable so that it fits on small screens
+    return SingleChildScrollView(
+      child: Container(
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            SizedBox(height: 32.0),
+            SizedBox(
+              height: 50.0,
+              child: _buildHeader(),
+            ),
+            SizedBox(height: 32.0),
+            if (appleSignInAvailable.isAvailable) ...[
+              AppleSignInButton(
+                // TODO: add key when supported
+                style: ButtonStyle.black,
+                type: ButtonType.signIn,
+                onPressed: isLoading ? null : () => _signInWithApple(context),
+              ),
+              SizedBox(height: 8),
+            ],
+            SocialSignInButton(
+              key: googleButtonKey,
+              assetName: 'assets/go-logo.png',
+              text: Strings.signInWithGoogle,
+              onPressed: isLoading ? null : () => _signInWithGoogle(context),
+              color: Colors.white,
+            ),
+            SizedBox(height: 8),
+            SocialSignInButton(
+              key: facebookButtonKey,
+              assetName: 'assets/fb-logo.png',
+              text: Strings.signInWithFacebook,
+              textColor: Colors.white,
+              onPressed: isLoading ? null : () => _signInWithFacebook(context),
+              color: Color(0xFF334D92),
+            ),
+            SizedBox(height: 8),
+            SignInButton(
+              key: emailPasswordButtonKey,
+              text: Strings.signInWithEmailPassword,
+              onPressed:
+                  isLoading ? null : () => _signInWithEmailAndPassword(context),
+              textColor: Colors.white,
+              color: Colors.teal[700],
+            ),
+            SizedBox(height: 8),
+            SignInButton(
+              key: emailLinkButtonKey,
+              text: Strings.signInWithEmailLink,
+              onPressed: isLoading ? null : () => _signInWithEmailLink(context),
+              textColor: Colors.white,
+              color: Colors.blueGrey[700],
+            ),
+            SizedBox(height: 8),
+            Text(
+              Strings.or,
+              style: TextStyle(fontSize: 14.0, color: Colors.black87),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 8),
+            SignInButton(
+              key: anonymousButtonKey,
+              text: Strings.goAnonymous,
+              color: Colors.lime[300],
+              textColor: Colors.black87,
+              onPressed: isLoading ? null : () => _signInAnonymously(context),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -30,4 +30,8 @@ class SignInManager {
   Future<void> signInWithFacebook() async {
     return await _signIn(auth.signInWithFacebook);
   }
+
+  Future<void> signInWithApple() async {
+    return await _signIn(auth.signInWithApple);
+  }
 }
