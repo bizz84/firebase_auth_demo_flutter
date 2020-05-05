@@ -78,9 +78,9 @@ class FirebaseEmailLinkHandler with WidgetsBindingObserver {
         .then((link) => linkHandler._processDynamicLink(link?.link));
     // Listen to subsequent links
     FirebaseDynamicLinks.instance.onLink(
-      onSuccess: (linkData) => linkHandler.handleLink(linkData?.link),
+      onSuccess: (linkData) => linkHandler._handleLink(linkData?.link),
       // convert to PlatformException as OnLinkErrorCallback has private constructor and can't be tested
-      onError: (error) => linkHandler.handleLinkError(PlatformException(
+      onError: (error) => linkHandler._handleLinkError(PlatformException(
         code: error.code,
         message: error.message,
         details: error.details,
@@ -101,19 +101,25 @@ class FirebaseEmailLinkHandler with WidgetsBindingObserver {
 
   /// last link data received from FirebaseDynamicLinks
   Uri _lastUnprocessedLink;
+  AppLifecycleState _currentAppState = AppLifecycleState.resumed;
 
-  /// last link error received from FirebaseDynamicLinks
-  PlatformException _lastUnprocessedLinkError;
-
-  Future<dynamic> handleLink(Uri link) {
-    _lastUnprocessedLink = link;
-    _lastUnprocessedLinkError = null;
+  Future<dynamic> _handleLink(Uri link) {
+    if (_currentAppState == AppLifecycleState.resumed) {
+      // If app is in foreground, process link
+      _processDynamicLink(link);
+    } else {
+      // else, save for later processing
+      _lastUnprocessedLink = link;
+    }
     return Future<dynamic>.value();
   }
 
-  Future<dynamic> handleLinkError(PlatformException error) {
-    _lastUnprocessedLink = null;
-    _lastUnprocessedLinkError = error;
+  Future<dynamic> _handleLinkError(PlatformException error) {
+    _errorController.add(EmailLinkError(
+      error: EmailLinkErrorType.linkError,
+      description: error.message,
+    ));
+
     return Future<dynamic>.value();
   }
 
@@ -126,23 +132,12 @@ class FirebaseEmailLinkHandler with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     // When the application comes into focus
+    _currentAppState = state;
     if (state == AppLifecycleState.resumed) {
-      _checkUnprocessedLinks();
-    }
-  }
-
-  /// Checks for a dynamic link, and tries to use it to sign in with email (passwordless)
-  Future<void> _checkUnprocessedLinks() async {
-    if (_lastUnprocessedLink != null) {
-      await _processDynamicLink(_lastUnprocessedLink);
-      _lastUnprocessedLink = null;
-    }
-    if (_lastUnprocessedLinkError != null) {
-      _errorController.add(EmailLinkError(
-        error: EmailLinkErrorType.linkError,
-        description: _lastUnprocessedLinkError.message,
-      ));
-      _lastUnprocessedLinkError = null;
+      if (_lastUnprocessedLink != null) {
+        _processDynamicLink(_lastUnprocessedLink);
+        _lastUnprocessedLink = null;
+      }
     }
   }
 
