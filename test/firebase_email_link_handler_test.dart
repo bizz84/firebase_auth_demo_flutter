@@ -30,6 +30,11 @@ void main() {
       );
     }
 
+    void stubNullInitialLink() {
+      when(mockFirebaseDynamicLinks.getInitialLink())
+          .thenAnswer((_) => Future.value(null));
+    }
+
     void stubValidInitialLink() {
       final linkData = MockPendingDynamicLinkData();
       when(linkData.link).thenReturn(sampleLink);
@@ -37,9 +42,12 @@ void main() {
           .thenAnswer((_) => Future.value(linkData));
     }
 
-    void stubNullInitialLink() {
+    void stubGetInitialLinkThrows() {
       when(mockFirebaseDynamicLinks.getInitialLink())
-          .thenAnswer((_) => Future.value(null));
+          .thenThrow(PlatformException(
+        code: 'ERROR',
+        message: 'error',
+      ));
     }
 
     void stubCurrentUser(User user) {
@@ -119,40 +127,16 @@ void main() {
           handler.errorStream,
           emits(EmailLinkError(
             error: EmailLinkErrorType.linkError,
-            description: 'fail',
+            description: 'error',
           )));
+      stubGetInitialLinkThrows();
       await handler.init();
-      //handler.handleLinkError(PlatformException(code: '', message: 'fail'));
       // artificial delay so that valeus are added to stream
       await Future<void>.delayed(Duration());
       verifyNever(mockAuth.isSignInWithEmailLink(any));
       handler.dispose();
-    }, skip: true);
+    });
 
-    test(
-        'WHEN currentUser is null'
-        'AND stored email is null'
-        'AND link received'
-        'AND error received'
-        'THEN emits linkError error'
-        'AND isSignInWithEmailLink not called', () async {
-      stubCurrentUser(null);
-      stubStoredEmail(null);
-      final handler = buildHandler();
-      expect(
-          handler.errorStream,
-          emits(EmailLinkError(
-            error: EmailLinkErrorType.linkError,
-            description: 'fail',
-          )));
-      stubValidInitialLink();
-      await handler.init();
-      //handler.handleLinkError(PlatformException(code: '', message: 'fail'));
-      // artificial delay so that valeus are added to stream
-      await Future<void>.delayed(Duration());
-      verifyNever(mockAuth.isSignInWithEmailLink(any));
-      handler.dispose();
-    }, skip: true);
     test(
         'WHEN currentUser is NOT null'
         'AND stored email is null'

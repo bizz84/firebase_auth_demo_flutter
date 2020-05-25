@@ -78,8 +78,8 @@ class FirebaseEmailLinkHandler {
       if (link != null) {
         await _processDynamicLink(linkData?.link);
       }
-    } catch (e) {
-      print(e);
+    } on PlatformException catch (e) {
+      _handleLinkError(e);
     }
   }
 
