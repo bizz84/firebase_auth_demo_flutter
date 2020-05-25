@@ -78,6 +78,7 @@ void main() {
       expect(handler.errorStream,
           neverEmits(EmailLinkError(error: EmailLinkErrorType.emailNotSet)));
       stubNullInitialLink();
+      await handler.init();
       // artificial delay so that valeus are added to stream
       await Future<void>.delayed(Duration());
       verifyNever(mockAuth.isSignInWithEmailLink(any));
@@ -97,6 +98,7 @@ void main() {
       expect(handler.errorStream,
           emits(EmailLinkError(error: EmailLinkErrorType.emailNotSet)));
       stubValidInitialLink();
+      await handler.init();
       // artificial delay so that valeus are added to stream
       await Future<void>.delayed(Duration());
       verifyNever(mockAuth.isSignInWithEmailLink(any));
@@ -119,6 +121,7 @@ void main() {
             error: EmailLinkErrorType.linkError,
             description: 'fail',
           )));
+      await handler.init();
       //handler.handleLinkError(PlatformException(code: '', message: 'fail'));
       // artificial delay so that valeus are added to stream
       await Future<void>.delayed(Duration());
@@ -143,6 +146,7 @@ void main() {
             description: 'fail',
           )));
       stubValidInitialLink();
+      await handler.init();
       //handler.handleLinkError(PlatformException(code: '', message: 'fail'));
       // artificial delay so that valeus are added to stream
       await Future<void>.delayed(Duration());
@@ -161,6 +165,7 @@ void main() {
       expect(handler.errorStream,
           emits(EmailLinkError(error: EmailLinkErrorType.userAlreadySignedIn)));
       stubValidInitialLink();
+      await handler.init();
       // artificial delay so that valeus are added to stream
       await Future<void>.delayed(Duration());
       verifyNever(mockAuth.isSignInWithEmailLink(any));
@@ -179,6 +184,7 @@ void main() {
       expect(handler.errorStream,
           emits(EmailLinkError(error: EmailLinkErrorType.userAlreadySignedIn)));
       stubValidInitialLink();
+      await handler.init();
       // artificial delay so that valeus are added to stream
       await Future<void>.delayed(Duration());
       verifyNever(mockAuth.isSignInWithEmailLink(any));
@@ -199,6 +205,7 @@ void main() {
           emits(EmailLinkError(
               error: EmailLinkErrorType.isNotSignInWithEmailLink)));
       stubValidInitialLink();
+      await handler.init();
       // artificial delay so that valeus are added to stream
       await Future<void>.delayed(Duration());
       verify(mockAuth.isSignInWithEmailLink(any)).called(1);
@@ -220,6 +227,7 @@ void main() {
           neverEmits(EmailLinkError(
               error: EmailLinkErrorType.isNotSignInWithEmailLink)));
       stubValidInitialLink();
+      await handler.init();
       // artificial delay so that valeus are added to stream
       await Future<void>.delayed(Duration());
       verify(mockAuth.isSignInWithEmailLink(any)).called(1);
@@ -247,6 +255,7 @@ void main() {
           emits(EmailLinkError(
               error: EmailLinkErrorType.signInFailed, description: 'fail')));
       stubValidInitialLink();
+      await handler.init();
       // artificial delay so that valeus are added to stream
       await Future<void>.delayed(Duration());
       verify(mockAuth.isSignInWithEmailLink(any)).called(1);
