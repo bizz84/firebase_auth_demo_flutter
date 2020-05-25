@@ -48,19 +48,21 @@ class EmailLinkError {
 }
 
 /// Checks incoming dynamic links and uses them to sign in the user with Firebase
-class FirebaseEmailLinkHandler with WidgetsBindingObserver {
+class FirebaseEmailLinkHandler {
   FirebaseEmailLinkHandler({
     @required this.auth,
     @required this.emailStore,
+    @required this.firebaseDynamicLinks,
   });
   final AuthService auth;
   final EmailSecureStore emailStore;
+  final FirebaseDynamicLinks firebaseDynamicLinks;
 
   /// Sets up listeners to process all links from [FirebaseDynamicLinks.instance.getInitialLink()] and [FirebaseDynamicLinks.instance.onLink]
   Future<void> init() async {
     try {
       // Listen to incoming links when the app is open
-      FirebaseDynamicLinks.instance.onLink(
+      firebaseDynamicLinks.onLink(
         onSuccess: (linkData) => _processDynamicLink(linkData?.link),
         onError: (error) => _handleLinkError(PlatformException(
           code: error.code,
@@ -71,7 +73,7 @@ class FirebaseEmailLinkHandler with WidgetsBindingObserver {
 
       // Check dynamic link once on app startup.
       // This is required to process any dynamic links that are opened when the app was closed
-      final linkData = await FirebaseDynamicLinks.instance.getInitialLink();
+      final linkData = await firebaseDynamicLinks.getInitialLink();
       final link = linkData?.link?.toString();
       if (link != null) {
         await _processDynamicLink(linkData?.link);

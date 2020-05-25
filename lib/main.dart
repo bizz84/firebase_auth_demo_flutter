@@ -6,6 +6,7 @@ import 'package:firebase_auth_demo_flutter/services/auth_service.dart';
 import 'package:firebase_auth_demo_flutter/services/auth_service_adapter.dart';
 import 'package:firebase_auth_demo_flutter/services/firebase_email_link_handler.dart';
 import 'package:firebase_auth_demo_flutter/services/email_secure_store.dart';
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
@@ -47,6 +48,7 @@ class MyApp extends StatelessWidget {
               FirebaseEmailLinkHandler(
             auth: authService,
             emailStore: storage,
+            firebaseDynamicLinks: FirebaseDynamicLinks.instance,
           )..init(),
           dispose: (_, linkHandler) => linkHandler.dispose(),
         ),
