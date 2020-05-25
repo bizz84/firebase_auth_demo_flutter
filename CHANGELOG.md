@@ -1,3 +1,7 @@
+# 0.1.3
+
+- Fix email-link sign in ([#59](https://github.com/bizz84/firebase_auth_demo_flutter/pull/59))
+
 # 0.1.2
 
 - Add sign-in with Apple
