@@ -1,4 +1,3 @@
-import 'package:apple_sign_in/apple_sign_in.dart';
 import 'package:firebase_auth_demo_flutter/app/auth_widget_builder.dart';
 import 'package:firebase_auth_demo_flutter/app/email_link_error_presenter.dart';
 import 'package:firebase_auth_demo_flutter/app/auth_widget.dart';
@@ -45,10 +44,10 @@ class MyApp extends StatelessWidget {
         ),
         ProxyProvider2<AuthService, EmailSecureStore, FirebaseEmailLinkHandler>(
           update: (_, AuthService authService, EmailSecureStore storage, __) =>
-              FirebaseEmailLinkHandler.createAndConfigure(
+              FirebaseEmailLinkHandler(
             auth: authService,
-            userCredentialsStorage: storage,
-          ),
+            emailStore: storage,
+          )..init(),
           dispose: (_, linkHandler) => linkHandler.dispose(),
         ),
       ],

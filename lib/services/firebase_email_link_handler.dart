@@ -51,42 +51,34 @@ class EmailLinkError {
 class FirebaseEmailLinkHandler with WidgetsBindingObserver {
   FirebaseEmailLinkHandler({
     @required this.auth,
-    @required this.widgetsBinding,
     @required this.emailStore,
-  }) {
-    // Register WidgetsBinding observer so that we can detect when the app is resumed.
-    // See [didChangeAppLifecycleState].
-    widgetsBinding.addObserver(this);
-  }
+  });
   final AuthService auth;
-  final WidgetsBinding widgetsBinding;
   final EmailSecureStore emailStore;
 
-  static FirebaseEmailLinkHandler createAndConfigure({
-    @required AuthService auth,
-    @required EmailSecureStore userCredentialsStorage,
-  }) {
-    final linkHandler = FirebaseEmailLinkHandler(
-      auth: auth,
-      widgetsBinding: WidgetsBinding.instance,
-      emailStore: userCredentialsStorage,
-    );
-    // Check dynamic link once on app startup. This is required to process any dynamic links that may have opened
-    // the app when it was closed.
-    FirebaseDynamicLinks.instance
-        .getInitialLink()
-        .then((link) => linkHandler._processDynamicLink(link?.link));
-    // Listen to subsequent links
-    FirebaseDynamicLinks.instance.onLink(
-      onSuccess: (linkData) => linkHandler._handleLink(linkData?.link),
-      // convert to PlatformException as OnLinkErrorCallback has private constructor and can't be tested
-      onError: (error) => linkHandler._handleLinkError(PlatformException(
-        code: error.code,
-        message: error.message,
-        details: error.details,
-      )),
-    );
-    return linkHandler;
+  /// Sets up listeners to process all links from [FirebaseDynamicLinks.instance.getInitialLink()] and [FirebaseDynamicLinks.instance.onLink]
+  Future<void> init() async {
+    try {
+      // Listen to incoming links when the app is open
+      FirebaseDynamicLinks.instance.onLink(
+        onSuccess: (linkData) => _processDynamicLink(linkData?.link),
+        onError: (error) => _handleLinkError(PlatformException(
+          code: error.code,
+          message: error.message,
+          details: error.details,
+        )),
+      );
+
+      // Check dynamic link once on app startup.
+      // This is required to process any dynamic links that are opened when the app was closed
+      final linkData = await FirebaseDynamicLinks.instance.getInitialLink();
+      final link = linkData?.link?.toString();
+      if (link != null) {
+        await _processDynamicLink(linkData?.link);
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 
   /// Clients can listen to this stream and show error alerts when dynamic link processing fails
@@ -98,21 +90,6 @@ class FirebaseEmailLinkHandler with WidgetsBindingObserver {
   final ValueNotifier<bool> isLoading = ValueNotifier<bool>(false);
 
   Future<String> getEmail() => emailStore.getEmail();
-
-  /// last link data received from FirebaseDynamicLinks
-  Uri _lastUnprocessedLink;
-  AppLifecycleState _currentAppState = AppLifecycleState.resumed;
-
-  Future<dynamic> _handleLink(Uri link) {
-    if (_currentAppState == AppLifecycleState.resumed) {
-      // If app is in foreground, process link
-      _processDynamicLink(link);
-    } else {
-      // else, save for later processing
-      _lastUnprocessedLink = link;
-    }
-    return Future<dynamic>.value();
-  }
 
   Future<dynamic> _handleLinkError(PlatformException error) {
     _errorController.add(EmailLinkError(
@@ -126,19 +103,6 @@ class FirebaseEmailLinkHandler with WidgetsBindingObserver {
   void dispose() {
     _errorController.close();
     isLoading.dispose();
-    widgetsBinding.removeObserver(this);
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    // When the application comes into focus
-    _currentAppState = state;
-    if (state == AppLifecycleState.resumed) {
-      if (_lastUnprocessedLink != null) {
-        _processDynamicLink(_lastUnprocessedLink);
-        _lastUnprocessedLink = null;
-      }
-    }
   }
 
   Future<void> _processDynamicLink(Uri deepLink) async {
@@ -207,7 +171,7 @@ class FirebaseEmailLinkHandler with WidgetsBindingObserver {
         androidInstallIfNotAvailable: androidInstallIfNotAvailable,
         androidMinimumVersion: androidMinimumVersion,
       );
-    } on PlatformException catch (e) {
+    } on PlatformException catch (_) {
       rethrow;
     } finally {
       isLoading.value = false;

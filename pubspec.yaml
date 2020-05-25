@@ -23,7 +23,11 @@ dependencies:
   flutter_facebook_login: ^3.0.0
   apple_sign_in: ^0.1.0
   provider: ^4.0.1
-  firebase_dynamic_links: ^0.5.0+9
+  firebase_dynamic_links:
+    git:
+      url: https://github.com/mrmilu/flutterfire
+      path: packages/firebase_dynamic_links
+      ref: firebase_dynamic_links
   rxdart: ^0.23.1
   flutter_secure_storage: ^3.3.1+1
   package_info: ^0.4.0+13
