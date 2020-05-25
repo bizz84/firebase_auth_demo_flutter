@@ -1,4 +1,3 @@
-import 'package:apple_sign_in/apple_sign_in.dart';
 import 'package:firebase_auth_demo_flutter/app/auth_widget_builder.dart';
 import 'package:firebase_auth_demo_flutter/app/email_link_error_presenter.dart';
 import 'package:firebase_auth_demo_flutter/app/auth_widget.dart';
@@ -7,6 +6,7 @@ import 'package:firebase_auth_demo_flutter/services/auth_service.dart';
 import 'package:firebase_auth_demo_flutter/services/auth_service_adapter.dart';
 import 'package:firebase_auth_demo_flutter/services/firebase_email_link_handler.dart';
 import 'package:firebase_auth_demo_flutter/services/email_secure_store.dart';
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
@@ -45,10 +45,11 @@ class MyApp extends StatelessWidget {
         ),
         ProxyProvider2<AuthService, EmailSecureStore, FirebaseEmailLinkHandler>(
           update: (_, AuthService authService, EmailSecureStore storage, __) =>
-              FirebaseEmailLinkHandler.createAndConfigure(
+              FirebaseEmailLinkHandler(
             auth: authService,
-            userCredentialsStorage: storage,
-          ),
+            emailStore: storage,
+            firebaseDynamicLinks: FirebaseDynamicLinks.instance,
+          )..init(),
           dispose: (_, linkHandler) => linkHandler.dispose(),
         ),
       ],
