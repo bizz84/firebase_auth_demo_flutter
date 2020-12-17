@@ -1,6 +1,10 @@
 name: firebase_auth_demo_flutter
 description: Reference Authentication Flow with Flutter & Firebase
 
+# The following line prevents the package from being accidentally published to
+# pub.dev using `pub publish`. This is preferred for private packages.
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
 # followed by an optional build number separated by a +.
@@ -11,45 +15,37 @@ description: Reference Authentication Flow with Flutter & Firebase
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 0.1.3+1
+version: 0.2.0
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
-  random_string: ^2.0.0
-  firebase_auth: ^0.15.3
-  google_sign_in: ^4.1.1
-  flutter_facebook_login: ^3.0.0
-  apple_sign_in: ^0.1.0
-  provider: ^4.0.1
-  firebase_dynamic_links:
-    git:
-      url: https://github.com/mrmilu/flutterfire
-      path: packages/firebase_dynamic_links
-      ref: firebase_dynamic_links
-  rxdart: ^0.23.1
-  flutter_secure_storage: ^3.3.1+1
-  package_info: ^0.4.0+13
   flutter:
     sdk: flutter
-
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^0.1.2
+  apple_sign_in: ^0.1.0
+  cupertino_icons: ^1.0.0
+  firebase_auth: ^0.18.4+1
+  firebase_core: ^0.5.3
+  firebase_dynamic_links: ^0.6.3
+  flutter_login_facebook: ^0.4.0+1
+  flutter_secure_storage: ^3.3.5
+  google_sign_in: ^4.5.6
+  package_info: ^0.4.3+2
+  provider: ^4.3.2+3
+  random_string: ^2.1.0
+  rxdart: ^0.25.0
 
 dev_dependencies:
+  flutter_driver:
+    sdk: flutter
   flutter_test:
     sdk: flutter
-  mockito: ^4.1.1
-  flutter_driver:
-    sdk: flutter 
+  mockito: ^4.1.3
   test: any
 
-
 # For information on the generic Dart part of this file, see the
-# following page: https://www.dartlang.org/tools/pub/pubspec
-
+# following page: https://dart.dev/tools/pub/pubspec
 # The following section is specific to Flutter.
 flutter:
 
@@ -57,22 +53,16 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
-
   # To add assets to your application, add an assets section, like this:
   # assets:
-  #  - images/a_dot_burr.jpeg
-  #  - images/a_dot_ham.jpeg
+  #   - images/a_dot_burr.jpeg
+  #   - images/a_dot_ham.jpeg
   assets:
-    - assets/fb-logo.png
-    - assets/go-logo.png
-    - assets/user.png
-
+    - assets/
   # An image asset can refer to one or more resolution-specific "variants", see
-  # https://flutter.io/assets-and-images/#resolution-aware.
-
+  # https://flutter.dev/assets-and-images/#resolution-aware.
   # For details regarding adding assets from package dependencies, see
-  # https://flutter.io/assets-and-images/#from-packages
-
+  # https://flutter.dev/assets-and-images/#from-packages
   # To add custom fonts to your application, add a fonts section here,
   # in this "flutter" section. Each entry in this list should have a
   # "family" key with the font family name, and a "fonts" key with a
@@ -91,4 +81,4 @@ flutter:
   #         weight: 700
   #
   # For details regarding fonts from package dependencies,
-  # see https://flutter.io/custom-fonts/#from-packages
+  # see https://flutter.dev/custom-fonts/#from-packages

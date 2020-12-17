@@ -117,7 +117,7 @@ class FirebaseEmailLinkHandler {
     try {
       isLoading.value = true;
       // check that user is not signed in
-      final User user = await auth.currentUser();
+      final MyAppUser user = await auth.currentUser();
       if (user != null) {
         _errorController.add(EmailLinkError(
           error: EmailLinkErrorType.userAlreadySignedIn,
@@ -133,7 +133,7 @@ class FirebaseEmailLinkHandler {
         return;
       }
       // sign in
-      if (await auth.isSignInWithEmailLink(link)) {
+      if (auth.isSignInWithEmailLink(link)) {
         await auth.signInWithEmailAndLink(email: email, link: link);
       } else {
         _errorController.add(EmailLinkError(
@@ -156,7 +156,7 @@ class FirebaseEmailLinkHandler {
     @required String url,
     @required bool handleCodeInApp,
     @required String packageName,
-    @required bool androidInstallIfNotAvailable,
+    @required bool androidInstallApp,
     @required String androidMinimumVersion,
   }) async {
     try {
@@ -168,9 +168,9 @@ class FirebaseEmailLinkHandler {
         email: email,
         url: url,
         handleCodeInApp: handleCodeInApp,
-        iOSBundleID: packageName,
+        iOSBundleId: packageName,
         androidPackageName: packageName,
-        androidInstallIfNotAvailable: androidInstallIfNotAvailable,
+        androidInstallApp: androidInstallApp,
         androidMinimumVersion: androidMinimumVersion,
       );
     } on PlatformException catch (_) {

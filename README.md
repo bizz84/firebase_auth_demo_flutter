@@ -1,5 +1,7 @@
 # Reference Authentication Flow with Flutter & Firebase
 
+This forked project has been upgraded to the latest packages.
+
 [![Codemagic build status](https://api.codemagic.io/apps/5d8e174b125acf001aca4a45/5d8e174b125acf001aca4a44/status_badge.svg)](https://codemagic.io/apps/5d8e174b125acf001aca4a45/5d8e174b125acf001aca4a44/latest_build)
 
 YouTube video walk-throughs here: 

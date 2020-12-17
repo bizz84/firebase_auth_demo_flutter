@@ -54,7 +54,7 @@ class _EmailLinkSignInPageState extends State<EmailLinkSignInPage> {
 
   final TextEditingController _emailController = TextEditingController();
 
-  StreamSubscription<User> _onAuthStateChangedSubscription;
+  StreamSubscription<MyAppUser> _onAuthStateChangedSubscription;
   @override
   void initState() {
     super.initState();
@@ -65,7 +65,7 @@ class _EmailLinkSignInPageState extends State<EmailLinkSignInPage> {
     });
     // Invoke onSignedIn callback if a non-null user is detected
     _onAuthStateChangedSubscription =
-        widget.authService.onAuthStateChanged.listen((User user) {
+        widget.authService.onAuthStateChanged.listen((MyAppUser user) {
       if (user != null) {
         if (widget.onSignedIn != null && mounted) {
           widget.onSignedIn();
@@ -89,7 +89,7 @@ class _EmailLinkSignInPageState extends State<EmailLinkSignInPage> {
         url: Constants.firebaseProjectURL,
         handleCodeInApp: true,
         packageName: packageInfo.packageName,
-        androidInstallIfNotAvailable: true,
+        androidInstallApp: true,
         androidMinimumVersion: '21',
       );
       // Tell user we sent an email

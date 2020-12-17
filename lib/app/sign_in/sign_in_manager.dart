@@ -9,7 +9,7 @@ class SignInManager {
   final AuthService auth;
   final ValueNotifier<bool> isLoading;
 
-  Future<User> _signIn(Future<User> Function() signInMethod) async {
+  Future<MyAppUser> _signIn(Future<MyAppUser> Function() signInMethod) async {
     try {
       isLoading.value = true;
       return await signInMethod();
@@ -19,7 +19,7 @@ class SignInManager {
     }
   }
 
-  Future<User> signInAnonymously() async {
+  Future<MyAppUser> signInAnonymously() async {
     return await _signIn(auth.signInAnonymously);
   }
 

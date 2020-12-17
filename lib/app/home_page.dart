@@ -37,7 +37,7 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<User>(context);
+    final user = Provider.of<MyAppUser>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(Strings.homePage),
@@ -62,7 +62,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _buildUserInfo(User user) {
+  Widget _buildUserInfo(MyAppUser user) {
     return Column(
       children: [
         Avatar(

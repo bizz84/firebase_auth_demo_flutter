@@ -1,10 +1,11 @@
 import 'dart:async';
 
 import 'package:apple_sign_in/apple_sign_in.dart';
-import 'package:firebase_auth_demo_flutter/services/auth_service.dart';
-import 'package:firebase_auth_demo_flutter/services/firebase_auth_service.dart';
-import 'package:firebase_auth_demo_flutter/services/mock_auth_service.dart';
 import 'package:flutter/foundation.dart';
+
+import 'auth_service.dart';
+import 'firebase_auth_service.dart';
+import 'mock_auth_service.dart';
 
 enum AuthServiceType { firebase, mock }
 
@@ -24,14 +25,14 @@ class AuthServiceAdapter implements AuthService {
       ? _firebaseAuthService
       : _mockAuthService;
 
-  StreamSubscription<User> _firebaseAuthSubscription;
-  StreamSubscription<User> _mockAuthSubscription;
+  StreamSubscription<MyAppUser> _firebaseAuthSubscription;
+  StreamSubscription<MyAppUser> _mockAuthSubscription;
 
   void _setup() {
     // Observable<User>.merge was considered here, but we need more fine grained control to ensure
     // that only events from the currently active service are processed
     _firebaseAuthSubscription =
-        _firebaseAuthService.onAuthStateChanged.listen((User user) {
+        _firebaseAuthService.onAuthStateChanged.listen((MyAppUser user) {
       if (authServiceType == AuthServiceType.firebase) {
         _onAuthStateChangedController.add(user);
       }
@@ -41,7 +42,7 @@ class AuthServiceAdapter implements AuthService {
       }
     });
     _mockAuthSubscription =
-        _mockAuthService.onAuthStateChanged.listen((User user) {
+        _mockAuthService.onAuthStateChanged.listen((MyAppUser user) {
       if (authServiceType == AuthServiceType.mock) {
         _onAuthStateChangedController.add(user);
       }
@@ -61,23 +62,25 @@ class AuthServiceAdapter implements AuthService {
     authServiceTypeNotifier.dispose();
   }
 
-  final StreamController<User> _onAuthStateChangedController =
-      StreamController<User>.broadcast();
+  final StreamController<MyAppUser> _onAuthStateChangedController =
+      StreamController<MyAppUser>.broadcast();
   @override
-  Stream<User> get onAuthStateChanged => _onAuthStateChangedController.stream;
+  Stream<MyAppUser> get onAuthStateChanged =>
+      _onAuthStateChangedController.stream;
 
   @override
-  Future<User> currentUser() => authService.currentUser();
+  Future<MyAppUser> currentUser() => authService.currentUser();
 
   @override
-  Future<User> signInAnonymously() => authService.signInAnonymously();
+  Future<MyAppUser> signInAnonymously() => authService.signInAnonymously();
 
   @override
-  Future<User> createUserWithEmailAndPassword(String email, String password) =>
+  Future<MyAppUser> createUserWithEmailAndPassword(
+          String email, String password) =>
       authService.createUserWithEmailAndPassword(email, password);
 
   @override
-  Future<User> signInWithEmailAndPassword(String email, String password) =>
+  Future<MyAppUser> signInWithEmailAndPassword(String email, String password) =>
       authService.signInWithEmailAndPassword(email, password);
 
   @override
@@ -85,11 +88,11 @@ class AuthServiceAdapter implements AuthService {
       authService.sendPasswordResetEmail(email);
 
   @override
-  Future<User> signInWithEmailAndLink({String email, String link}) =>
+  Future<MyAppUser> signInWithEmailAndLink({String email, String link}) =>
       authService.signInWithEmailAndLink(email: email, link: link);
 
   @override
-  Future<bool> isSignInWithEmailLink(String link) =>
+  bool isSignInWithEmailLink(String link) =>
       authService.isSignInWithEmailLink(link);
 
   @override
@@ -97,29 +100,29 @@ class AuthServiceAdapter implements AuthService {
     @required String email,
     @required String url,
     @required bool handleCodeInApp,
-    @required String iOSBundleID,
+    @required String iOSBundleId,
     @required String androidPackageName,
-    @required bool androidInstallIfNotAvailable,
+    @required bool androidInstallApp,
     @required String androidMinimumVersion,
   }) =>
       authService.sendSignInWithEmailLink(
         email: email,
         url: url,
         handleCodeInApp: handleCodeInApp,
-        iOSBundleID: iOSBundleID,
+        iOSBundleId: iOSBundleId,
         androidPackageName: androidPackageName,
-        androidInstallIfNotAvailable: androidInstallIfNotAvailable,
+        androidInstallApp: androidInstallApp,
         androidMinimumVersion: androidMinimumVersion,
       );
 
   @override
-  Future<User> signInWithFacebook() => authService.signInWithFacebook();
+  Future<MyAppUser> signInWithFacebook() => authService.signInWithFacebook();
 
   @override
-  Future<User> signInWithGoogle() => authService.signInWithGoogle();
+  Future<MyAppUser> signInWithGoogle() => authService.signInWithGoogle();
 
   @override
-  Future<User> signInWithApple({List<Scope> scopes}) =>
+  Future<MyAppUser> signInWithApple({List<Scope> scopes}) =>
       authService.signInWithApple();
 
   @override

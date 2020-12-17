@@ -3,51 +3,53 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_auth_demo_flutter/services/auth_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:flutter_login_facebook/flutter_login_facebook.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class FirebaseAuthService implements AuthService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
-  User _userFromFirebase(FirebaseUser user) {
+  MyAppUser _userFromFirebase(User user) {
     if (user == null) {
       return null;
     }
-    return User(
+    return MyAppUser(
       uid: user.uid,
       email: user.email,
       displayName: user.displayName,
-      photoUrl: user.photoUrl,
+      photoUrl: user.photoURL,
     );
   }
 
   @override
-  Stream<User> get onAuthStateChanged {
-    return _firebaseAuth.onAuthStateChanged.map(_userFromFirebase);
+  Stream<MyAppUser> get onAuthStateChanged {
+    return _firebaseAuth.authStateChanges().map(_userFromFirebase);
   }
 
   @override
-  Future<User> signInAnonymously() async {
-    final AuthResult authResult = await _firebaseAuth.signInAnonymously();
-    return _userFromFirebase(authResult.user);
+  Future<MyAppUser> signInAnonymously() async {
+    final UserCredential userCredential =
+        await _firebaseAuth.signInAnonymously();
+    return _userFromFirebase(userCredential.user);
   }
 
   @override
-  Future<User> signInWithEmailAndPassword(String email, String password) async {
-    final AuthResult authResult = await _firebaseAuth
-        .signInWithCredential(EmailAuthProvider.getCredential(
+  Future<MyAppUser> signInWithEmailAndPassword(
+      String email, String password) async {
+    final UserCredential userCredential =
+        await _firebaseAuth.signInWithEmailAndPassword(
       email: email,
       password: password,
-    ));
-    return _userFromFirebase(authResult.user);
+    );
+    return _userFromFirebase(userCredential.user);
   }
 
   @override
-  Future<User> createUserWithEmailAndPassword(
+  Future<MyAppUser> createUserWithEmailAndPassword(
       String email, String password) async {
-    final AuthResult authResult = await _firebaseAuth
+    final UserCredential userCredential = await _firebaseAuth
         .createUserWithEmailAndPassword(email: email, password: password);
-    return _userFromFirebase(authResult.user);
+    return _userFromFirebase(userCredential.user);
   }
 
   @override
@@ -56,15 +58,15 @@ class FirebaseAuthService implements AuthService {
   }
 
   @override
-  Future<User> signInWithEmailAndLink({String email, String link}) async {
-    final AuthResult authResult =
-        await _firebaseAuth.signInWithEmailAndLink(email: email, link: link);
-    return _userFromFirebase(authResult.user);
+  Future<MyAppUser> signInWithEmailAndLink({String email, String link}) async {
+    final UserCredential userCredential =
+        await _firebaseAuth.signInWithEmailLink(email: email, emailLink: link);
+    return _userFromFirebase(userCredential.user);
   }
 
   @override
-  Future<bool> isSignInWithEmailLink(String link) async {
-    return await _firebaseAuth.isSignInWithEmailLink(link);
+  bool isSignInWithEmailLink(String link) {
+    return _firebaseAuth.isSignInWithEmailLink(link);
   }
 
   @override
@@ -72,24 +74,26 @@ class FirebaseAuthService implements AuthService {
     @required String email,
     @required String url,
     @required bool handleCodeInApp,
-    @required String iOSBundleID,
+    @required String iOSBundleId,
     @required String androidPackageName,
-    @required bool androidInstallIfNotAvailable,
+    @required bool androidInstallApp,
     @required String androidMinimumVersion,
   }) async {
-    return await _firebaseAuth.sendSignInWithEmailLink(
+    return await _firebaseAuth.sendSignInLinkToEmail(
       email: email,
-      url: url,
-      handleCodeInApp: handleCodeInApp,
-      iOSBundleID: iOSBundleID,
-      androidPackageName: androidPackageName,
-      androidInstallIfNotAvailable: androidInstallIfNotAvailable,
-      androidMinimumVersion: androidMinimumVersion,
+      actionCodeSettings: ActionCodeSettings(
+        url: url,
+        handleCodeInApp: handleCodeInApp,
+        iOSBundleId: iOSBundleId,
+        androidPackageName: androidPackageName,
+        androidInstallApp: androidInstallApp,
+        androidMinimumVersion: androidMinimumVersion,
+      ),
     );
   }
 
   @override
-  Future<User> signInWithGoogle() async {
+  Future<MyAppUser> signInWithGoogle() async {
     final GoogleSignIn googleSignIn = GoogleSignIn();
     final GoogleSignInAccount googleUser = await googleSignIn.signIn();
 
@@ -97,12 +101,12 @@ class FirebaseAuthService implements AuthService {
       final GoogleSignInAuthentication googleAuth =
           await googleUser.authentication;
       if (googleAuth.accessToken != null && googleAuth.idToken != null) {
-        final AuthResult authResult = await _firebaseAuth
-            .signInWithCredential(GoogleAuthProvider.getCredential(
+        final UserCredential userCredential = await _firebaseAuth
+            .signInWithCredential(GoogleAuthProvider.credential(
           idToken: googleAuth.idToken,
           accessToken: googleAuth.accessToken,
         ));
-        return _userFromFirebase(authResult.user);
+        return _userFromFirebase(userCredential.user);
       } else {
         throw PlatformException(
             code: 'ERROR_MISSING_GOOGLE_AUTH_TOKEN',
@@ -115,33 +119,43 @@ class FirebaseAuthService implements AuthService {
   }
 
   @override
-  Future<User> signInWithFacebook() async {
-    final FacebookLogin facebookLogin = FacebookLogin();
-    // https://github.com/roughike/flutter_facebook_login/issues/210
-    facebookLogin.loginBehavior = FacebookLoginBehavior.webViewOnly;
-    final FacebookLoginResult result =
-        await facebookLogin.logIn(<String>['public_profile']);
-    if (result.accessToken != null) {
-      final AuthResult authResult = await _firebaseAuth.signInWithCredential(
-        FacebookAuthProvider.getCredential(
-            accessToken: result.accessToken.token),
-      );
-      return _userFromFirebase(authResult.user);
-    } else {
-      throw PlatformException(
-          code: 'ERROR_ABORTED_BY_USER', message: 'Sign in aborted by user');
+  Future<MyAppUser> signInWithFacebook() async {
+    final fb = FacebookLogin();
+    final response = await fb.logIn(permissions: [
+      FacebookPermission.publicProfile,
+      FacebookPermission.email,
+    ]);
+    switch (response.status) {
+      case FacebookLoginStatus.Success:
+        final accessToken = response.accessToken;
+        final userCredential = await _firebaseAuth.signInWithCredential(
+          FacebookAuthProvider.credential(accessToken.token),
+        );
+        return _userFromFirebase(userCredential.user);
+      case FacebookLoginStatus.Cancel:
+        throw FirebaseAuthException(
+          code: 'ERROR_ABORTED_BY_USER',
+          message: 'Login cancelado pelo usuário.',
+        );
+      case FacebookLoginStatus.Error:
+        throw FirebaseAuthException(
+          code: 'ERROR_FACEBOOK_LOGIN_FAILED',
+          message: response.error.developerMessage,
+        );
+      default:
+        throw UnimplementedError();
     }
   }
 
   @override
-  Future<User> signInWithApple({List<Scope> scopes = const []}) async {
+  Future<MyAppUser> signInWithApple({List<Scope> scopes = const []}) async {
     final AuthorizationResult result = await AppleSignIn.performRequests(
         [AppleIdRequest(requestedScopes: scopes)]);
     switch (result.status) {
       case AuthorizationStatus.authorized:
         final appleIdCredential = result.credential;
-        final oAuthProvider = OAuthProvider(providerId: 'apple.com');
-        final credential = oAuthProvider.getCredential(
+        final oAuthProvider = OAuthProvider('apple.com');
+        final credential = oAuthProvider.credential(
           idToken: String.fromCharCodes(appleIdCredential.identityToken),
           accessToken:
               String.fromCharCodes(appleIdCredential.authorizationCode),
@@ -150,10 +164,9 @@ class FirebaseAuthService implements AuthService {
         final authResult = await _firebaseAuth.signInWithCredential(credential);
         final firebaseUser = authResult.user;
         if (scopes.contains(Scope.fullName)) {
-          final updateUser = UserUpdateInfo();
-          updateUser.displayName =
+          String displayName =
               '${appleIdCredential.fullName.givenName} ${appleIdCredential.fullName.familyName}';
-          await firebaseUser.updateProfile(updateUser);
+          await firebaseUser.updateProfile(displayName: displayName);
         }
         return _userFromFirebase(firebaseUser);
       case AuthorizationStatus.error:
@@ -171,9 +184,8 @@ class FirebaseAuthService implements AuthService {
   }
 
   @override
-  Future<User> currentUser() async {
-    final FirebaseUser user = await _firebaseAuth.currentUser();
-    return _userFromFirebase(user);
+  Future<MyAppUser> currentUser() async {
+    return _userFromFirebase(_firebaseAuth.currentUser);
   }
 
   @override

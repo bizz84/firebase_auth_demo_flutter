@@ -1,5 +1,4 @@
 import 'package:firebase_auth_demo_flutter/app/sign_in/auth_service_type_selector.dart';
-import 'package:firebase_auth_demo_flutter/constants/keys.dart';
 import 'package:firebase_auth_demo_flutter/constants/strings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

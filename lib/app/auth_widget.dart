@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 /// Note: this class used to be called [LandingPage].
 class AuthWidget extends StatelessWidget {
   const AuthWidget({Key key, @required this.userSnapshot}) : super(key: key);
-  final AsyncSnapshot<User> userSnapshot;
+  final AsyncSnapshot<MyAppUser> userSnapshot;
 
   @override
   Widget build(BuildContext context) {
