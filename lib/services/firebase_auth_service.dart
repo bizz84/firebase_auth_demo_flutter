@@ -164,7 +164,7 @@ class FirebaseAuthService implements AuthService {
         final authResult = await _firebaseAuth.signInWithCredential(credential);
         final firebaseUser = authResult.user;
         if (scopes.contains(Scope.fullName)) {
-          String displayName =
+          final String displayName =
               '${appleIdCredential.fullName.givenName} ${appleIdCredential.fullName.familyName}';
           await firebaseUser.updateProfile(displayName: displayName);
         }
