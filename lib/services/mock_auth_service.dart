@@ -22,21 +22,22 @@ class MockAuthService implements AuthService {
 
   final Map<String, _UserData> _usersStore = <String, _UserData>{};
 
-  User _currentUser;
+  MyAppUser _currentUser;
 
-  final StreamController<User> _onAuthStateChangedController =
-      StreamController<User>();
+  final StreamController<MyAppUser> _onAuthStateChangedController =
+      StreamController<MyAppUser>();
   @override
-  Stream<User> get onAuthStateChanged => _onAuthStateChangedController.stream;
+  Stream<MyAppUser> get onAuthStateChanged =>
+      _onAuthStateChangedController.stream;
 
   @override
-  Future<User> currentUser() async {
+  Future<MyAppUser> currentUser() async {
     await Future<void>.delayed(startupTime);
     return _currentUser;
   }
 
   @override
-  Future<User> createUserWithEmailAndPassword(
+  Future<MyAppUser> createUserWithEmailAndPassword(
       String email, String password) async {
     await Future<void>.delayed(responseTime);
     if (_usersStore.keys.contains(email)) {
@@ -45,14 +46,16 @@ class MockAuthService implements AuthService {
         message: 'The email address is already registered. Sign in instead?',
       );
     }
-    final User user = User(uid: random.randomAlphaNumeric(32), email: email);
+    final MyAppUser user =
+        MyAppUser(uid: random.randomAlphaNumeric(32), email: email);
     _usersStore[email] = _UserData(password: password, user: user);
     _add(user);
     return user;
   }
 
   @override
-  Future<User> signInWithEmailAndPassword(String email, String password) async {
+  Future<MyAppUser> signInWithEmailAndPassword(
+      String email, String password) async {
     await Future<void>.delayed(responseTime);
     if (!_usersStore.keys.contains(email)) {
       throw PlatformException(
@@ -75,26 +78,24 @@ class MockAuthService implements AuthService {
   Future<void> sendPasswordResetEmail(String email) async {}
 
   @override
-  Future<User> signInWithEmailAndLink({String email, String link}) async {
+  Future<MyAppUser> signInWithEmailAndLink({String email, String link}) async {
     await Future<void>.delayed(responseTime);
-    final User user = User(uid: random.randomAlphaNumeric(32));
+    final MyAppUser user = MyAppUser(uid: random.randomAlphaNumeric(32));
     _add(user);
     return user;
   }
 
   @override
-  Future<bool> isSignInWithEmailLink(String link) async {
-    return true;
-  }
+  bool isSignInWithEmailLink(String link) => true;
 
   @override
   Future<void> sendSignInWithEmailLink({
     @required String email,
     @required String url,
     @required bool handleCodeInApp,
-    @required String iOSBundleID,
+    @required String iOSBundleId,
     @required String androidPackageName,
-    @required bool androidInstallIfNotAvailable,
+    @required bool androidInstallApp,
     @required String androidMinimumVersion,
   }) async {}
 
@@ -103,39 +104,39 @@ class MockAuthService implements AuthService {
     _add(null);
   }
 
-  void _add(User user) {
+  void _add(MyAppUser user) {
     _currentUser = user;
     _onAuthStateChangedController.add(user);
   }
 
   @override
-  Future<User> signInAnonymously() async {
+  Future<MyAppUser> signInAnonymously() async {
     await Future<void>.delayed(responseTime);
-    final User user = User(uid: random.randomAlphaNumeric(32));
+    final MyAppUser user = MyAppUser(uid: random.randomAlphaNumeric(32));
     _add(user);
     return user;
   }
 
   @override
-  Future<User> signInWithFacebook() async {
+  Future<MyAppUser> signInWithFacebook() async {
     await Future<void>.delayed(responseTime);
-    final User user = User(uid: random.randomAlphaNumeric(32));
+    final MyAppUser user = MyAppUser(uid: random.randomAlphaNumeric(32));
     _add(user);
     return user;
   }
 
   @override
-  Future<User> signInWithGoogle() async {
+  Future<MyAppUser> signInWithGoogle() async {
     await Future<void>.delayed(responseTime);
-    final User user = User(uid: random.randomAlphaNumeric(32));
+    final MyAppUser user = MyAppUser(uid: random.randomAlphaNumeric(32));
     _add(user);
     return user;
   }
 
   @override
-  Future<User> signInWithApple({List<Scope> scopes}) async {
+  Future<MyAppUser> signInWithApple({List<Scope> scopes}) async {
     await Future<void>.delayed(responseTime);
-    final User user = User(uid: random.randomAlphaNumeric(32));
+    final MyAppUser user = MyAppUser(uid: random.randomAlphaNumeric(32));
     _add(user);
     return user;
   }
@@ -149,5 +150,5 @@ class MockAuthService implements AuthService {
 class _UserData {
   _UserData({@required this.password, @required this.user});
   final String password;
-  final User user;
+  final MyAppUser user;
 }

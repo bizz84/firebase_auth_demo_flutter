@@ -37,7 +37,7 @@ void main() {
 
   void stubSignInWithEmailAndPasswordSucceeds() {
     when(mockAuth.signInWithEmailAndPassword(any, any))
-        .thenAnswer((_) => Future<User>.value(User(uid: '123')));
+        .thenAnswer((_) => Future<MyAppUser>.value(MyAppUser(uid: '123')));
   }
 
   void stubSignInWithEmailAndPasswordThrows() {
@@ -47,7 +47,7 @@ void main() {
 
   void stubCreateUserWithEmailAndPasswordSucceeds() {
     when(mockAuth.createUserWithEmailAndPassword(any, any))
-        .thenAnswer((_) => Future<User>.value(User(uid: '123')));
+        .thenAnswer((_) => Future<MyAppUser>.value(MyAppUser(uid: '123')));
   }
 
   void stubCreateUserWithEmailAndPasswordThrows() {

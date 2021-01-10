@@ -4,8 +4,8 @@ import 'package:apple_sign_in/apple_sign_in.dart';
 import 'package:meta/meta.dart';
 
 @immutable
-class User {
-  const User({
+class MyAppUser {
+  const MyAppUser({
     @required this.uid,
     this.email,
     this.photoUrl,
@@ -19,26 +19,27 @@ class User {
 }
 
 abstract class AuthService {
-  Future<User> currentUser();
-  Future<User> signInAnonymously();
-  Future<User> signInWithEmailAndPassword(String email, String password);
-  Future<User> createUserWithEmailAndPassword(String email, String password);
+  Future<MyAppUser> currentUser();
+  Future<MyAppUser> signInAnonymously();
+  Future<MyAppUser> signInWithEmailAndPassword(String email, String password);
+  Future<MyAppUser> createUserWithEmailAndPassword(
+      String email, String password);
   Future<void> sendPasswordResetEmail(String email);
-  Future<User> signInWithEmailAndLink({String email, String link});
-  Future<bool> isSignInWithEmailLink(String link);
+  Future<MyAppUser> signInWithEmailAndLink({String email, String link});
+  bool isSignInWithEmailLink(String link);
   Future<void> sendSignInWithEmailLink({
     @required String email,
     @required String url,
     @required bool handleCodeInApp,
-    @required String iOSBundleID,
+    @required String iOSBundleId,
     @required String androidPackageName,
-    @required bool androidInstallIfNotAvailable,
+    @required bool androidInstallApp,
     @required String androidMinimumVersion,
   });
-  Future<User> signInWithGoogle();
-  Future<User> signInWithFacebook();
-  Future<User> signInWithApple({List<Scope> scopes});
+  Future<MyAppUser> signInWithGoogle();
+  Future<MyAppUser> signInWithFacebook();
+  Future<MyAppUser> signInWithApple({List<Scope> scopes});
   Future<void> signOut();
-  Stream<User> get onAuthStateChanged;
+  Stream<MyAppUser> get onAuthStateChanged;
   void dispose();
 }

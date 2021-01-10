@@ -15,13 +15,13 @@ void main() {
   MockAuthService mockAuthService;
   MockFirebaseEmailLinkHandler mockFirebaseEmailLinkHandler;
   MockNavigatorObserver mockNavigatorObserver;
-  StreamController<User> onAuthStateChangedController;
+  StreamController<MyAppUser> onAuthStateChangedController;
 
   setUp(() {
     mockAuthService = MockAuthService();
     mockFirebaseEmailLinkHandler = MockFirebaseEmailLinkHandler();
     mockNavigatorObserver = MockNavigatorObserver();
-    onAuthStateChangedController = StreamController<User>();
+    onAuthStateChangedController = StreamController<MyAppUser>();
   });
 
   tearDown(() {
@@ -38,9 +38,9 @@ void main() {
         .thenReturn(ValueNotifier<bool>(loading));
   }
 
-  void stubOnAuthStateChangedYields(Iterable<User> onAuthStateChanged) {
+  void stubOnAuthStateChangedYields(Iterable<MyAppUser> onAuthStateChanged) {
     onAuthStateChangedController
-        .addStream(Stream<User>.fromIterable(onAuthStateChanged));
+        .addStream(Stream<MyAppUser>.fromIterable(onAuthStateChanged));
     when(mockAuthService.onAuthStateChanged).thenAnswer((_) {
       return onAuthStateChangedController.stream;
     });

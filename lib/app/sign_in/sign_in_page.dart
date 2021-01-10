@@ -1,4 +1,4 @@
-import 'package:apple_sign_in/apple_sign_in.dart';
+import 'package:apple_sign_in/apple_sign_in_button.dart' as apple_button;
 import 'package:firebase_auth_demo_flutter/app/sign_in/developer_menu.dart';
 import 'package:firebase_auth_demo_flutter/app/sign_in/email_password/email_password_sign_in_page.dart';
 import 'package:firebase_auth_demo_flutter/app/sign_in/email_link/email_link_sign_in_page.dart';
@@ -160,10 +160,10 @@ class SignInPage extends StatelessWidget {
             ),
             SizedBox(height: 32.0),
             if (appleSignInAvailable.isAvailable) ...[
-              AppleSignInButton(
+              apple_button.AppleSignInButton(
                 // TODO: add key when supported
-                style: ButtonStyle.black,
-                type: ButtonType.signIn,
+                style: apple_button.ButtonStyle.black,
+                type: apple_button.ButtonType.signIn,
                 onPressed: isLoading ? null : () => _signInWithApple(context),
               ),
               SizedBox(height: 8),

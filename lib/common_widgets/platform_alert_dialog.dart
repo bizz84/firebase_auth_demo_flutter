@@ -1,9 +1,10 @@
 import 'dart:io';
 
-import 'package:firebase_auth_demo_flutter/common_widgets/platform_widget.dart';
 import 'package:firebase_auth_demo_flutter/constants/keys.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+
+import 'platform_widget.dart';
 
 class PlatformAlertDialog extends PlatformWidget {
   PlatformAlertDialog({

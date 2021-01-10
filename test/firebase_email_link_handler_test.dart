@@ -14,7 +14,7 @@ void main() {
 
     final sampleLink = Uri.https('', 'example.com');
     const sampleEmail = 'test@test.com';
-    const sampleUser = User(uid: '123', email: sampleEmail);
+    const sampleUser = MyAppUser(uid: '123', email: sampleEmail);
 
     setUp(() {
       mockAuth = MockAuthService();
@@ -50,7 +50,7 @@ void main() {
       ));
     }
 
-    void stubCurrentUser(User user) {
+    void stubCurrentUser(MyAppUser user) {
       when(mockAuth.currentUser()).thenAnswer((_) => Future.value(user));
     }
 
@@ -60,8 +60,7 @@ void main() {
     }
 
     void stubIsSignInWithEmailLinkReturns(bool result) {
-      when(mockAuth.isSignInWithEmailLink(any))
-          .thenAnswer((_) => Future.value(result));
+      when(mockAuth.isSignInWithEmailLink(any)).thenAnswer((_) => result);
     }
 
     void stubSignInWithEmailLinkThrows(PlatformException exception) {
